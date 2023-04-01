@@ -11,10 +11,11 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import Divider from "@mui/material/Divider";
+import { Chapter, Section, File } from "../types";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function ChapterView({ chapter }: { chapter: string }) {
+export default function ChapterView({ chapter }: { chapter: Chapter }) {
   const theme = createTheme({
     typography: {
       fontFamily: inter.style.fontFamily,
@@ -24,13 +25,20 @@ export default function ChapterView({ chapter }: { chapter: string }) {
     },
   });
 
-  const IndivListItem = ({
-    name,
-    subitems,
-  }: {
-    name: string;
-    subitems: string;
-  }) => {
+  // Component for each file
+  const IndivListFile = ({ file }: { file: File }) => {
+    return (
+      <List component="div" disablePadding>
+        <Divider light />
+        <ListItemButton sx={{ pl: 4 }}>
+          <ListItemText primary={file.fileName} className="dark:text-text" />
+        </ListItemButton>
+      </List>
+    );
+  };
+
+  // Component for each section
+  const IndivListItem = ({ section }: { section: Section }) => {
     const [open, setOpen] = React.useState(false);
     const handleClick = () => {
       setOpen(!open);
@@ -39,7 +47,7 @@ export default function ChapterView({ chapter }: { chapter: string }) {
       <>
         <Divider light />
         <ListItemButton onClick={handleClick}>
-          <ListItemText primary={name} className="dark:text-text" />
+          <ListItemText primary={section.title} className="dark:text-text" />
 
           {open ? (
             <ExpandLess className="dark:text-text" />
@@ -49,12 +57,9 @@ export default function ChapterView({ chapter }: { chapter: string }) {
         </ListItemButton>
 
         <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <Divider light />
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary={subitems} className="dark:text-text" />
-            </ListItemButton>
-          </List>
+          {section.files.map((file) => (
+            <IndivListFile file={file} />
+          ))}
         </Collapse>
       </>
     );
@@ -64,7 +69,7 @@ export default function ChapterView({ chapter }: { chapter: string }) {
     <ThemeProvider theme={theme}>
       <List
         className="bg-[#182c44] w-full lg:max-w-6xl mb-12"
-        id={chapter}
+        id={chapter.title}
         component="nav"
         aria-labelledby="nested-list-subheader"
         subheader={
@@ -73,13 +78,13 @@ export default function ChapterView({ chapter }: { chapter: string }) {
             id="nested-list-subheader"
             className="py-4 bg-[#182c44] font-bold text-xl dark:text-sky-400"
           >
-            {chapter}
+            {chapter.title}
           </ListSubheader>
         }
       >
-        <IndivListItem name="Tutorials" subitems="Tutorial 1" />
-
-        <IndivListItem name="Assignments" subitems="Assignment 2" />
+        {chapter.sections.map((section) => (
+          <IndivListItem section={section} />
+        ))}
       </List>
     </ThemeProvider>
   );

@@ -21,8 +21,9 @@ export default function MyPage() {
                   {sampleCourse.title}
                 </h1>
 
-                <ChapterView chapter="Price Mechanism" />
-                <ChapterView chapter="Market Failure" />
+                {sampleCourse.chapters.map((chapter) => (
+                  <ChapterView chapter={chapter} />
+                ))}
               </div>
             </main>
           </div>
