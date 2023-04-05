@@ -2,30 +2,26 @@ import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from "../utils/db";
 
-class Course extends Model {}
+class Chapter extends Model {}
 
-Course.init(
+Chapter.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    teacher: {
+    title: {
       type: DataTypes.TEXT,
-      allowNull: true,
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
   },
   {
     sequelize,
     underscored: true,
     timestamps: true,
-    modelName: "course",
+    modelName: "chapter",
   }
 );
 
-export default Course;
+export default Chapter;
