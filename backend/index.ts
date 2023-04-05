@@ -1,4 +1,6 @@
 import express from "express";
+import { connectToDatabase } from "./utils/db";
+
 const app = express();
 app.use(express.json());
 
@@ -9,6 +11,7 @@ app.get("/ping", (req, res) => {
   res.send("pong");
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  await connectToDatabase();
   console.log(`Server running on port ${PORT}`);
 });
