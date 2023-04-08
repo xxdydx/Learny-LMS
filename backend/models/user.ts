@@ -1,7 +1,16 @@
-const { Model, DataTypes } = require("sequelize");
-const { sequelize } = require("../utils/db");
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../utils/db";
 
-class User extends Model {}
+class User extends Model {
+  public id!: number;
+  public name!: string;
+  public username!: string;
+  public role!: string;
+  public email!: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
+
 User.init(
   {
     id: {
@@ -18,6 +27,10 @@ User.init(
       allowNull: false,
       unique: true,
     },
+    role: {
+      type: DataTypes.ENUM("student", "teacher", "admin"),
+      allowNull: false,
+    },
     email: {
       type: DataTypes.TEXT,
       allowNull: false,
@@ -31,8 +44,8 @@ User.init(
     sequelize,
     underscored: true,
     timestamps: true,
-    modelName: "user",
+    modelName: "User",
   }
 );
 
-module.exports = User;
+export default User;
