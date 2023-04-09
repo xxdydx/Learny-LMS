@@ -19,3 +19,5 @@ router.post("/", async (req, res) => {
   });
   return res.json(course);
 });
+
+export default router;

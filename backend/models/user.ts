@@ -7,6 +7,7 @@ class User extends Model {
   public username!: string;
   public role!: string;
   public email!: string;
+  public passwordHash!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -30,6 +31,9 @@ User.init(
     role: {
       type: DataTypes.ENUM("student", "teacher", "admin"),
       allowNull: false,
+    },
+    passwordHash: {
+      type: DataTypes.TEXT,
     },
     email: {
       type: DataTypes.TEXT,
