@@ -1,9 +1,12 @@
 import { Request, Response, NextFunction } from "express";
+import { CustomRequest } from "../types";
 import { ValidationError, DatabaseError } from "sequelize";
+import jwt from "jsonwebtoken";
+import { SECRET } from "./config";
 
 export const errorHandler = (
   error: any,
-  req: Request,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
@@ -21,4 +24,16 @@ export const errorHandler = (
   }
 
   next(error);
+};
+
+export const tokenExtractor = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const authorisation = req.get("Authorization");
+  if (authorisation && authorisation.toLowerCase().startsWith("bearer ")) {
+    req.decodedToken = jwt.verify(authorisation.substring(7), SECRET);
+  }
+  next();
 };
