@@ -11,13 +11,18 @@ Course.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    teacher: {
+    title: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      allowNull: false,
     },
     description: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    teacher: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "user", key: "id" },
     },
   },
   {
