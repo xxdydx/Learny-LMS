@@ -10,8 +10,8 @@ import { CustomRequest } from "../types";
 
 const router = express.Router();
 
-router.get("/", (_req, res) => {
-  const courses = Course.findAll();
+router.get("/", async (_req, res) => {
+  const courses = await Course.findAll({});
   console.log(courses);
   res.send(courses);
 });
