@@ -1,3 +1,11 @@
+import { Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
+import { Identifier } from "sequelize";
+
+export interface CustomRequest extends Request {
+  decodedToken?: string | JwtPayload;
+}
+
 export interface File {
   fileName: string;
   fileLink: string;
@@ -20,7 +28,6 @@ export interface Course {
   title: string;
   id: number;
   description?: string;
-  author?: string;
   chapters: Chapter[];
   students?: string;
 }
