@@ -18,16 +18,16 @@ export interface Section {
   id: number;
 }
 
-export interface Chapter {
+export interface ChapterType {
   title: string;
   sections: Section[];
   id: number;
 }
 
-export interface Course {
+export interface CourseType {
   title: string;
   id: number;
   description?: string;
-  chapters: Chapter[];
+  chapters: ChapterType[];
   students?: string;
 }

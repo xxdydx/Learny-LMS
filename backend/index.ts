@@ -4,10 +4,14 @@ import usersRouter from "./controllers/users";
 import coursesRouter from "./controllers/courses";
 import loginRouter from "./controllers/login";
 import { PORT } from "./utils/config";
+
 const { errorHandler } = require("./utils/middleware");
 
 const app = express();
 app.use(express.json());
+const cors = require("cors");
+
+app.use(cors());
 
 app.use("/api/courses", coursesRouter);
 app.use("/api/users", usersRouter);

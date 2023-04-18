@@ -1,8 +1,15 @@
 import { Model, DataTypes } from "sequelize";
-
+import { CourseType } from "../types";
 import { sequelize } from "../utils/db";
+import { User } from "../models";
 
-class Course extends Model {}
+class Course extends Model {
+  public id!: number;
+  public title!: string;
+  public description!: string;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
 
 Course.init(
   {
@@ -19,12 +26,8 @@ Course.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    teacher: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: { model: "user", key: "id" },
-    },
   },
+
   {
     sequelize,
     underscored: true,
