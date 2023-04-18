@@ -1,6 +1,6 @@
 import { Link, List, ListItem } from "@mui/material";
 import { useState } from "react";
-import { sampleCourse } from "../data/courseinfo";
+import { sampleCourse } from "../../data/courseinfo";
 
 /**
  * MenuInteractiveColumn :

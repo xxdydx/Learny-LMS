@@ -11,7 +11,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import Divider from "@mui/material/Divider";
-import { Chapter, Section, File } from "../types";
+import { Chapter, Section, File } from "../../types";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -16,9 +16,16 @@ export interface Chapter {
   id: number;
 }
 
+export interface Teacher {
+  id: number;
+  name: string;
+  username: string;
+}
+
 export interface Course {
   title: string;
   id: number;
+  teacher: Teacher;
   description?: string;
   author?: string;
   chapters: Chapter[];
