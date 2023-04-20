@@ -40,8 +40,18 @@ Section.belongsTo(Chapter, {
   },
 });
 
-Section.hasMany(File);
-File.belongsTo(Section);
+Section.hasMany(File, {
+  foreignKey: {
+    name: "sectionId",
+    allowNull: false,
+  },
+});
+File.belongsTo(Section, {
+  foreignKey: {
+    name: "sectionId",
+    allowNull: false,
+  },
+});
 
 export { default as Course } from "./course";
 export { default as Chapter } from "./chapter";

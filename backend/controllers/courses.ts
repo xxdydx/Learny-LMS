@@ -26,6 +26,13 @@ router.get("/", async (_req, res) => {
           {
             model: Section,
             as: "sections",
+            include: [
+              {
+                model: File,
+                as: "files",
+                attributes: ["fileName"],
+              },
+            ],
           },
         ],
       },

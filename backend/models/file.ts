@@ -11,11 +11,11 @@ File.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    fileName: {
+    name: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    fileLink: {
+    link: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
