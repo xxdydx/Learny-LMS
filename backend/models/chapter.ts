@@ -2,7 +2,10 @@ import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from "../utils/db";
 
-class Chapter extends Model {}
+class Chapter extends Model {
+  public id!: number;
+  public title!: string;
+}
 
 Chapter.init(
   {

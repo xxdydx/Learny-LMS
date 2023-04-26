@@ -2,7 +2,10 @@ import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from "../utils/db";
 
-class Section extends Model {}
+class Section extends Model {
+  public id!: number;
+  public title!: string;
+}
 
 Section.init(
   {
