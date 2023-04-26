@@ -2,21 +2,40 @@
 
 import { Typography } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
+import loginService from "../services/login";
+import courseService from "../services/courses";
 import Link from "@mui/material";
 import { useState } from "react";
 import { useAppDispatch } from "../hooks";
+import userReducer, { setUser } from "../reducers/userReducer";
+import { useRouter } from "next/navigation";
 
 export default function MyPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  // attempts login thru API, sets token in local storage, dispatches token to reducers and authenticates user
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const user = await loginService.login({ username, password });
+      window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
+      courseService.setToken(user.token);
+      dispatch(setUser(user));
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
-      <section className="bg-white dark:bg-bg">
-        <div className="flex flex-col items-center justify-center sm:pt-16 pt-36 pb-44">
+      <section className="bg-white dark:bg-bg min-h-screen">
+        <div className="flex flex-col items-center justify-center pt-16 pb-32 sm:pt-20 md:pt-24 lg:pt-36 ">
           <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
-            <SchoolIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+            <SchoolIcon sx={{ display: { xs: "flex", md: "flex" }, mr: 1 }} />
             <Typography
               variant="h6"
               noWrap
@@ -24,8 +43,7 @@ export default function MyPage() {
               href="/"
               sx={{
                 mr: 4,
-                display: { xs: "none", md: "flex" },
-
+                display: { xs: "flex", md: "flex" },
                 fontWeight: 700,
                 letterSpacing: ".3rem",
                 color: "inherit",
@@ -35,12 +53,16 @@ export default function MyPage() {
               AE Education
             </Typography>
           </div>
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-bg ">
+          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0  sm:max-w-md xl:p-0 dark:bg-bg ">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" action="#">
+              <form
+                className="space-y-4 md:space-y-6"
+                action="#"
+                onSubmit={handleLogin}
+              >
                 <div>
                   <label
                     htmlFor="username"

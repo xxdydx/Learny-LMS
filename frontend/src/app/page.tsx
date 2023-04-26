@@ -6,20 +6,38 @@ import NavigationBar from "./components/NavigationBar";
 import { sampleCourse } from "./data/courseinfo";
 import CourseCard from "./components/CourseCard";
 import { initializeCourses } from "./reducers/courseReducer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { AppState } from "./store";
 import { AppDispatch } from "./store";
 import { useAppDispatch, useAppSelector } from "./hooks";
+import { initializeUsers } from "./reducers/userReducer";
+import { UserIdentifier } from "./types";
+import { useRouter } from "next/navigation";
+import LoadingPage from "./components/LoadingPage";
+import { useAuth } from "./hooks";
 
 export default function MyPage() {
-  const dispatch = useAppDispatch();
-  const courses = useAppSelector((state) => state.courses);
+  const router = useRouter();
+  // abstracted GET users and courses into a hook
+  const [isLoading, user, courses] = useAuth();
+  // if page is loaded + no user => redirect to login page
   useEffect(() => {
-    dispatch(initializeCourses());
-  }, [dispatch]);
-  console.log(courses);
+    if (!isLoading && !user) {
+      router.push("/login");
+    }
+  }, [isLoading, user]);
+
+  // if page is loading and no user => redirect to loading page
+  if (isLoading || !user) {
+    return <LoadingPage />;
+  }
+
+  if (!Array.isArray(courses)) {
+    // handle error or return null
+    return null;
+  }
 
   return (
     <div className="dark">

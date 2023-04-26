@@ -1,9 +1,9 @@
 import { Action, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { Course } from "../types";
-import { useAppDispatch, useAppSelector } from "../hooks";
+
 import { AppState } from "../store";
 import courseService from "../services/courses";
-import { ThunkDispatch } from "@reduxjs/toolkit";
+
 import { ThunkAction } from "@reduxjs/toolkit";
 
 const courseSlice = createSlice({

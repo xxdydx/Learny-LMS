@@ -1,12 +1,17 @@
 import { Link, List, ListItem } from "@mui/material";
 import { useState } from "react";
 import { sampleCourse } from "../../data/courseinfo";
+import { Course } from "@/app/types";
 
 /**
  * MenuInteractiveColumn :
  * @description
  */
-const Contents = () => {
+
+interface Props {
+  course: Course;
+}
+const Contents = ({ course }: Props) => {
   const [selected, setSelected] = useState<string>("");
   const handleClick = (id: string) => {
     setSelected(id);
@@ -14,7 +19,7 @@ const Contents = () => {
   return (
     <div className="w-fit hidden md:flex md: ml-4 lg:ml-6">
       <List>
-        {sampleCourse.chapters.map((value) => {
+        {course.chapters.map((value) => {
           return (
             <ListItem key={value.id}>
               <Link

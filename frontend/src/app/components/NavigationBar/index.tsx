@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -13,7 +15,11 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import SchoolIcon from "@mui/icons-material/School";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { brown, deepPurple } from "@mui/material/colors";
+import { deepPurple } from "@mui/material/colors";
+import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useRouter } from "next/navigation";
+import { setUser } from "@/app/reducers/userReducer";
+import { UserIdentifier } from "@/app/types";
 
 const theme = createTheme({
   palette: {
@@ -23,9 +29,12 @@ const theme = createTheme({
 });
 
 const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function NavigationBar() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+  const user: UserIdentifier | null = useAppSelector((state) => state.user);
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -46,6 +55,14 @@ function NavigationBar() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  // Handle logout function
+  const logout = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    window.localStorage.removeItem("AKAppSessionID");
+    dispatch(setUser(null));
+    router.push("/");
   };
 
   return (
@@ -75,7 +92,6 @@ function NavigationBar() {
             <Box
               sx={{
                 flexGrow: 1,
-
                 display: { xs: "flex", md: "none" },
               }}
             >
@@ -154,7 +170,10 @@ function NavigationBar() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="John A" src="/static/images/avatar/2.jpg" />
+                  <Avatar
+                    alt={user ? user.name : "user"}
+                    src="/static/images/avatar/2.jpg"
+                  />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -173,11 +192,14 @@ function NavigationBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">Profile</Typography>
+                </MenuItem>
+                <MenuItem onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center" onClick={logout}>
+                    Log out
+                  </Typography>
+                </MenuItem>
               </Menu>
             </Box>
           </Toolbar>

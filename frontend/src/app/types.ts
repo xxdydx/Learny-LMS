@@ -22,6 +22,25 @@ export interface Teacher {
   username: string;
 }
 
+enum UserRole {
+  Student = "student",
+  Teacher = "teacher",
+  Admin = "admin",
+}
+export interface User {
+  id: number;
+  name: string;
+  username: string;
+  role: UserRole;
+  passwordHash?: string;
+}
+
+export interface UserIdentifier {
+  name: string;
+  username: string;
+  token: string;
+}
+
 export interface Course {
   title: string;
   id: number;
@@ -30,4 +49,6 @@ export interface Course {
   author?: string;
   chapters: Chapter[];
   students?: string;
+  createdAt: string;
+  updatedAt: string;
 }
