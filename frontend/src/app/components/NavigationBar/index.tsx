@@ -86,7 +86,7 @@ function NavigationBar() {
                 textDecoration: "none",
               }}
             >
-              LMS App
+              AE Education
             </Typography>
 
             <Box
@@ -147,7 +147,7 @@ function NavigationBar() {
                 textDecoration: "none",
               }}
             >
-              LMS App
+              AE Education
             </Typography>
             <Box
               sx={{
