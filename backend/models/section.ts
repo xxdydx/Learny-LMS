@@ -5,6 +5,7 @@ import { sequelize } from "../utils/db";
 class Section extends Model {
   public id!: number;
   public title!: string;
+  public chapterId!: number;
 }
 
 Section.init(

@@ -3,6 +3,7 @@ import { CustomRequest } from "../types";
 import { ValidationError, DatabaseError } from "sequelize";
 import jwt from "jsonwebtoken";
 import { SECRET } from "./config";
+import { User } from "../models";
 
 export const errorHandler = (
   error: any,
@@ -26,7 +27,7 @@ export const errorHandler = (
   next(error);
 };
 
-export const tokenExtractor = (
+export const tokenExtractor = async (
   req: CustomRequest,
   res: Response,
   next: NextFunction
@@ -35,5 +36,14 @@ export const tokenExtractor = (
   if (authorisation && authorisation.toLowerCase().startsWith("bearer ")) {
     req.decodedToken = jwt.verify(authorisation.substring(7), SECRET);
   }
+  const decodedToken = req.decodedToken;
+  const userId =
+    typeof decodedToken === "string" ? decodedToken : decodedToken?.id;
+  const user = await User.findByPk(userId); // Use the extracted ID to find the user
+
+  if (user instanceof User) {
+    req.user = user;
+  }
+
   next();
 };

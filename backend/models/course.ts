@@ -7,6 +7,7 @@ class Course extends Model {
   public id!: number;
   public title!: string;
   public description!: string;
+  public teacherId!: number;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }

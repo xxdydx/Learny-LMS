@@ -1,9 +1,11 @@
 import { Request } from "express";
 import { JwtPayload } from "jsonwebtoken";
 import { Identifier } from "sequelize";
+import { User } from "./models";
 
 export interface CustomRequest extends Request {
   decodedToken?: string | JwtPayload;
+  user?: User;
 }
 
 export interface File {
