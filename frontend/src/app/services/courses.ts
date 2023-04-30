@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Course } from "../types";
+import { Course, NewCourse } from "../types";
 const apiBaseUrl = "http://localhost:3001/api";
 
 let token: string = "";
@@ -22,10 +22,11 @@ const getOne = async (id: number) => {
   return data;
 };
 
-const create = async (object: Course) => {
+const create = async (object: NewCourse) => {
   const config = {
     headers: { Authorization: token },
   };
+  console.log(object);
   const { data } = await axios.post(`${apiBaseUrl}/courses`, object, config);
 
   return data;

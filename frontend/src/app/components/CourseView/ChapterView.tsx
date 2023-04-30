@@ -69,7 +69,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
     <ThemeProvider theme={theme}>
       <List
         className="w-full lg:max-w-6xl"
-        sx={{ bgcolor: "#182c44", mb: "3rem" }}
+        sx={{ bgcolor: "#242527", mb: "3rem" }}
         id={chapter.title}
         component="nav"
         aria-labelledby="nested-list-subheader"
@@ -79,9 +79,9 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
             id="nested-list-subheader"
             sx={{
               py: 1,
-              bgcolor: "#182c44",
+              bgcolor: "#242527",
               fontWeight: "bold",
-              color: "#38BDF8",
+              color: "#fec006",
               fontSize: 20,
             }}
           >

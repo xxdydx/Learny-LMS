@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/hooks";
 import LoadingPage from "@/app/components/LoadingPage";
+import styled from "@mui/material/styles/styled";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const router = useRouter();

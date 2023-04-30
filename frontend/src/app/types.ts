@@ -39,6 +39,13 @@ export interface UserIdentifier {
   name: string;
   username: string;
   token: string;
+  role: UserRole;
+}
+
+// New course that has yet to be updated on backend
+export interface NewCourse {
+  title: string;
+  description: string;
 }
 
 export interface Course {

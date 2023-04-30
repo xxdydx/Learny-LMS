@@ -1,5 +1,5 @@
 import { Action, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Course } from "../types";
+import { Course, NewCourse } from "../types";
 
 import { AppState } from "../store";
 import courseService from "../services/courses";
@@ -44,11 +44,12 @@ export const initializeCourses = (): ThunkAction<
   };
 };
 
-export const createSubmission = (
-  courseObject: Course
+export const createCourse = (
+  courseObject: NewCourse
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.create(courseObject);
+    console.log(newCourse);
     dispatch(create(newCourse));
   };
 };

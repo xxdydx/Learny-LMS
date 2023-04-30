@@ -13,15 +13,17 @@ import { AppState } from "./store";
 import { AppDispatch } from "./store";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { initializeUsers } from "./reducers/userReducer";
-import { UserIdentifier } from "./types";
+import { UserIdentifier, Course } from "./types";
 import { useRouter } from "next/navigation";
 import LoadingPage from "./components/LoadingPage";
 import { useAuth } from "./hooks";
+import FormModal from "./components/FormModal";
 
 export default function MyPage() {
   const router = useRouter();
   // abstracted GET users and courses into a hook
   const [isLoading, user, courses] = useAuth();
+
   // if page is loaded + no user => redirect to login page
   useEffect(() => {
     if (!isLoading && !user) {
@@ -43,21 +45,24 @@ export default function MyPage() {
     <div className="dark">
       <div className="dark:bg-bg">
         <NavigationBar />
-        <div className="flex justify-between px-4 pt-16 mx-auto max-w-7xl">
-          <main className="bg-white dark:bg-bg min-h-screen">
-            <div>
+        <div className="flex flex-col px-4 pt-16 mx-auto min-h-screen max-w-7xl ">
+          <div>
+            <div className="flex justify-between mx-auto max-w-7xl ">
               <h1 className="pb-12 text-4xl tracking-tight font-bold text-gray-900 dark:text-white">
                 My Courses
               </h1>
-              <div className="grid gap-12 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
-                {courses.map((course) => (
-                  <div key={course.id} className="mx-auto max-w-xs">
-                    <CourseCard course={course} />
-                  </div>
-                ))}
-              </div>
+              {user?.role === "teacher" ? <FormModal /> : null}
             </div>
-          </main>
+          </div>
+          <div>
+            <div className="grid gap-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+              {courses.map((course) => (
+                <div key={course.id} className="mx-auto max-w-xs">
+                  <CourseCard course={course} />
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
