@@ -49,12 +49,11 @@ export const createCourse = (
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.create(courseObject);
-    console.log(newCourse);
     dispatch(create(newCourse));
   };
 };
 
-export const deleteSubmission = (
+export const deleteCourse = (
   id: number
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {

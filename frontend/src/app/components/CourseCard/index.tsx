@@ -7,15 +7,18 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Course } from "@/app/types";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { CardHeader, ThemeProvider, createTheme } from "@mui/material";
 import { Inter } from "next/font/google";
 import { styled } from "@mui/material";
+import CourseMenu from "../OptionsMenu/course";
+import { useAppSelector } from "@/app/hooks";
 
 interface Props {
   course: Course;
 }
 const inter = Inter({ subsets: ["latin"] });
 const CourseCard = ({ course }: Props) => {
+  const user = useAppSelector((state) => state.user);
   const theme = createTheme({
     typography: {
       fontFamily: inter.style.fontFamily,
@@ -38,15 +41,14 @@ const CourseCard = ({ course }: Props) => {
   return (
     <ThemeProvider theme={theme}>
       <Card sx={{ minWidth: 280 }}>
+        <CardHeader subheader="Course" action={<CourseMenu id={course.id} />} />
+
         <CardContent>
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Course
-          </Typography>
           <Typography variant="h5" fontWeight="bold" component="div">
             {course.title}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Teacher: {course.teacher.name}
+          <Typography color="text.secondary">
+            Teacher: {course.teacher?.name || user?.name}
           </Typography>
           <Typography variant="body2">
             <br />

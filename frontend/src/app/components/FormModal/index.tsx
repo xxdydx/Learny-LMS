@@ -14,9 +14,10 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { NewCourse } from "@/app/types";
+import { Course, NewCourse } from "@/app/types";
 import { createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
+import { useRouter } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function FormModal() {
   const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const StyledButton = styled(Button)({
@@ -62,10 +64,10 @@ export default function FormModal() {
         description: description && description.trim(),
       };
       const response = await dispatch(createCourse(newCourse));
-      console.log(response);
       setTitle("");
       setDescription("");
       setOpen(false);
+      router.push("/");
     }
   };
 
