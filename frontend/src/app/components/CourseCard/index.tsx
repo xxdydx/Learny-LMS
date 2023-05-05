@@ -40,11 +40,17 @@ const CourseCard = ({ course }: Props) => {
   }
   return (
     <ThemeProvider theme={theme}>
-      <Card sx={{ minWidth: 280 }}>
+      <Card
+        sx={{
+          minWidth: 280,
+          borderRadius: "1.25rem",
+          backgroundColor: "#242527",
+        }}
+      >
         <CardHeader subheader="Course" action={<CourseMenu id={course.id} />} />
 
         <CardContent>
-          <Typography variant="h5" fontWeight="bold" component="div">
+          <Typography variant="h5" fontWeight="600" component="div">
             {course.title}
           </Typography>
           <Typography color="text.secondary">

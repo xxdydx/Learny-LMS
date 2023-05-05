@@ -14,17 +14,21 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { Course, NewCourse } from "@/app/types";
+import { Chapter, Course, NewCourse } from "@/app/types";
 import { createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
+import { NewChapter } from "@/app/types";
+import { addChapter } from "@/app/reducers/courseReducer";
 
 const inter = Inter({ subsets: ["latin"] });
+interface Props {
+  courseId: number;
+}
 
-export default function FormModal() {
+export default function NewChapterForm({ courseId }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -56,18 +60,15 @@ export default function FormModal() {
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (title.trim().length === 0 || description.trim().length === 0) {
+    if (title.trim().length === 0) {
       console.log("No empty strings allowed");
     } else {
-      const newCourse: NewCourse = {
+      const newChapter: NewChapter = {
         title: title && title.trim(),
-        description: description && description.trim(),
       };
-      const response = await dispatch(createCourse(newCourse));
+      await dispatch(addChapter(newChapter, courseId));
       setTitle("");
-      setDescription("");
       setOpen(false);
-      router.push("/");
     }
   };
 
@@ -109,7 +110,7 @@ export default function FormModal() {
           onClick={handleClickOpen}
           className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
         >
-          Create a Course
+          Create a Chapter
         </button>
 
         <Dialog
@@ -134,16 +135,6 @@ export default function FormModal() {
               type="text"
               required={true}
               onChange={({ target }) => setTitle(target.value)}
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              margin="dense"
-              id="name"
-              label="Description"
-              type="text"
-              required={true}
-              onChange={({ target }) => setDescription(target.value)}
               fullWidth
               variant="standard"
             />

@@ -83,7 +83,6 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                   {
                     model: File,
                     as: "files",
-                    attributes: ["name"],
                   },
                 ],
               },
@@ -152,7 +151,44 @@ router.post(
         courseId: course.id,
       });
 
-      return res.json(chapter);
+      const editedCourse = await Course.findByPk(course.id, {
+        attributes: { exclude: ["teacherId"] },
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["name", "username", "id"],
+          },
+          {
+            model: User,
+            as: "students",
+            attributes: ["name", "username", "id"],
+            through: {
+              attributes: [],
+            },
+          },
+          {
+            model: Chapter,
+            as: "chapters",
+            attributes: ["title", "id"],
+            include: [
+              {
+                model: Section,
+                as: "sections",
+                include: [
+                  {
+                    model: File,
+                    as: "files",
+                    attributes: ["name", "id"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      return res.json(editedCourse);
     } catch (err) {
       next(err);
     }

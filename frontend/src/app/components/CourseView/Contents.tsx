@@ -1,3 +1,4 @@
+"use client";
 import { Link, List, ListItem } from "@mui/material";
 import { useState } from "react";
 import { sampleCourse } from "../../data/courseinfo";
@@ -17,7 +18,7 @@ const Contents = ({ course }: Props) => {
     setSelected(id);
   };
   return (
-    <div className="w-fit hidden md:flex md: ml-4 lg:ml-6">
+    <div>
       <List>
         {course.chapters.map((value) => {
           return (

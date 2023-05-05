@@ -5,17 +5,30 @@ import SchoolIcon from "@mui/icons-material/School";
 import loginService from "../services/login";
 import courseService from "../services/courses";
 import Link from "@mui/material";
-import { useState } from "react";
-import { useAppDispatch } from "../hooks";
-import userReducer, { setUser } from "../reducers/userReducer";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../hooks";
+import userReducer, { initializeUsers, setUser } from "../reducers/userReducer";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import { useAuth } from "../hooks";
+import LoadingPage from "../components/LoadingPage";
 
 export default function MyPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, user] = useAuth();
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      router.push("/");
+    }
+  }, [isLoading, user]);
+
+  if (isLoading || user) {
+    return <LoadingPage />;
+  }
 
   // attempts login thru API, sets token in local storage, dispatches token to reducers and authenticates user
   const handleLogin = async (event: React.FormEvent) => {
@@ -27,12 +40,16 @@ export default function MyPage() {
       dispatch(setUser(user));
       router.push("/");
     } catch (error) {
-      console.log(error.response.data.error);
+      console.log(error);
     }
   };
 
+  if (user) {
+    router.push("/");
+  }
+
   return (
-    <>
+    <div className="dark">
       <section className="bg-white dark:bg-bg min-h-screen">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
@@ -138,6 +155,6 @@ export default function MyPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

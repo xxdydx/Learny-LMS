@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Course, NewCourse } from "../types";
+import { Course, NewChapter, NewCourse } from "../types";
 const apiBaseUrl = "http://localhost:3001/api";
 
 let token: string = "";
@@ -32,6 +32,20 @@ const create = async (object: NewCourse) => {
   return data;
 };
 
+const createChapter = async (object: NewChapter, id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  console.log(object);
+  const { data } = await axios.post(
+    `${apiBaseUrl}/courses/${id}/chapters`,
+    object,
+    config
+  );
+
+  return data;
+};
+
 const remove = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -44,6 +58,7 @@ const remove = async (id: number) => {
 export default {
   getAll,
   create,
+  createChapter,
   getOne,
   remove,
   setToken,

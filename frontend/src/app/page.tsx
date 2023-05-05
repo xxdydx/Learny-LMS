@@ -17,12 +17,14 @@ import { UserIdentifier, Course } from "./types";
 import { useRouter } from "next/navigation";
 import LoadingPage from "./components/LoadingPage";
 import { useAuth } from "./hooks";
-import FormModal from "./components/FormModal";
+import NewCourseForm from "./components/FormModal/NewCourseForm";
 
 export default function MyPage() {
-  const router = useRouter();
   // abstracted GET users and courses into a hook
-  const [isLoading, user, courses] = useAuth();
+  const [isLoading, user] = useAuth();
+  const courses = useAppSelector((state) => state.courses);
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
   // if page is loaded + no user => redirect to login page
   useEffect(() => {
@@ -31,11 +33,17 @@ export default function MyPage() {
     }
   }, [isLoading, user]);
 
+  // to GET courses
+  useEffect(() => {
+    if (user) {
+      dispatch(initializeCourses());
+    }
+  }, [dispatch, user]);
+
   // if page is loading and no user => redirect to loading page
   if (isLoading || !user) {
     return <LoadingPage />;
   }
-
   if (!Array.isArray(courses)) {
     // handle error or return null
     return null;
@@ -48,10 +56,10 @@ export default function MyPage() {
         <div className="flex flex-col px-4 pt-16 mx-auto min-h-screen max-w-7xl ">
           <div>
             <div className="flex justify-between mx-auto max-w-7xl ">
-              <h1 className="pb-12 text-4xl tracking-tight font-bold text-gray-900 dark:text-white">
+              <h1 className="pb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
                 My Courses
               </h1>
-              {user?.role === "teacher" ? <FormModal /> : null}
+              {user?.role === "teacher" ? <NewCourseForm /> : null}
             </div>
           </div>
           <div>

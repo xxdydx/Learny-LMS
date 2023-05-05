@@ -1,6 +1,6 @@
 export interface File {
-  fileName: string;
-  fileLink: string;
+  name: string;
+  link: string;
   id: number;
 }
 
@@ -46,6 +46,9 @@ export interface UserIdentifier {
 export interface NewCourse {
   title: string;
   description: string;
+}
+export interface NewChapter {
+  title: string;
 }
 
 export interface Course {

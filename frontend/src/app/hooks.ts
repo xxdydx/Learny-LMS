@@ -13,11 +13,10 @@ export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 
 // Hook to authenticate user & render courses associated with user
-type UseAuthReturnType = [boolean, UserIdentifier | null, Course[] | null];
+type UseAuthReturnType = [boolean, UserIdentifier | null];
 
 export const useAuth = (): UseAuthReturnType => {
   const dispatch = useAppDispatch();
-  const courses = useAppSelector((state) => state.courses);
   const user: UserIdentifier | null = useAppSelector((state) => state.user);
   const [isLoading, setLoading] = useState(true);
 
@@ -30,12 +29,5 @@ export const useAuth = (): UseAuthReturnType => {
     setLoading(false);
   }, [dispatch]);
 
-  // to GET courses
-  useEffect(() => {
-    if (user) {
-      dispatch(initializeCourses());
-    }
-  }, [dispatch, user]);
-
-  return [isLoading, user, courses];
+  return [isLoading, user];
 };
