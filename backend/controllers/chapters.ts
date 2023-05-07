@@ -45,4 +45,71 @@ router.post(
   }
 );
 
+// to delete the chapter
+
+router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(404).send("You need to be logged in");
+  }
+  try {
+    let chapter = await Chapter.findByPk(req.params.id);
+    if (!chapter) {
+      return res.status(404).send("Chapter not found");
+    }
+    let course = await Course.findByPk(chapter.courseId);
+
+    if (user.id.toString() !== course?.teacherId.toString()) {
+      return res
+        .status(403)
+        .send(`You don't have permissions to delete this chapter`);
+    }
+
+    await chapter.destroy();
+
+    // Display the edited course after the chapter is deleted
+
+    const editedCourse = await Course.findByPk(course.id, {
+      attributes: { exclude: ["teacherId"] },
+      include: [
+        {
+          model: User,
+          as: "teacher",
+          attributes: ["name", "username", "id"],
+        },
+        {
+          model: User,
+          as: "students",
+          attributes: ["name", "username", "id"],
+          through: {
+            attributes: [],
+          },
+        },
+        {
+          model: Chapter,
+          as: "chapters",
+          attributes: ["title", "id"],
+          include: [
+            {
+              model: Section,
+              as: "sections",
+              include: [
+                {
+                  model: File,
+                  as: "files",
+                  attributes: ["name", "id"],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.json(editedCourse);
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;

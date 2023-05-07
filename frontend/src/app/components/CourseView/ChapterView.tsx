@@ -14,6 +14,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import Divider from "@mui/material/Divider";
 import { Chapter, Section, File } from "../../types";
+import ChapterMenu from "../OptionsMenu/chapter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -90,7 +91,10 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
               borderRadius: "1.25rem",
             }}
           >
-            {chapter.title}
+            <div className="flex justify-between">
+              {chapter.title}
+              <ChapterMenu id={chapter.id} />
+            </div>
           </ListSubheader>
         }
       >

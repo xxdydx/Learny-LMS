@@ -15,7 +15,6 @@ const courseSlice = createSlice({
       const course = action.payload;
       state.push(course);
     },
-    createChapter(state, action: PayloadAction<Course>) {},
     setCourses(state, action) {
       return action.payload;
     },
@@ -71,6 +70,15 @@ export const addChapter = (
   return async (dispatch) => {
     const newCourse = await courseService.createChapter(chapter, id);
     console.log(newCourse);
+    dispatch(edit(newCourse));
+  };
+};
+
+export const deleteChapter = (
+  chpId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.removeChapter(chpId);
     dispatch(edit(newCourse));
   };
 };

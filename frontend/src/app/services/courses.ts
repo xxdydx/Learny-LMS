@@ -46,6 +46,14 @@ const createChapter = async (object: NewChapter, id: number) => {
   return data;
 };
 
+const removeChapter = async (id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.delete(`${apiBaseUrl}/chapters/${id}`, config);
+  return data;
+};
+
 const remove = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -59,6 +67,7 @@ export default {
   getAll,
   create,
   createChapter,
+  removeChapter,
   getOne,
   remove,
   setToken,
