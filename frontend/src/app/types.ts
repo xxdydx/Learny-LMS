@@ -50,6 +50,9 @@ export interface NewCourse {
 export interface NewChapter {
   title: string;
 }
+export interface NewSection {
+  title: string;
+}
 
 export interface Course {
   title: string;

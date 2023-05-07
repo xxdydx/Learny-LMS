@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Course, NewChapter, NewCourse } from "../types";
+import { Course, NewChapter, NewCourse, NewSection } from "../types";
 const apiBaseUrl = "http://localhost:3001/api";
 
 let token: string = "";
@@ -32,6 +32,14 @@ const create = async (object: NewCourse) => {
   return data;
 };
 
+const remove = async (id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.delete(`${apiBaseUrl}/courses/${id}`, config);
+  return data;
+};
+
 const createChapter = async (object: NewChapter, id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -54,11 +62,16 @@ const removeChapter = async (id: number) => {
   return data;
 };
 
-const remove = async (id: number) => {
+const createSection = async (section: NewSection, chpId: number) => {
   const config = {
     headers: { Authorization: token },
   };
-  const { data } = await axios.delete(`${apiBaseUrl}/courses/${id}`, config);
+
+  const { data } = await axios.post(
+    `${apiBaseUrl}/chapters/${chpId}/sections`,
+    section,
+    config
+  );
   return data;
 };
 
@@ -66,9 +79,10 @@ const remove = async (id: number) => {
 export default {
   getAll,
   create,
-  createChapter,
-  removeChapter,
   getOne,
   remove,
   setToken,
+  createChapter,
+  removeChapter,
+  createSection,
 };

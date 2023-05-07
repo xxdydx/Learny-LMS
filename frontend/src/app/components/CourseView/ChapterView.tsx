@@ -27,7 +27,6 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
       mode: "dark",
     },
   });
-  console.log(chapter);
 
   // Component for each file
   const IndivListFile = ({ file }: { file: File }) => {

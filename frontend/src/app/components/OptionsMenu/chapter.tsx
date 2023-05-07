@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
 import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
@@ -15,6 +16,7 @@ import { Inter } from "next/font/google";
 import { deleteCourse } from "@/app/reducers/courseReducer";
 import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
+import NewSectionForm from "../FormModal/NewSectionForm";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -117,8 +119,14 @@ export default function ChapterMenu({ id }: Props) {
         >
           <MenuItem onClick={handleClose}>
             <EditIcon />
-            Edit
+            Edit Chapter
           </MenuItem>
+          <NewSectionForm chapterId={id}>
+            <MenuItem>
+              <AddIcon />
+              Add Section
+            </MenuItem>
+          </NewSectionForm>
           <Divider sx={{ my: 0.5 }} />
           <MenuItem sx={{ color: "red" }} onClick={handleDelete}>
             <DeleteIcon sx={{ color: "red" }} />

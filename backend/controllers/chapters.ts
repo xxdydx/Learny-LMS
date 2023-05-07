@@ -24,6 +24,7 @@ router.post(
       if (!chapter) {
         return res.status(404).send("Chapter not found");
       }
+
       let course = await Course.findByPk(chapter.courseId);
 
       if (user.id.toString() !== course?.teacherId.toString()) {
@@ -32,13 +33,50 @@ router.post(
           .send(`You don't have permissions to create sections`);
       }
 
-      const section = await Section.create({
+      await Section.create({
         title: req.body.title,
         files: [],
         chapterId: chapter.id,
       });
 
-      return res.json(section);
+      const editedCourse = await Course.findByPk(course.id, {
+        attributes: { exclude: ["teacherId"] },
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["name", "username", "id"],
+          },
+          {
+            model: User,
+            as: "students",
+            attributes: ["name", "username", "id"],
+            through: {
+              attributes: [],
+            },
+          },
+          {
+            model: Chapter,
+            as: "chapters",
+            attributes: ["title", "id"],
+            include: [
+              {
+                model: Section,
+                as: "sections",
+                include: [
+                  {
+                    model: File,
+                    as: "files",
+                    attributes: ["name", "id"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      return res.json(editedCourse);
     } catch (error) {
       next(error);
     }
