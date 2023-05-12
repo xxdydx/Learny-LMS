@@ -14,20 +14,21 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { Chapter, Course, NewCourse, NewSection } from "@/app/types";
-import { addSection, createCourse } from "@/app/reducers/courseReducer";
+import { Chapter, Course, NewCourse } from "@/app/types";
+import { createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { NewChapter } from "@/app/types";
 import { addChapter } from "@/app/reducers/courseReducer";
+import AddIcon from "@mui/icons-material/Add";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
-  chapterId: number;
-  children: React.ReactNode;
+  courseId: number;
 }
 
-export default function NewSectionForm({ chapterId, children }: Props) {
+export default function CourseSettings({ courseId }: Props) {
   const [open, setOpen] = useState<boolean>(false);
   const [title, setTitle] = useState<string>("");
   const router = useRouter();
@@ -64,11 +65,10 @@ export default function NewSectionForm({ chapterId, children }: Props) {
     if (title.trim().length === 0) {
       console.log("No empty strings allowed");
     } else {
-      const newSection: NewSection = {
+      const newChapter: NewChapter = {
         title: title && title.trim(),
       };
-
-      await dispatch(addSection(newSection, chapterId));
+      await dispatch(addChapter(newChapter, courseId));
       setTitle("");
       setOpen(false);
     }
@@ -107,7 +107,13 @@ export default function NewSectionForm({ chapterId, children }: Props) {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <div onClick={handleClickOpen}>{children}</div>
+        <button
+          type="button"
+          onClick={handleClickOpen}
+          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+        >
+          <SettingsIcon />
+        </button>
 
         <Dialog
           open={open}
@@ -116,15 +122,18 @@ export default function NewSectionForm({ chapterId, children }: Props) {
         >
           <NewDialogTitle id="customized-dialog-title" onClose={handleClose}>
             {" "}
-            Create section
+            Settings
           </NewDialogTitle>
           <DialogContent dividers>
-            <DialogContentText>Add a section here.</DialogContentText>
+            <DialogContentText>
+              Create a course here. You can initialize chapters, sections, files
+              and add students later on.
+            </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="Section Title"
+              label="Course Title"
               type="text"
               required={true}
               onChange={({ target }) => setTitle(target.value)}

@@ -53,6 +53,10 @@ export interface NewChapter {
 export interface NewSection {
   title: string;
 }
+export interface NewFile {
+  name: string;
+  link: string;
+}
 
 export interface Course {
   title: string;

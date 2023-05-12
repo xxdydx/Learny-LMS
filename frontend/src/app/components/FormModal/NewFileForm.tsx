@@ -14,22 +14,22 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { Chapter, Course, NewCourse, NewSection } from "@/app/types";
-import { addSection, createCourse } from "@/app/reducers/courseReducer";
+import { NewFile } from "@/app/types";
+import { addFile } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
-import { NewChapter } from "@/app/types";
-import { addChapter } from "@/app/reducers/courseReducer";
+import MenuItem from "@mui/material/MenuItem";
+import AddIcon from "@mui/icons-material/Add";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
-  chapterId: number;
-  children: React.ReactNode;
+  sxnId: number;
 }
 
-export default function NewSectionForm({ chapterId, children }: Props) {
+export default function NewFileForm({ sxnId }: Props) {
   const [open, setOpen] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [link, setLink] = useState<string>("");
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -61,15 +61,17 @@ export default function NewSectionForm({ chapterId, children }: Props) {
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (title.trim().length === 0) {
+    if (name.trim().length === 0 || link.trim().length === 0) {
       console.log("No empty strings allowed");
     } else {
-      const newSection: NewSection = {
-        title: title && title.trim(),
+      const newFile: NewFile = {
+        name: name && name.trim(),
+        link: link && link.trim(),
       };
-
-      await dispatch(addSection(newSection, chapterId));
-      setTitle("");
+      console.log(newFile);
+      await dispatch(addFile(newFile, sxnId));
+      setName("");
+      setLink("");
       setOpen(false);
     }
   };
@@ -107,7 +109,13 @@ export default function NewSectionForm({ chapterId, children }: Props) {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <div onClick={handleClickOpen}>{children}</div>
+        <div onClick={handleClickOpen}>
+          {" "}
+          <MenuItem>
+            <AddIcon />
+            Create File
+          </MenuItem>
+        </div>
 
         <Dialog
           open={open}
@@ -116,18 +124,30 @@ export default function NewSectionForm({ chapterId, children }: Props) {
         >
           <NewDialogTitle id="customized-dialog-title" onClose={handleClose}>
             {" "}
-            Create section
+            Upload file
           </NewDialogTitle>
           <DialogContent dividers>
-            <DialogContentText>Add a section here.</DialogContentText>
+            <DialogContentText>
+              Upload a tutorial file or worksheet here.
+            </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="Section Title"
+              label="File Name"
               type="text"
               required={true}
-              onChange={({ target }) => setTitle(target.value)}
+              onChange={({ target }) => setName(target.value)}
+              fullWidth
+              variant="standard"
+            />
+            <TextField
+              margin="dense"
+              id="name"
+              label="File Link"
+              type="text"
+              required={true}
+              onChange={({ target }) => setLink(target.value)}
               fullWidth
               variant="standard"
             />

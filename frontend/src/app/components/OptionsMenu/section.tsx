@@ -13,7 +13,7 @@ import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
-import { deleteCourse } from "@/app/reducers/courseReducer";
+import { deleteCourse, deleteSection } from "@/app/reducers/courseReducer";
 import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
 import NewSectionForm from "../FormModal/NewSectionForm";
@@ -25,7 +25,7 @@ interface Props {
   id: number;
 }
 
-export default function ChapterMenu({ id }: Props) {
+export default function SectionMenu({ id }: Props) {
   const dispatch = useAppDispatch();
   const theme = createTheme({
     typography: {
@@ -50,7 +50,7 @@ export default function ChapterMenu({ id }: Props) {
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
-    await dispatch(deleteChapter(id));
+    await dispatch(deleteSection(id));
     setAnchorEl(null);
   };
   const StyledMenu = styled((props: MenuProps) => (
@@ -120,14 +120,10 @@ export default function ChapterMenu({ id }: Props) {
         >
           <MenuItem onClick={handleClose}>
             <EditIcon />
-            Edit Chapter
+            Edit Section
           </MenuItem>
-          <NewSectionForm chapterId={id}>
-            <MenuItem>
-              <AddIcon />
-              Add Section
-            </MenuItem>
-          </NewSectionForm>
+
+          <NewFileForm sxnId={id} />
 
           <Divider sx={{ my: 0.5 }} />
           <MenuItem sx={{ color: "red" }} onClick={handleDelete}>

@@ -30,7 +30,10 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
     }
 
     // Check if student exists
-    const student = await User.findByPk(req.body.userId);
+
+    const student = await User.findOne({
+      where: { username: req.body.username },
+    });
     if (!student) {
       return res.status(404).send("Student not found");
     }
@@ -41,8 +44,7 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
         .send(`Only allowed to add students to this course`);
     }
 
-    console.log(student);
-    const userId = req.body.userId;
+    const userId = student.id;
     const courseId = req.body.courseId;
 
     const enrollmentQuery = `

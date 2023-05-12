@@ -4,7 +4,6 @@ import usersRouter from "./controllers/users";
 import coursesRouter from "./controllers/courses";
 import chaptersRouter from "./controllers/chapters";
 import sectionsRouter from "./controllers/sections";
-import filesRouter from "./controllers/files";
 import loginRouter from "./controllers/login";
 import enrollmentRouter from "./controllers/enrollment";
 
@@ -21,7 +20,6 @@ app.use(cors());
 app.use("/api/courses", coursesRouter);
 app.use("/api/chapters", chaptersRouter);
 app.use("/api/sections", sectionsRouter);
-app.use("/api/files", filesRouter);
 app.use("/api/enrollment", enrollmentRouter);
 
 app.use("/api/users", usersRouter);

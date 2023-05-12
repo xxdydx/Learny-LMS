@@ -14,6 +14,7 @@ import styled from "@mui/material/styles/styled";
 import NewCourseForm from "@/app/components/FormModal/NewCourseForm";
 import { NewChapter } from "@/app/types";
 import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
+import CourseSettings from "@/app/components/FormModal/CourseSettings";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -52,30 +53,33 @@ export default function MyPage({ params }: { params: { slug: string } }) {
     <div className="dark">
       <div className="dark:bg-bg">
         <NavigationBar />
-        <div className="flex flex-row pt-8 lg:pt-16 gap-6 lg:gap-16">
-          <div className="w-1/6 hidden md:flex md: ml-4 lg:ml-6">
-            <Contents course={course} />
-          </div>
+        <main className="mt-8 mb-16 lg:mt-16 lg:mb-24 bg-white dark:bg-bg min-h-screen">
+          <div className="flex justify-between px-4 mx-auto max-w-6xl">
+            <div className="flex-grow mx-4">
+              <div className="bg-white dark:bg-bg min-h-screen">
+                <div className="w-full lg:max-w-6xl">
+                  <div className="flex justify-between mx-auto ">
+                    <h1 className="mb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
+                      {course.title}
+                    </h1>
+                    <div className="flex flex-row">
+                      {user?.role === "teacher" ? (
+                        <NewChapterForm courseId={course.id} />
+                      ) : null}
+                      <div>
+                        <CourseSettings courseId={course.id} />
+                      </div>
+                    </div>
+                  </div>
 
-          <div className="flex-grow mx-4">
-            <main className="bg-white dark:bg-bg min-h-screen">
-              <div className="w-full lg:max-w-6xl">
-                <div className="flex justify-between mx-auto ">
-                  <h1 className=" pb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
-                    {course.title}
-                  </h1>
-                  {user?.role === "teacher" ? (
-                    <NewChapterForm courseId={course.id} />
-                  ) : null}
+                  {course.chapters.map((chapter) => (
+                    <ChapterView key={chapter.id} chapter={chapter} />
+                  ))}
                 </div>
-
-                {course.chapters.map((chapter) => (
-                  <ChapterView key={chapter.id} chapter={chapter} />
-                ))}
               </div>
-            </main>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

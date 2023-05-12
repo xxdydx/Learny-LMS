@@ -7,7 +7,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 
 import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
-
+import AddIcon from "@mui/icons-material/Add";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { createTheme, ThemeProvider } from "@mui/material";
@@ -15,10 +15,17 @@ import { Inter } from "next/font/google";
 import Divider from "@mui/material/Divider";
 import { Chapter, Section, File } from "../../types";
 import ChapterMenu from "../OptionsMenu/chapter";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import IconButton from "@mui/material/IconButton/IconButton";
+import { useAppSelector } from "@/app/hooks";
+import NewFileForm from "../FormModal/NewFileForm";
+import SectionMenu from "../OptionsMenu/section";
+import Typography from "@mui/material/Typography/Typography";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function ChapterView({ chapter }: { chapter: Chapter }) {
+  const user = useAppSelector((state) => state.user);
   const theme = createTheme({
     typography: {
       fontFamily: inter.style.fontFamily,
@@ -50,15 +57,29 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
     return (
       <>
         <Divider light />
-        <ListItemButton onClick={handleClick}>
-          <ListItemText primary={section.title} className="dark:text-text" />
+        <div className="flex justify mr-4">
+          <ListItemButton onClick={handleClick}>
+            <ListItemText
+              disableTypography
+              primary={
+                <Typography style={{ color: "#fff" }} component="div">
+                  {section.title}
+                </Typography>
+              }
+            />
 
-          {section.files.length > 0 && open ? (
-            <ExpandLess className="dark:text-text" />
-          ) : (
-            <ExpandMore className="dark:text-text" />
-          )}
-        </ListItemButton>
+            {user?.role !== "teacher" && (
+              <>
+                {section.files.length > 0 && open ? (
+                  <ExpandLess className="dark:text-text" />
+                ) : (
+                  <ExpandMore className="dark:text-text" />
+                )}
+              </>
+            )}
+          </ListItemButton>
+          <SectionMenu id={section.id} />
+        </div>
 
         <Collapse in={open} timeout="auto" unmountOnExit>
           {section.files.map((file) => (

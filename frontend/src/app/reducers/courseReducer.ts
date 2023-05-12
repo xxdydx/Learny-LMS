@@ -1,5 +1,5 @@
 import { Action, PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { Course, NewCourse, NewSection } from "../types";
+import { Course, NewCourse, NewFile, NewSection } from "../types";
 
 import { AppState } from "../store";
 import courseService from "../services/courses";
@@ -89,6 +89,26 @@ export const addSection = (
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.createSection(section, chpId);
+    dispatch(edit(newCourse));
+  };
+};
+
+export const deleteSection = (
+  sxnId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.removeSection(sxnId);
+    dispatch(edit(newCourse));
+  };
+};
+
+export const addFile = (
+  file: NewFile,
+  sxnId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.createFile(file, sxnId);
+    console.log(newCourse);
     dispatch(edit(newCourse));
   };
 };

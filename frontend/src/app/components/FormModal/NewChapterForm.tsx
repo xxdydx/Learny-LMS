@@ -20,6 +20,7 @@ import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { NewChapter } from "@/app/types";
 import { addChapter } from "@/app/reducers/courseReducer";
+import AddIcon from "@mui/icons-material/Add";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -110,7 +111,7 @@ export default function NewChapterForm({ courseId }: Props) {
           onClick={handleClickOpen}
           className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
         >
-          Create a Chapter
+          <AddIcon />
         </button>
 
         <Dialog
@@ -120,18 +121,17 @@ export default function NewChapterForm({ courseId }: Props) {
         >
           <NewDialogTitle id="customized-dialog-title" onClose={handleClose}>
             {" "}
-            Create course
+            Add a chapter
           </NewDialogTitle>
           <DialogContent dividers>
             <DialogContentText>
-              Create a course here. You can initialize chapters, sections, files
-              and add students later on.
+              A great way to organise your files according to different topics.
             </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="Course Title"
+              label="Chapter Title"
               type="text"
               required={true}
               onChange={({ target }) => setTitle(target.value)}
@@ -141,7 +141,7 @@ export default function NewChapterForm({ courseId }: Props) {
           </DialogContent>
           <DialogActions>
             <StyledButton onClick={handleClose}>Cancel</StyledButton>
-            <StyledButton onClick={handleCreate}>Create</StyledButton>
+            <StyledButton onClick={handleCreate}>Add</StyledButton>
           </DialogActions>
         </Dialog>
       </div>
