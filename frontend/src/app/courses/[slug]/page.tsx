@@ -15,6 +15,7 @@ import NewCourseForm from "@/app/components/FormModal/NewCourseForm";
 import { NewChapter } from "@/app/types";
 import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
 import CourseSettings from "@/app/components/FormModal/CourseSettings";
+import NotifComponent from "@/app/components/NotifComponent";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -46,18 +47,18 @@ export default function MyPage({ params }: { params: { slug: string } }) {
 
   const course = courses.find((course) => course.id === parseInt(params.slug));
   if (course === undefined) {
-    return <main className="bg-white dark:bg-bg min-h-screen"></main>;
+    return <main className="bg-bg min-h-screen"></main>;
   }
 
   return (
     <div className="dark">
       <div className="dark:bg-bg">
         <NavigationBar />
-        <main className="mt-8 mb-16 lg:mt-16 lg:mb-24 bg-white dark:bg-bg min-h-screen">
-          <div className="flex justify-between px-4 mx-auto max-w-6xl">
+        <main className="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-bg">
+          <div className="min-h-screen flex justify-between px-4 mx-auto max-w-6xl">
             <div className="flex-grow mx-4">
               <div className="bg-white dark:bg-bg min-h-screen">
-                <div className="w-full lg:max-w-6xl">
+                <div className=" w-full lg:max-w-6xl">
                   <div className="flex justify-between mx-auto ">
                     <h1 className="mb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
                       {course.title}
@@ -79,6 +80,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
               </div>
             </div>
           </div>
+          <NotifComponent />
         </main>
       </div>
     </div>

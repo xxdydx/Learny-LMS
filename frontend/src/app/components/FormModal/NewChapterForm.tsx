@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { NewChapter } from "@/app/types";
 import { addChapter } from "@/app/reducers/courseReducer";
 import AddIcon from "@mui/icons-material/Add";
+import { setNotification } from "@/app/reducers/notifReducer";
+import { Notif } from "@/app/types";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -70,6 +72,11 @@ export default function NewChapterForm({ courseId }: Props) {
       await dispatch(addChapter(newChapter, courseId));
       setTitle("");
       setOpen(false);
+      const notification: Notif = {
+        type: "success",
+        message: "Chapter created",
+      };
+      dispatch(setNotification(notification, 5000));
     }
   };
 

@@ -1,3 +1,5 @@
+export type AlertColor = "success" | "info" | "warning" | "error";
+
 export interface File {
   name: string;
   link: string;
@@ -56,6 +58,11 @@ export interface NewSection {
 export interface NewFile {
   name: string;
   link: string;
+}
+
+export interface Notif {
+  type: AlertColor;
+  message: string;
 }
 
 export interface Course {

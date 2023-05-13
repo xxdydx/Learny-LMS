@@ -14,10 +14,11 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { Course, NewCourse } from "@/app/types";
+import { Course, NewCourse, Notif } from "@/app/types";
 import { createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
+import { setNotification } from "@/app/reducers/notifReducer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -66,6 +67,11 @@ export default function NewCourseForm() {
       const response = await dispatch(createCourse(newCourse));
       setTitle("");
       setDescription("");
+      const notif: Notif = {
+        type: "success",
+        message: "Course created",
+      };
+      dispatch(setNotification(notif, 5000));
       setOpen(false);
       router.push("/");
     }

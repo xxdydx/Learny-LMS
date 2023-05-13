@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import LoadingPage from "./components/LoadingPage";
 import { useAuth } from "./hooks";
 import NewCourseForm from "./components/FormModal/NewCourseForm";
+import NotifComponent from "./components/NotifComponent";
 
 export default function MyPage() {
   // abstracted GET users and courses into a hook
@@ -72,6 +73,7 @@ export default function MyPage() {
             </div>
           </div>
         </div>
+        <NotifComponent />
       </div>
     </div>
   );

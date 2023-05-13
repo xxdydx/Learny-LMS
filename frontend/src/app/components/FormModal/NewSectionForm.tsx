@@ -14,12 +14,13 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { Chapter, Course, NewCourse, NewSection } from "@/app/types";
+import { Chapter, Course, NewCourse, NewSection, Notif } from "@/app/types";
 import { addSection, createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { NewChapter } from "@/app/types";
 import { addChapter } from "@/app/reducers/courseReducer";
+import { setNotification } from "@/app/reducers/notifReducer";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -70,6 +71,11 @@ export default function NewSectionForm({ chapterId, children }: Props) {
 
       await dispatch(addSection(newSection, chapterId));
       setTitle("");
+      const notif: Notif = {
+        type: "success",
+        message: "Section created",
+      };
+      await dispatch(setNotification(notif, 5000));
       setOpen(false);
     }
   };

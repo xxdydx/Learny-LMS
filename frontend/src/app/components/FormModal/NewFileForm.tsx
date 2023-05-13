@@ -14,12 +14,13 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { NewFile } from "@/app/types";
+import { NewFile, Notif } from "@/app/types";
 import { addFile } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import MenuItem from "@mui/material/MenuItem";
 import AddIcon from "@mui/icons-material/Add";
+import { setNotification } from "@/app/reducers/notifReducer";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -72,6 +73,11 @@ export default function NewFileForm({ sxnId }: Props) {
       await dispatch(addFile(newFile, sxnId));
       setName("");
       setLink("");
+      const notif: Notif = {
+        type: "success",
+        message: "File uploaded",
+      };
+      await dispatch(setNotification(notif, 5000));
       setOpen(false);
     }
   };
