@@ -14,6 +14,7 @@ import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
 import { deleteCourse } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
+import { useRouter } from "next/navigation";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -36,6 +37,7 @@ export default function CourseMenu({ id }: Props) {
   });
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const router = useRouter();
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -49,6 +51,7 @@ export default function CourseMenu({ id }: Props) {
     await dispatch(deleteCourse(id));
     setAnchorEl(null);
   };
+
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
       elevation={0}

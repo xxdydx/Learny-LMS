@@ -18,6 +18,17 @@ import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
 import NewSectionForm from "../FormModal/NewSectionForm";
 import NewFileForm from "../FormModal/NewFileForm";
+import { setNotification } from "@/app/reducers/notifReducer";
+import { NewSection, Notif } from "@/app/types";
+import { addSection } from "@/app/reducers/courseReducer";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import CloseIcon from "@mui/icons-material/Close";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -25,7 +36,7 @@ interface Props {
   id: number;
 }
 
-export default function ChapterMenu({ id }: Props) {
+export default function ChapterMenu({ id }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = createTheme({
     typography: {
@@ -40,13 +51,49 @@ export default function ChapterMenu({ id }: Props) {
   });
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [title, setTitle] = useState<string>("");
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  const handleMenuClick = () => {
+    setAnchorEl(null);
+    setOpenDialog(true);
+  };
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  // to handle new section responses once 'create' button is clicked
+  const handleCreate = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (title.trim().length === 0) {
+      console.log("No empty strings allowed");
+    } else {
+      const newSection: NewSection = {
+        title: title && title.trim(),
+      };
+
+      await dispatch(addSection(newSection, id));
+      setTitle("");
+      const notif: Notif = {
+        type: "success",
+        message: "Section created",
+      };
+      await dispatch(setNotification(notif, 5000));
+      setOpenDialog(false);
+    }
+  };
+
+  // to ensure button's text is not all CAPS
+  const StyledButton = styled(Button)({
+    textTransform: "none",
+  });
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -70,7 +117,7 @@ export default function ChapterMenu({ id }: Props) {
     "& .MuiPaper-root": {
       borderRadius: 6,
       marginTop: theme.spacing(1),
-      minWidth: 100,
+      minWidth: 150,
       color:
         theme.palette.mode === "light"
           ? "rgb(55, 65, 81)"
@@ -89,6 +136,35 @@ export default function ChapterMenu({ id }: Props) {
       },
     },
   }));
+  interface DialogTitleProps {
+    id: string;
+    children?: React.ReactNode;
+    onClose: () => void;
+  }
+
+  const NewDialogTitle = (props: DialogTitleProps) => {
+    const { children, onClose, ...other } = props;
+
+    return (
+      <DialogTitle {...other}>
+        {children}
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </DialogTitle>
+    );
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -122,12 +198,11 @@ export default function ChapterMenu({ id }: Props) {
             <EditIcon />
             Edit Chapter
           </MenuItem>
-          <NewSectionForm chapterId={id}>
-            <MenuItem>
-              <AddIcon />
-              Add Section
-            </MenuItem>
-          </NewSectionForm>
+
+          <MenuItem onClick={handleMenuClick}>
+            <AddIcon />
+            Add Section
+          </MenuItem>
 
           <Divider sx={{ my: 0.5 }} />
           <MenuItem sx={{ color: "red" }} onClick={handleDelete}>
@@ -135,6 +210,38 @@ export default function ChapterMenu({ id }: Props) {
             Delete
           </MenuItem>
         </StyledMenu>
+
+        <Dialog
+          open={openDialog}
+          onClose={handleClose}
+          PaperProps={{ style: { backgroundColor: "black" } }}
+        >
+          <NewDialogTitle
+            id="customized-dialog-title"
+            onClose={handleDialogClose}
+          >
+            {" "}
+            Create section
+          </NewDialogTitle>
+          <DialogContent dividers>
+            <DialogContentText>Add a section here.</DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Section Title"
+              type="text"
+              required={true}
+              onChange={({ target }) => setTitle(target.value)}
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <StyledButton onClick={handleDialogClose}>Cancel</StyledButton>
+            <StyledButton onClick={handleCreate}>Create</StyledButton>
+          </DialogActions>
+        </Dialog>
       </div>
     </ThemeProvider>
   );
