@@ -3,7 +3,6 @@
 import ChapterView from "./components/CourseView/ChapterView";
 import Contents from "./components/CourseView/Contents";
 import NavigationBar from "./components/NavigationBar";
-import { sampleCourse } from "./data/courseinfo";
 import CourseCard from "./components/CourseCard";
 import { initializeCourses } from "./reducers/courseReducer";
 import { useEffect, useState } from "react";
@@ -54,7 +53,7 @@ export default function MyPage() {
     <div className="dark">
       <div className="dark:bg-bg">
         <NavigationBar />
-        <div className="flex flex-col px-4 pt-16 mx-auto min-h-screen max-w-7xl ">
+        <div className="flex flex-col px-4 pt-16 mx-auto min-h-screen max-w-6xl ">
           <div>
             <div className="flex justify-between mx-auto max-w-7xl ">
               <h1 className="pb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">

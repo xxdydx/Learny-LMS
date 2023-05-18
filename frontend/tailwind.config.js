@@ -20,6 +20,7 @@ module.exports = {
         bg: "#111111",
         pink: "#ff4081",
         darkerpink: "#f01b68",
+        surface: "#242527",
         yellow: "#fec006",
         text: "#B2BAC2",
       },

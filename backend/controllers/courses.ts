@@ -61,12 +61,12 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           {
             model: User,
             as: "teacher",
-            attributes: ["name", "username", "id"],
+            attributes: ["name", "username", "id", "email", "role"],
           },
           {
             model: User,
             as: "students",
-            attributes: ["name", "username", "id"],
+            attributes: ["name", "username", "id", "email", "role"],
             through: {
               attributes: [],
             },
@@ -194,12 +194,12 @@ router.post(
           {
             model: User,
             as: "teacher",
-            attributes: ["name", "username", "id"],
+            attributes: ["name", "username", "id", "email", "role"],
           },
           {
             model: User,
             as: "students",
-            attributes: ["name", "username", "id"],
+            attributes: ["name", "username", "id", "email", "role"],
             through: {
               attributes: [],
             },

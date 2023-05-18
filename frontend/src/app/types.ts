@@ -72,7 +72,7 @@ export interface Course {
   description?: string;
   author?: string;
   chapters: Chapter[];
-  students?: string;
+  students: User[];
   createdAt: string;
   updatedAt: string;
 }
