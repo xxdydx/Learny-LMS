@@ -21,6 +21,7 @@ import { useAppSelector } from "@/app/hooks";
 import NewFileForm from "../FormModal/NewFileForm";
 import SectionMenu from "../OptionsMenu/section";
 import Typography from "@mui/material/Typography/Typography";
+import { link } from "fs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,7 +41,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
     return (
       <List component="div" disablePadding>
         <Divider light />
-        <ListItemButton sx={{ pl: 4 }}>
+        <ListItemButton sx={{ pl: 4 }} onClick={() => window.open(file.link)}>
           <ListItemText primary={file.name} className="dark:text-text" />
         </ListItemButton>
       </List>
@@ -78,7 +79,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
               </>
             )}
           </ListItemButton>
-          <SectionMenu id={section.id} />
+          <SectionMenu id={section.id} title={section.title} />
         </div>
 
         <Collapse in={open} timeout="auto" unmountOnExit>

@@ -3,7 +3,6 @@
 import ChapterView from "../../components/CourseView/ChapterView";
 import Contents from "../../components/CourseView/Contents";
 import NavigationBar from "../../components/NavigationBar";
-import { sampleCourse } from "../../data/courseinfo";
 import { useEffect } from "react";
 import { initializeCourses } from "@/app/reducers/courseReducer";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
@@ -16,6 +15,7 @@ import { NewChapter } from "@/app/types";
 import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
 import CourseSettings from "@/app/components/FormModal/CourseSettings";
 import NotifComponent from "@/app/components/NotifComponent";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -68,7 +68,15 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                         <NewChapterForm courseId={course.id} />
                       ) : null}
                       <div>
-                        <CourseSettings courseId={course.id} />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            window.open(`/courses/${course.id}/settings`)
+                          }
+                          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                        >
+                          <SettingsIcon />
+                        </button>
                       </div>
                     </div>
                   </div>
