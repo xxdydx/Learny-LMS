@@ -4,6 +4,7 @@ import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
 import { Op } from "sequelize";
+import getUpdatedCourse from "../utils/getUpdatedCourse";
 
 const router = express.Router();
 
@@ -188,43 +189,10 @@ router.post(
         courseId: course.id,
       });
 
-      const editedCourse = await Course.findByPk(course.id, {
-        attributes: { exclude: ["teacherId"] },
-        include: [
-          {
-            model: User,
-            as: "teacher",
-            attributes: ["name", "username", "id", "email", "role"],
-          },
-          {
-            model: User,
-            as: "students",
-            attributes: ["name", "username", "id", "email", "role"],
-            through: {
-              attributes: [],
-            },
-          },
-          {
-            model: Chapter,
-            as: "chapters",
-            attributes: ["title", "id"],
-            include: [
-              {
-                model: Section,
-                as: "sections",
-                include: [
-                  {
-                    model: File,
-                    as: "files",
-                    attributes: ["name", "id"],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      });
-
+      const editedCourse = await getUpdatedCourse(course.id);
+      if (!editedCourse) {
+        return res.status(404).send("Course not found");
+      }
       return res.json(editedCourse);
     } catch (err) {
       next(err);
