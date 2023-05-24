@@ -18,10 +18,11 @@ import ChapterMenu from "../OptionsMenu/chapter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton/IconButton";
 import { useAppSelector } from "@/app/hooks";
-import NewFileForm from "../FormModal/NewFileForm";
+
 import SectionMenu from "../OptionsMenu/section";
 import Typography from "@mui/material/Typography/Typography";
 import { link } from "fs";
+import FileMenu from "../OptionsMenu/file";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,9 +42,12 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
     return (
       <List component="div" disablePadding>
         <Divider light />
-        <ListItemButton sx={{ pl: 4 }} onClick={() => window.open(file.link)}>
-          <ListItemText primary={file.name} className="dark:text-text" />
-        </ListItemButton>
+        <div className="flex justify mr-4">
+          <ListItemButton sx={{ pl: 4 }} onClick={() => window.open(file.link)}>
+            <ListItemText primary={file.name} className="dark:text-text" />
+          </ListItemButton>
+          <FileMenu id={file.id} />
+        </div>
       </List>
     );
   };

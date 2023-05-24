@@ -3,6 +3,7 @@ export type AlertColor = "success" | "info" | "warning" | "error";
 export interface File {
   name: string;
   link: string;
+  awskey: string;
   id: number;
 }
 
@@ -58,6 +59,12 @@ export interface NewSection {
 export interface NewFile {
   name: string;
   link: string;
+  awskey: string;
+}
+
+export interface NewEnrollment {
+  username: string;
+  courseId: number;
 }
 
 export interface Notif {

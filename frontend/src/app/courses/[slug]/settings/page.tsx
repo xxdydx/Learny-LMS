@@ -13,6 +13,7 @@ import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import AddNewStudentForm from "@/app/components/FormModal/AddNewStudent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -125,12 +126,17 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                       <h1 className="text-3xl tracking-tight font-semibold text-gray-900 dark:text-white">
                         Students
                       </h1>
-                      <button
-                        type="button"
-                        className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                      <AddNewStudentForm
+                        courseId={course.id}
+                        courseTitle={course.title}
                       >
-                        Add Student
-                      </button>
+                        <button
+                          type="button"
+                          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                        >
+                          Add Student
+                        </button>
+                      </AddNewStudentForm>
                     </div>
 
                     <div style={{ width: "100%", maxHeight: 800 }}>

@@ -14,23 +14,26 @@ import { Inter } from "next/font/google";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import courseService from "@/app/services/courses";
 import { useState } from "react";
-import { NewFile, Notif } from "@/app/types";
-import { addFile } from "@/app/reducers/courseReducer";
+import { Course, NewCourse, NewEnrollment, Notif } from "@/app/types";
+import { addEnrollment, createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
-import MenuItem from "@mui/material/MenuItem";
-import AddIcon from "@mui/icons-material/Add";
 import { setNotification } from "@/app/reducers/notifReducer";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
-  sxnId: number;
+  courseId: number;
+  courseTitle: string;
+  children: React.ReactNode;
 }
 
-export default function NewFileForm({ sxnId }: Props) {
+export default function AddNewStudentForm({
+  courseId,
+  courseTitle,
+  children,
+}: Props) {
   const [open, setOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>("");
-  const [link, setLink] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -62,22 +65,20 @@ export default function NewFileForm({ sxnId }: Props) {
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (name.trim().length === 0 || link.trim().length === 0) {
+    if (username.trim().length === 0) {
       console.log("No empty strings allowed");
     } else {
-      const newFile: NewFile = {
-        name: name && name.trim(),
-        link: link && link.trim(),
+      const newEnrollment: NewEnrollment = {
+        username: username && username.trim(),
+        courseId: courseId,
       };
-      console.log(newFile);
-      await dispatch(addFile(newFile, sxnId));
-      setName("");
-      setLink("");
+      await dispatch(addEnrollment(newEnrollment));
       const notif: Notif = {
         type: "success",
-        message: "File uploaded",
+        message: `Student u/${username} added`,
       };
-      await dispatch(setNotification(notif, 5000));
+      dispatch(setNotification(notif, 5000));
+      setUsername("");
       setOpen(false);
     }
   };
@@ -115,13 +116,7 @@ export default function NewFileForm({ sxnId }: Props) {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <div onClick={handleClickOpen}>
-          {" "}
-          <MenuItem>
-            <AddIcon />
-            Create File
-          </MenuItem>
-        </div>
+        <div onClick={handleClickOpen}>{children}</div>
 
         <Dialog
           open={open}
@@ -130,30 +125,20 @@ export default function NewFileForm({ sxnId }: Props) {
         >
           <NewDialogTitle id="customized-dialog-title" onClose={handleClose}>
             {" "}
-            Upload file
+            Add student to course
           </NewDialogTitle>
           <DialogContent dividers>
             <DialogContentText>
-              Upload a tutorial file or worksheet here.
+              Add a student to <b>{courseTitle}</b>.
             </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              label="File Name"
+              label="Student's username"
               type="text"
               required={true}
-              onChange={({ target }) => setName(target.value)}
-              fullWidth
-              variant="standard"
-            />
-            <TextField
-              margin="dense"
-              id="name"
-              label="File Link"
-              type="text"
-              required={true}
-              onChange={({ target }) => setLink(target.value)}
+              onChange={({ target }) => setUsername(target.value)}
               fullWidth
               variant="standard"
             />

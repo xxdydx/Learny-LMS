@@ -13,7 +13,7 @@ import styled from "@mui/material/styles/styled";
 import NewCourseForm from "@/app/components/FormModal/NewCourseForm";
 import { NewChapter } from "@/app/types";
 import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
-import CourseSettings from "@/app/components/FormModal/CourseSettings";
+
 import NotifComponent from "@/app/components/NotifComponent";
 import SettingsIcon from "@mui/icons-material/Settings";
 

@@ -1,5 +1,12 @@
 import axios from "axios";
-import { Course, NewChapter, NewCourse, NewSection, NewFile } from "../types";
+import {
+  Course,
+  NewChapter,
+  NewCourse,
+  NewSection,
+  NewFile,
+  NewEnrollment,
+} from "../types";
 const apiBaseUrl = "http://localhost:3001/api";
 
 let token: string = "";
@@ -95,6 +102,29 @@ const createFile = async (file: NewFile, sxnId: number) => {
   return data;
 };
 
+const removeFile = async (id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.delete(`${apiBaseUrl}/files/${id}`, config);
+  return data;
+};
+
+const createEnrollment = async (enrollment: NewEnrollment) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  console.log(config);
+  const { data } = await axios.post(
+    `${apiBaseUrl}/enrollment`,
+    enrollment,
+    config
+  );
+  console.log(data);
+  return data;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getAll,
@@ -107,4 +137,6 @@ export default {
   createSection,
   removeSection,
   createFile,
+  removeFile,
+  createEnrollment,
 };

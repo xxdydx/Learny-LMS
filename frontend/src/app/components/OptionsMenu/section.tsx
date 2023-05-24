@@ -80,6 +80,7 @@ export default function SectionMenu({ id, title }: Props) {
   const [name, setName] = useState<string>("");
   const [file, setFile] = useState<null | File>(null);
   const [link, setLink] = useState<string>("");
+  const [awskey, setawskey] = useState<string>("");
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
 
@@ -147,9 +148,10 @@ export default function SectionMenu({ id, title }: Props) {
       return;
     }
     const bucketName = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
+    const dirName = `Section${id}/Files/`;
 
     const params = {
-      Key: file?.name,
+      Key: dirName + file?.name,
       Body: file,
       Bucket: bucketName ? bucketName : "",
       ContentType: file?.type,
@@ -160,6 +162,7 @@ export default function SectionMenu({ id, title }: Props) {
       setSuccess(true);
       setLoading(false);
       setLink(data.Location);
+      setawskey(data.Key);
     } catch (err) {
       console.log(err);
     }
@@ -171,6 +174,14 @@ export default function SectionMenu({ id, title }: Props) {
     if (name.trim().length === 0) {
       const notif: Notif = {
         message: "File name cannot be empty",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+    if (awskey.trim().length === 0) {
+      const notif: Notif = {
+        message: "Error in uploading file. Try again later",
         type: "error",
       };
       dispatch(setNotification(notif, 5000));
@@ -189,6 +200,7 @@ export default function SectionMenu({ id, title }: Props) {
       const newFile: NewFile = {
         name: name && name.trim(),
         link: link,
+        awskey: awskey,
       };
 
       await dispatch(addFile(newFile, id));
@@ -331,7 +343,7 @@ export default function SectionMenu({ id, title }: Props) {
           <DialogContent dividers>
             <DialogContentText>
               Upload a tutorial file or worksheet here. You are uploading in{" "}
-              {title}.
+              <b>{title}</b>.
             </DialogContentText>
             <TextField
               autoFocus
