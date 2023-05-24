@@ -3,6 +3,7 @@ import { Section, User, File, Chapter, Course, Enrollment } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
 import { QueryTypes } from "sequelize";
+import getUpdatedCourse from "../utils/getUpdatedCourse";
 
 const router = express.Router();
 
@@ -57,7 +58,11 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
       type: QueryTypes.INSERT,
     });
 
-    return res.json(enrollment);
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
+    return res.json(editedCourse);
   } catch (error) {
     next(error);
   }

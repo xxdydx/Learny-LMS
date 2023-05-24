@@ -2,7 +2,13 @@ import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from "../utils/db";
 
-class File extends Model {}
+class File extends Model {
+  public id!: number;
+  public name!: string;
+  public link!: string;
+  public awskey!: string;
+  public sectionId!: number;
+}
 
 File.init(
   {
@@ -18,6 +24,10 @@ File.init(
     link: {
       type: DataTypes.TEXT,
       allowNull: false,
+    },
+    awskey: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

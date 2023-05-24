@@ -93,6 +93,50 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
       });
       res.send(courses);
     }
+
+    if (user.role === "student") {
+      const courses = await Course.findAll({
+        attributes: { exclude: ["teacherId"] },
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["name", "username", "id", "email", "role"],
+          },
+          {
+            model: User,
+            as: "students",
+            where: {
+              id: {
+                [Op.eq]: user.id,
+              },
+            },
+            attributes: ["name", "username", "id", "email", "role"],
+            through: {
+              attributes: [],
+            },
+          },
+          {
+            model: Chapter,
+            as: "chapters",
+            attributes: ["title", "id"],
+            include: [
+              {
+                model: Section,
+                as: "sections",
+                include: [
+                  {
+                    model: File,
+                    as: "files",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+      res.send(courses);
+    }
   } catch (err) {
     next(err);
   }

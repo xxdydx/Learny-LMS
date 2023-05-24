@@ -29,7 +29,7 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
               {
                 model: File,
                 as: "files",
-                attributes: ["name", "id", "link"],
+                attributes: ["name", "id", "link", "awskey"],
               },
             ],
           },
