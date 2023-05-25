@@ -58,6 +58,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             [Op.eq]: user.id,
           },
         },
+        order: [["createdAt", "DESC"]],
         include: [
           {
             model: User,
@@ -76,14 +77,17 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             model: Chapter,
             as: "chapters",
             attributes: ["title", "id"],
+            order: [["createdAt", "DESC"]],
             include: [
               {
                 model: Section,
                 as: "sections",
+                order: [["createdAt", "DESC"]],
                 include: [
                   {
                     model: File,
                     as: "files",
+                    order: [["createdAt", "DESC"]],
                   },
                 ],
               },

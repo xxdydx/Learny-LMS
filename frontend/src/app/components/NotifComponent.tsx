@@ -19,7 +19,6 @@ export default function NotifComponent() {
   const notification: Notif | null = useAppSelector(
     (state) => state.notifications
   );
-  console.log(notification);
 
   if (!notification) {
     return null;

@@ -118,6 +118,7 @@ export default function NewSectionForm({ chapterId, children }: Props) {
         <Dialog
           open={open}
           onClose={handleClose}
+          fullWidth
           PaperProps={{ style: { backgroundColor: "black" } }}
         >
           <NewDialogTitle id="customized-dialog-title" onClose={handleClose}>

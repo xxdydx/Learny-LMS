@@ -46,7 +46,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
           <ListItemButton sx={{ pl: 4 }} onClick={() => window.open(file.link)}>
             <ListItemText primary={file.name} className="dark:text-text" />
           </ListItemButton>
-          <FileMenu id={file.id} />
+          {user?.role === "teacher" && <FileMenu id={file.id} />}
         </div>
       </List>
     );
@@ -83,7 +83,9 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
               </>
             )}
           </ListItemButton>
-          <SectionMenu id={section.id} title={section.title} />
+          {user?.role === "teacher" && (
+            <SectionMenu id={section.id} title={section.title} />
+          )}
         </div>
 
         <Collapse in={open} timeout="auto" unmountOnExit>
@@ -118,7 +120,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
           >
             <div className="flex justify-between">
               {chapter.title}
-              <ChapterMenu id={chapter.id} />
+              {user?.role === "teacher" && <ChapterMenu id={chapter.id} />}
             </div>
           </ListSubheader>
         }

@@ -121,6 +121,7 @@ export default function AddNewStudentForm({
         <Dialog
           open={open}
           onClose={handleClose}
+          fullWidth
           PaperProps={{ style: { backgroundColor: "black" } }}
         >
           <NewDialogTitle id="customized-dialog-title" onClose={handleClose}>

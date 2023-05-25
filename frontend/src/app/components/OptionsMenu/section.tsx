@@ -13,8 +13,6 @@ import { Inter } from "next/font/google";
 import { deleteCourse, deleteSection } from "@/app/reducers/courseReducer";
 import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
-import NewSectionForm from "../FormModal/NewSectionForm";
-import NewFileForm from "../FormModal/NewFileForm";
 import React, { useState, useEffect } from "react";
 import { NewFile, Notif } from "@/app/types";
 import { addFile } from "@/app/reducers/courseReducer";

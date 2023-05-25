@@ -43,6 +43,7 @@ const CourseCard = ({ course }: Props) => {
       <Card
         sx={{
           minWidth: 280,
+
           borderRadius: "1.25rem",
           backgroundColor: "#242527",
         }}

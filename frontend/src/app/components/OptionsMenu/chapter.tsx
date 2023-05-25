@@ -17,7 +17,6 @@ import { deleteCourse } from "@/app/reducers/courseReducer";
 import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
 import NewSectionForm from "../FormModal/NewSectionForm";
-import NewFileForm from "../FormModal/NewFileForm";
 import { setNotification } from "@/app/reducers/notifReducer";
 import { NewSection, Notif } from "@/app/types";
 import { addSection } from "@/app/reducers/courseReducer";
@@ -214,6 +213,7 @@ export default function ChapterMenu({ id }: Props): JSX.Element {
         <Dialog
           open={openDialog}
           onClose={handleClose}
+          fullWidth
           PaperProps={{ style: { backgroundColor: "black" } }}
         >
           <NewDialogTitle
