@@ -89,9 +89,9 @@ const removeSection = async (id: number) => {
   return data;
 };
 
-const createFile = async (file: NewFile, sxnId: number) => {
+const createFile = async (file: FormData, sxnId: number) => {
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: token, "Content-Type": "multipart/form-data" },
   };
 
   const { data } = await axios.post(

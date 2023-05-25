@@ -28,17 +28,8 @@ import {
   DialogActions,
   DialogContentText,
   TextField,
-  Input,
-  Box,
-  Fab,
-  CircularProgress,
 } from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-
-import AWS from "aws-sdk";
-import { AWSconfig } from "../../../../config";
-import { AWSError, S3 } from "aws-sdk";
+import { File } from "buffer";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -76,18 +67,9 @@ export default function SectionMenu({ id, title }: Props) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [name, setName] = useState<string>("");
-  const [file, setFile] = useState<null | File>(null);
-  const [link, setLink] = useState<string>("");
-  const [awskey, setawskey] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
-
-  // initialize AWS bucket
-  const s3 = new AWS.S3({
-    accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY_ID,
-    secretAccessKey: process.env.NEXT_PUBLIC_SECRET_ACCESS_KEY,
-    region: process.env.NEXT_PUBLIC_AWS_REGION,
-  });
 
   const open = Boolean(anchorEl);
 
@@ -110,7 +92,7 @@ export default function SectionMenu({ id, title }: Props) {
     const selectedFile = event.target.files?.[0];
     // only choosing PDF files here
     if (selectedFile && selectedFile.type === "application/pdf") {
-      setFile(selectedFile);
+      setFile(selectedFile as unknown as File);
     }
   };
 
@@ -132,43 +114,10 @@ export default function SectionMenu({ id, title }: Props) {
     setAnchorEl(null);
   };
 
-  const handleUpload = async () => {
-    if (!loading) {
-      setSuccess(false);
-      setLoading(true);
-    }
-    if (file === null) {
-      const notif: Notif = {
-        message: "File cannot be null.",
-        type: "error",
-      };
-      dispatch(setNotification(notif, 5000));
-      return;
-    }
-    const bucketName = process.env.NEXT_PUBLIC_AWS_BUCKET_NAME;
-    const dirName = `Section${id}/Files/`;
-
-    const params = {
-      Key: dirName + file?.name,
-      Body: file,
-      Bucket: bucketName ? bucketName : "",
-      ContentType: file?.type,
-    };
-
-    try {
-      const data = await s3.upload(params).promise();
-      setSuccess(true);
-      setLoading(false);
-      setLink(data.Location);
-      setawskey(data.Key);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   // Handle creation of file once 'create' button is clicked
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
+    const newFile = new FormData();
     if (name.trim().length === 0) {
       const notif: Notif = {
         message: "File name cannot be empty",
@@ -177,30 +126,18 @@ export default function SectionMenu({ id, title }: Props) {
       dispatch(setNotification(notif, 5000));
       return;
     }
-    if (awskey.trim().length === 0) {
+    if (file === null) {
       const notif: Notif = {
-        message: "Error in uploading file. Try again later",
+        message: "No file uploaded",
         type: "error",
       };
       dispatch(setNotification(notif, 5000));
       return;
     }
-    if (link.trim().length === 0) {
-      const notif: Notif = {
-        message: "File must be uploaded before it can be created",
-        type: "error",
-      };
-      dispatch(setNotification(notif, 5000));
-      return;
-    }
+    newFile.append("name", name);
+    newFile.append("file", file as unknown as Blob, file?.name);
 
     try {
-      const newFile: NewFile = {
-        name: name && name.trim(),
-        link: link,
-        awskey: awskey,
-      };
-
       await dispatch(addFile(newFile, id));
       const notif: Notif = {
         type: "success",
@@ -361,40 +298,13 @@ export default function SectionMenu({ id, title }: Props) {
                 accept=".pdf"
                 required
               />
-
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Box sx={{ m: 1, position: "relative" }}>
-                  <Fab
-                    aria-label="save"
-                    sx={buttonSx}
-                    onClick={handleUpload}
-                    disabled={file ? false : true}
-                  >
-                    {success ? <CheckIcon /> : <FileUploadIcon />}
-                  </Fab>
-                  {loading && (
-                    <CircularProgress
-                      size={68}
-                      sx={{
-                        color: green[500],
-                        position: "absolute",
-                        top: -6,
-                        left: -6,
-                        zIndex: 1,
-                      }}
-                    />
-                  )}
-                </Box>
-              </Box>
             </div>
           </DialogContent>
           <DialogActions>
             <StyledButton onClick={() => setOpenDialog(false)}>
               Cancel
             </StyledButton>
-            <StyledButton onClick={handleCreate} disabled={link === ""}>
-              Create
-            </StyledButton>
+            <StyledButton onClick={handleCreate}>Create</StyledButton>
           </DialogActions>
         </Dialog>
       </div>

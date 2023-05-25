@@ -6,6 +6,7 @@ import { User } from "./models";
 export interface CustomRequest extends Request {
   decodedToken?: string | JwtPayload;
   user?: User;
+  file?: Express.Multer.File;
 }
 
 export interface File {

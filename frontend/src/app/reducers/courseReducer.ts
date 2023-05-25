@@ -109,7 +109,7 @@ export const deleteSection = (
 };
 
 export const addFile = (
-  file: NewFile,
+  file: FormData,
   sxnId: number
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
