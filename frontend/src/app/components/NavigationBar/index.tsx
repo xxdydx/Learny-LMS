@@ -19,9 +19,9 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useRouter } from "next/navigation";
 import { setUser } from "@/app/reducers/userReducer";
 import { UserIdentifier } from "@/app/types";
-import { Inter_Tight } from "next/font/google";
+import { Inter } from "next/font/google";
 
-const inter = Inter_Tight({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] });
 const theme = createTheme({
   typography: {
     fontFamily: inter.style.fontFamily,

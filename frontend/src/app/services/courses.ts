@@ -7,7 +7,7 @@ import {
   NewFile,
   NewEnrollment,
 } from "../types";
-const apiBaseUrl = "http://localhost:3001/api";
+const apiBaseUrl = "/api";
 
 let token: string = "";
 
