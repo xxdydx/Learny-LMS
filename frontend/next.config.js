@@ -3,7 +3,6 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-  distDir: "build",
   async rewrites() {
     console.log("Rewrites function called");
     return [
