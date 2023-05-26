@@ -88,6 +88,7 @@ router.post(
         link: link,
         sectionId: section.id,
         awskey: awskey,
+        visibledate: req.body.visibledate,
       });
 
       const editedCourse = await getUpdatedCourse(course.id);

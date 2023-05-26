@@ -29,6 +29,10 @@ File.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    visibledate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
     sequelize,

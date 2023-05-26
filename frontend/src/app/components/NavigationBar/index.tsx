@@ -1,5 +1,4 @@
 "use client";
-
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -20,15 +19,18 @@ import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useRouter } from "next/navigation";
 import { setUser } from "@/app/reducers/userReducer";
 import { UserIdentifier } from "@/app/types";
+import { Inter_Tight } from "next/font/google";
 
+const inter = Inter_Tight({ subsets: ["latin"] });
 const theme = createTheme({
+  typography: {
+    fontFamily: inter.style.fontFamily,
+  },
   palette: {
     primary: deepPurple,
     mode: "dark",
   },
 });
-
-const pages = ["Products", "Pricing", "Blog"];
 
 function NavigationBar() {
   const dispatch = useAppDispatch();
@@ -79,14 +81,12 @@ function NavigationBar() {
               sx={{
                 mr: 4,
                 display: { xs: "none", md: "flex" },
-
                 fontWeight: 700,
-                letterSpacing: ".3rem",
                 color: "inherit",
                 textDecoration: "none",
               }}
             >
-              AE Education
+              Learny LMS
             </Typography>
 
             <Box
@@ -123,11 +123,9 @@ function NavigationBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">About this App</Typography>
+                </MenuItem>
               </Menu>
             </Box>
             <SchoolIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -140,14 +138,14 @@ function NavigationBar() {
                 mr: 2,
                 display: { xs: "flex", md: "none" },
                 flexGrow: 1,
-                fontFamily: "monospace",
+
                 fontWeight: 700,
-                letterSpacing: ".3rem",
+
                 color: "inherit",
                 textDecoration: "none",
               }}
             >
-              AE Education
+              Learny LMS
             </Typography>
             <Box
               sx={{
@@ -156,15 +154,17 @@ function NavigationBar() {
                 display: { xs: "none", md: "flex" },
               }}
             >
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                >
-                  {page}
-                </Button>
-              ))}
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  textTransform: "none",
+                }}
+              >
+                About This App
+              </Button>
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>

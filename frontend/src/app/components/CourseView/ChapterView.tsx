@@ -39,6 +39,13 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
 
   // Component for each file
   const IndivListFile = ({ file }: { file: File }) => {
+    // to check if file should be invisible for student, based on visible date set for each file
+    if (
+      user?.role === "student" &&
+      file?.visibledate > new Date().toISOString()
+    ) {
+      return null;
+    }
     return (
       <List component="div" disablePadding>
         <Divider light />

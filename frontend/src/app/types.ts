@@ -5,6 +5,7 @@ export interface File {
   link: string;
   awskey: string;
   id: number;
+  visibledate: string;
 }
 
 export interface Section {

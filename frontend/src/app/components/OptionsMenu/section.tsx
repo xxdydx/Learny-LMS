@@ -30,6 +30,10 @@ import {
   TextField,
 } from "@mui/material";
 import { File } from "buffer";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -68,6 +72,7 @@ export default function SectionMenu({ id, title }: Props) {
   const [openDialog, setOpenDialog] = useState(false);
   const [name, setName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
+  const [visibleDate, setVisibleDate] = useState<Dayjs | null>(dayjs());
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
 
@@ -87,6 +92,14 @@ export default function SectionMenu({ id, title }: Props) {
   const handleDialogClose = () => {
     setOpenDialog(false);
   };
+
+  // handling deletion of a section
+  const handleDelete = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    await dispatch(deleteSection(id));
+    setAnchorEl(null);
+  };
+
   // handling setting of file to state variable once user attaches the file
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -94,24 +107,6 @@ export default function SectionMenu({ id, title }: Props) {
     if (selectedFile && selectedFile.type === "application/pdf") {
       setFile(selectedFile as unknown as File);
     }
-  };
-
-  const buttonSx = success
-    ? {
-        backgroundColor: green[500],
-        "&:hover": {
-          backgroundColor: green[700],
-        },
-      }
-    : {
-        backgroundColor: "#ff4081",
-      };
-
-  // handling deletion of a section
-  const handleDelete = async (event: React.MouseEvent) => {
-    event.preventDefault();
-    await dispatch(deleteSection(id));
-    setAnchorEl(null);
   };
 
   // Handle creation of file once 'create' button is clicked
@@ -134,8 +129,12 @@ export default function SectionMenu({ id, title }: Props) {
       dispatch(setNotification(notif, 5000));
       return;
     }
+    const date = visibleDate
+      ? visibleDate?.toDate().toISOString()
+      : new Date().toISOString();
     newFile.append("name", name);
     newFile.append("file", file as unknown as Blob, file?.name);
+    newFile.append("visibledate", date);
 
     try {
       await dispatch(addFile(newFile, id));
@@ -291,7 +290,11 @@ export default function SectionMenu({ id, title }: Props) {
               fullWidth
               variant="standard"
             />
-            <div className="flex justify-between">
+            <DialogContentText sx={{ mt: 2 }}>
+              Choose a file to upload onto our servers. Only PDF files are
+              accepted for now.
+            </DialogContentText>
+            <div className="mt-2 mb-6">
               <input
                 type="file"
                 onChange={handleFileUpload}
@@ -299,6 +302,16 @@ export default function SectionMenu({ id, title }: Props) {
                 required
               />
             </div>
+            <DialogContentText sx={{ mb: 4 }}>
+              Set a date and time for this file to become visible for students.
+            </DialogContentText>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="File visible date"
+                value={visibleDate}
+                onChange={(newValue) => setVisibleDate(newValue)}
+              />
+            </LocalizationProvider>
           </DialogContent>
           <DialogActions>
             <StyledButton onClick={() => setOpenDialog(false)}>
