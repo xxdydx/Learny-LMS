@@ -14,12 +14,27 @@
 
 I am a part-time tutor, who mostly teaches via online platforms via Zoom. As part of my tuition classes, I also provide worksheets and notes to my students, and I usually upload them online on platforms like Google Drive or Onedrive. However, I've noticed that the navigation experience may not be the most intuitive. I also found that the uploading process could be quite inconvenient, as I would have to upload worksheets and answers (for the same topic) every week, as I didn't want my students to see worksheets/answer keys that are meant for upcoming weeks' lessons. Assignment submission is hard to track on such a platform as well. I have tried platforms like Google Classroom as well, but the structure was too rigid, so I decided to take things into my own hands and created my own Progressive Web App (PWA) to organise and distribute assignments, worksheets and answer keys to my students.
 
+## Features
+
+<b>List of core features</b>
+
+- <b>Role-based user system: </b>Teachers can create 'courses' and add students to view these courses. ✅
+- <b>Easy organisation of content: </b>Each course can have multiple 'chapters', under which there can be multiple 'sections', and each section can host multiple 'files'. ✅
+- <b>File permissions: </b>Teachers can set a 'visible date & time' for files to become 'visible' to students. ✅
+- <b>Course Templates: </b>Teachers can create 'templates' of courses and can create multiple course instances from the same template. 🚧
+- <b>Tracking of assignments: </b> Students can submit assignments through this platform and teachers will receive a notification once submitted. Once teacher has been graded, they can also submit the marked copy on the platform and students will receive a notification that the assignment has been graded. 🚧
+- <b>Grade Tracker: </b> Teachers can easily monitor progression of their students. 🚧
+- <b>Automated uploading of Zoom recording links: </b> After each Zoom lesson, the recording links for each lesson can be synced to our platform. 🚧
+
+## Guide to use the App
+
+(coming soon)
+
 ## Tech Stack
 
-- PostgreSQL
-- Express
-- React
-- NodeJS
+- PostgreSQL (database)
+- Express, NodeJS (server)
+- NextJS (app)
 
 ## Setup
 
