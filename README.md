@@ -80,13 +80,13 @@ The .env file should contain the following:
 ```bash
 DATABASE_URL=postgres://postgres:mysecretpassword@localhost:5432/postgres (replace 'mysecretpassword' with the password you defined earlier)
 
-ACCESS_KEY_ID=AKIAS53A6GEFMCQF4U7M (From AWS)
+ACCESS_KEY_ID= (From AWS)
 
-SECRET_ACCESS_KEY=FiOOgVWLoHvjrt1T9c9n7Ms+IhXw60A9hSgHWIa8 (From AWS)
+SECRET_ACCESS_KEY= (From AWS)
 
-AWS_REGION=ap-southeast-1 (From AWS)
+AWS_REGION= (From AWS)
 
-AWS_BUCKET_NAME=ae-education-lms (From AWS)
+AWS_BUCKET_NAME= (From AWS)
 
 PORT=3001 (or any port of your choice)
 
