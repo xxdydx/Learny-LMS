@@ -33,7 +33,7 @@ const create = async (object: NewCourse) => {
   const config = {
     headers: { Authorization: token },
   };
-  console.log(object);
+
   const { data } = await axios.post(`${apiBaseUrl}/courses`, object, config);
 
   return data;
@@ -51,7 +51,7 @@ const createChapter = async (object: NewChapter, id: number) => {
   const config = {
     headers: { Authorization: token },
   };
-  console.log(object);
+
   const { data } = await axios.post(
     `${apiBaseUrl}/courses/${id}/chapters`,
     object,
@@ -115,13 +115,12 @@ const createEnrollment = async (enrollment: NewEnrollment) => {
     headers: { Authorization: token },
   };
 
-  console.log(config);
   const { data } = await axios.post(
     `${apiBaseUrl}/enrollment`,
     enrollment,
     config
   );
-  console.log(data);
+
   return data;
 };
 

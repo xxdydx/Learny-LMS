@@ -73,8 +73,6 @@ export default function SectionMenu({ id, title }: Props) {
   const [name, setName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [visibleDate, setVisibleDate] = useState<Dayjs | null>(dayjs());
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
 
   const open = Boolean(anchorEl);
 

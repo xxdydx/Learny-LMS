@@ -66,7 +66,11 @@ export default function AddNewStudentForm({
     event.preventDefault();
 
     if (username.trim().length === 0) {
-      console.log("No empty strings allowed");
+      const notif: Notif = {
+        type: "error",
+        message: `No empty strings allowed`,
+      };
+      dispatch(setNotification(notif, 5000));
     } else {
       const newEnrollment: NewEnrollment = {
         username: username && username.trim(),

@@ -75,7 +75,7 @@ export const addChapter = (
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.createChapter(chapter, id);
-    console.log(newCourse);
+
     dispatch(edit(newCourse));
   };
 };
@@ -114,7 +114,6 @@ export const addFile = (
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.createFile(file, sxnId);
-    console.log(newCourse);
     dispatch(edit(newCourse));
   };
 };
