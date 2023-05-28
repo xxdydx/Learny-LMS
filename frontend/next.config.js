@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const dev = process.env.NODE_ENV !== "production";
-const rewriteUrl = dev
-  ? "http://localhost:3001/api"
-  : "https://learny-app.fly.dev/api/";
+const rewriteUrl = dev ? "http://localhost:3001" : "https://learny-app.fly.dev";
 const nextConfig = {
   experimental: {
     appDir: true,
@@ -12,7 +10,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: `${rewriteUrl}/:path*`,
+        destination: `${rewriteUrl}/api/:path*`,
       },
     ];
   },
