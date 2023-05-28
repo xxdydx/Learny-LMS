@@ -1,11 +1,10 @@
 import express from "express";
 import User from "../models/user";
-import Course from "../models/course";
-import bcrypt from "bcrypt";
+const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", async (_req, res) => {
   const users = await User.findAll({});
   res.json(users);
 });

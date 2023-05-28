@@ -1,5 +1,5 @@
 import express from "express";
-import { Section, User, File, Chapter, Enrollment } from "../models";
+import { Section, User, File, Chapter } from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
@@ -46,7 +46,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
         ],
       });
-      res.send(courses);
+      return res.send(courses);
     }
 
     // GET courses created by a teacher
@@ -95,7 +95,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
         ],
       });
-      res.send(courses);
+      return res.send(courses);
     }
 
     if (user.role === "student") {
@@ -139,10 +139,10 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
         ],
       });
-      res.send(courses);
+      return res.send(courses);
     }
   } catch (err) {
-    next(err);
+    return next(err);
   }
 });
 
@@ -170,7 +170,7 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
     return res.json(course);
   } catch (error) {
     // Handle any errors that occur
-    next(error);
+    return next(error);
   }
 });
 
@@ -185,7 +185,7 @@ router.put("/:id", tokenExtractor, async (req, res, next) => {
     await course.save();
     res.status(200).send(course);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
@@ -207,7 +207,7 @@ router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
     await course.destroy();
     res.status(204).end();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 
@@ -231,7 +231,7 @@ router.post(
           .send(`You don't have permissions to create chapters`);
       }
 
-      const chapter = await Chapter.create({
+      await Chapter.create({
         title: req.body.title,
         sections: [],
         courseId: course.id,
@@ -243,7 +243,7 @@ router.post(
       }
       return res.json(editedCourse);
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 );

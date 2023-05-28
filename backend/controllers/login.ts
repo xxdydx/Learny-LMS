@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 import express from "express";
 import { SECRET } from "../utils/config";
 import User from "../models/user";
-import bcrypt from "bcrypt";
+const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 

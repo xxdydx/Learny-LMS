@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Application } from "express";
 import { connectToDatabase } from "./utils/db";
 import usersRouter from "./controllers/users";
 import coursesRouter from "./controllers/courses";
@@ -7,12 +7,11 @@ import sectionsRouter from "./controllers/sections";
 import filesRouter from "./controllers/files";
 import loginRouter from "./controllers/login";
 import enrollmentRouter from "./controllers/enrollment";
-
 import { PORT } from "./utils/config";
 
 const { errorHandler } = require("./utils/middleware");
 
-const app = express();
+const app: Application = express();
 app.use(express.json());
 const cors = require("cors");
 
@@ -30,6 +29,11 @@ app.use("/api/login", loginRouter);
 app.use(errorHandler);
 
 app.listen(PORT, async () => {
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
+  } catch (err) {
+    console.log(err);
+  }
+
   console.log(`Server running on port ${PORT}`);
 });

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { CustomRequest } from "../types";
 import { ValidationError, DatabaseError } from "sequelize";
-import jwt from "jsonwebtoken";
+const jwt = require("jsonwebtoken");
 import { SECRET } from "./config";
 import { User } from "../models";
 

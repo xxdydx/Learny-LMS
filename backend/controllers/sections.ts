@@ -1,11 +1,11 @@
 import express from "express";
-import { Section, User, File, Chapter } from "../models";
+import { Section, File, Chapter } from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
 import AWS from "aws-sdk";
 import dotenv from "dotenv";
-import multer from "multer";
+const multer = require("multer");
 import getUpdatedCourse from "../utils/getUpdatedCourse";
 
 const router = express.Router();
@@ -83,7 +83,7 @@ router.post(
           );
       }
 
-      const file = await File.create({
+      await File.create({
         name: req.body.name,
         link: link,
         sectionId: section.id,

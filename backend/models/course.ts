@@ -1,7 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { CourseType } from "../types";
 import { sequelize } from "../utils/db";
-import { User } from "../models";
 
 class Course extends Model {
   public id!: number;
