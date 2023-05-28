@@ -1,0 +1,32 @@
+name: Deploy to Fly.io
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Fly.io CLI
+        uses: superfly/flyctl-actions@v0.1.1
+        with:
+          flyctl-version: latest
+
+      - name: Install Dependencies
+        run: npm install
+        working-directory: backend
+
+      - name: Build
+        run: npm run build
+        working-directory: backend
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --app learny-app ./backend
