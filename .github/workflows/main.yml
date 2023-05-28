@@ -1,35 +1,20 @@
-name: Deploy to Fly.io
-
+name: Fly Deploy
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'backend/**'
-
 jobs:
   deploy:
+    name: Deploy app
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up Fly.io CLI
-        uses: superfly/flyctl-actions@v0.1.1
-        with:
-          flyctl-version: latest
-
-      - name: Install Dependencies
-        run: npm install
-        working-directory: backend
-
-      - name: Build
-        run: npm run build
-        working-directory: backend
-
-      - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --app learny-app ./backend
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only --app learny-app ./backend
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+
 
