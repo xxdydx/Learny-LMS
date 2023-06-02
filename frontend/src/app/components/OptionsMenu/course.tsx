@@ -15,6 +15,9 @@ import { Inter } from "next/font/google";
 import { deleteCourse } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
 import { useRouter } from "next/navigation";
+import { setNotification } from "@/app/reducers/notifReducer";
+import { Notif } from "@/app/types";
+import { AxiosError } from "axios";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -48,8 +51,31 @@ export default function CourseMenu({ id }: Props) {
 
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
-    await dispatch(deleteCourse(id));
-    setAnchorEl(null);
+    if (window.confirm(`Do you want to delete this course?`)) {
+      try {
+        await dispatch(deleteCourse(id));
+        setAnchorEl(null);
+        const notif: Notif = {
+          message: "Course deleted",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
   };
 
   const StyledMenu = styled((props: MenuProps) => (

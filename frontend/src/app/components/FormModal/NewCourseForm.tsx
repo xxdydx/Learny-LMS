@@ -19,6 +19,7 @@ import { createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { setNotification } from "@/app/reducers/notifReducer";
+import { AxiosError } from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -56,24 +57,44 @@ export default function NewCourseForm() {
 
   const handleCreate = async (event: React.FormEvent) => {
     event.preventDefault();
-
+    // See if title and description fields are empty
     if (title.trim().length === 0 || description.trim().length === 0) {
-      console.log("No empty strings allowed");
-    } else {
-      const newCourse: NewCourse = {
-        title: title && title.trim(),
-        description: description && description.trim(),
-      };
-      const response = await dispatch(createCourse(newCourse));
-      setTitle("");
-      setDescription("");
       const notif: Notif = {
-        type: "success",
-        message: "Course created",
+        type: "info",
+        message: "Title and description cannot be empty",
       };
       dispatch(setNotification(notif, 5000));
-      setOpen(false);
-      router.push("/");
+    } else {
+      try {
+        const newCourse: NewCourse = {
+          title: title && title.trim(),
+          description: description && description.trim(),
+        };
+        await dispatch(createCourse(newCourse));
+        setTitle("");
+        setDescription("");
+        const notif: Notif = {
+          type: "success",
+          message: "Course created",
+        };
+        dispatch(setNotification(notif, 5000));
+        setOpen(false);
+        router.push("/");
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
     }
   };
 

@@ -20,6 +20,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { deleteFile } from "@/app/reducers/courseReducer";
 import { setNotification } from "@/app/reducers/notifReducer";
 import { Notif } from "@/app/types";
+import { AxiosError } from "axios";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -57,15 +58,34 @@ export default function FileMenu({ id }: Props): JSX.Element {
     textTransform: "none",
   });
 
+  // Handle delete of file
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
-    await dispatch(deleteFile(id));
-    setAnchorEl(null);
-    const notif: Notif = {
-      message: "File successfully deleted",
-      type: "success",
-    };
-    await dispatch(setNotification(notif, 5000));
+    if (window.confirm(`Do you want to delete this file?`)) {
+      try {
+        await dispatch(deleteFile(id));
+        setAnchorEl(null);
+        const notif: Notif = {
+          message: "File deleted",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
   };
   const StyledMenu = styled((props: MenuProps) => (
     <Menu

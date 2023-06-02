@@ -12,6 +12,9 @@ import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { useAuth } from "../hooks";
 import LoadingPage from "../components/LoadingPage";
+import { setNotification } from "../reducers/notifReducer";
+import { Notif } from "../types";
+import NotifComponent from "../components/NotifComponent";
 
 export default function MyPage() {
   const [username, setUsername] = useState<string>("");
@@ -34,13 +37,43 @@ export default function MyPage() {
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
+      // See if username is empty -> error notif
+      if (username.trim().length === 0) {
+        const notif: Notif = {
+          message: "Enter a username",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
+      // Likewise, to see if password is empty
+      if (password.trim().length === 0) {
+        const notif: Notif = {
+          message: "Enter a password",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
       const user = await loginService.login({ username, password });
+      // Set token (issued by backend) in localstorage
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
       courseService.setToken(user.token);
       dispatch(setUser(user));
       router.push("/");
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      // Error handling
+      if (error instanceof AxiosError) {
+        const notif: Notif = {
+          message: error.response?.data.error,
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
     }
   };
 
@@ -154,6 +187,7 @@ export default function MyPage() {
             </div>
           </div>
         </div>
+        <NotifComponent />
       </section>
     </div>
   );

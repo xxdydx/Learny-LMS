@@ -28,6 +28,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
+import { AxiosError } from "axios";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -94,10 +95,34 @@ export default function ChapterMenu({ id }: Props): JSX.Element {
     textTransform: "none",
   });
 
+  // Handle delete of chapter
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
-    await dispatch(deleteChapter(id));
-    setAnchorEl(null);
+    if (window.confirm(`Do you want to delete this chapter?`)) {
+      try {
+        await dispatch(deleteChapter(id));
+        setAnchorEl(null);
+        const notif: Notif = {
+          message: "Chapter deleted",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
   };
   const StyledMenu = styled((props: MenuProps) => (
     <Menu

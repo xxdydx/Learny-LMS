@@ -19,6 +19,7 @@ import { addEnrollment, createCourse } from "@/app/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { setNotification } from "@/app/reducers/notifReducer";
+import { AxiosError } from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -76,14 +77,30 @@ export default function AddNewStudentForm({
         username: username && username.trim(),
         courseId: courseId,
       };
-      await dispatch(addEnrollment(newEnrollment));
-      const notif: Notif = {
-        type: "success",
-        message: `Student u/${username} added`,
-      };
-      dispatch(setNotification(notif, 5000));
-      setUsername("");
-      setOpen(false);
+      try {
+        const response = await dispatch(addEnrollment(newEnrollment));
+        const notif: Notif = {
+          type: "success",
+          message: `Student u/${username} added`,
+        };
+        dispatch(setNotification(notif, 5000));
+        setUsername("");
+        setOpen(false);
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
     }
   };
 

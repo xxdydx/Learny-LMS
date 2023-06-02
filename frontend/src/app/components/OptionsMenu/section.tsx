@@ -34,6 +34,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
+import { AxiosError } from "axios";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -94,8 +95,31 @@ export default function SectionMenu({ id, title }: Props) {
   // handling deletion of a section
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
-    await dispatch(deleteSection(id));
-    setAnchorEl(null);
+    if (window.confirm(`Do you want to delete this section?`)) {
+      try {
+        await dispatch(deleteSection(id));
+        setAnchorEl(null);
+        const notif: Notif = {
+          message: "Section deleted",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
   };
 
   // handling setting of file to state variable once user attaches the file
