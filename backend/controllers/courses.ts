@@ -57,6 +57,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           teacherId: {
             [Op.eq]: user.id,
           },
+          template: { [Op.not]: true },
         },
         order: [["createdAt", "DESC"]],
         include: [
@@ -102,6 +103,9 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
     if (user.role === "student") {
       const courses = await Course.findAll({
         attributes: { exclude: ["teacherId"] },
+        where: {
+          template: { [Op.not]: true },
+        },
         include: [
           {
             model: User,
