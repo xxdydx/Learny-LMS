@@ -98,6 +98,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
       return res.send(courses);
     }
 
+    // GET students' courses
     if (user.role === "student") {
       const courses = await Course.findAll({
         attributes: { exclude: ["teacherId"] },
@@ -132,6 +133,11 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                   {
                     model: File,
                     as: "files",
+                    where: {
+                      visibledate: {
+                        [Op.lt]: new Date().toISOString(),
+                      },
+                    },
                   },
                 ],
               },
@@ -165,6 +171,7 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
       title: req.body.title,
       description: req.body.description,
       teacherId: user.id, // Assign the user's ID to the course
+      template: false, // to certify this is a live course, not a template
       chapters: [],
     });
     return res.json(course);

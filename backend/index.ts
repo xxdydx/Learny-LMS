@@ -7,6 +7,7 @@ import sectionsRouter from "./controllers/sections";
 import filesRouter from "./controllers/files";
 import loginRouter from "./controllers/login";
 import enrollmentRouter from "./controllers/enrollment";
+import templatesRouter from "./controllers/templates";
 import { PORT } from "./utils/config";
 
 const { errorHandler } = require("./utils/middleware");
@@ -18,6 +19,7 @@ const cors = require("cors");
 app.use(cors());
 
 app.use("/api/courses", coursesRouter);
+app.use("/api/templates", templatesRouter);
 app.use("/api/chapters", chaptersRouter);
 app.use("/api/sections", sectionsRouter);
 app.use("/api/files", filesRouter);

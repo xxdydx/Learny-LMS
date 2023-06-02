@@ -10,8 +10,10 @@ export interface CustomRequest extends Request {
 }
 
 export interface File {
-  fileName: string;
-  fileLink: string;
+  name: string;
+  link: string;
+  awskey: string;
+  visibledate: string;
   id: number;
 }
 
