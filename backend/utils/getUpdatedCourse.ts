@@ -21,15 +21,18 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
         model: Chapter,
         as: "chapters",
         attributes: ["title", "id"],
+        order: [["createdAt", "DESC"]],
         include: [
           {
             model: Section,
             as: "sections",
+            order: [["createdAt", "DESC"]],
             include: [
               {
                 model: File,
                 as: "files",
                 attributes: ["name", "id", "link", "awskey"],
+                order: [["createdAt", "DESC"]],
               },
             ],
           },
