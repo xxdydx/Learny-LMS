@@ -39,6 +39,19 @@ const create = async (object: NewCourse) => {
   return data;
 };
 
+const update = async (id: number, object: NewCourse) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.put(
+    `${apiBaseUrl}/courses/${id}`,
+    object,
+    config
+  );
+
+  return data;
+};
+
 const remove = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -102,6 +115,18 @@ const createFile = async (file: FormData, sxnId: number) => {
   return data;
 };
 
+const updateFile = async (file: NewFile, fileId: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.put(
+    `${apiBaseUrl}/files/${fileId}`,
+    file,
+    config
+  );
+  return data;
+};
+
 const removeFile = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -130,12 +155,14 @@ export default {
   create,
   getOne,
   remove,
+  update,
   setToken,
   createChapter,
   removeChapter,
   createSection,
   removeSection,
   createFile,
+  updateFile,
   removeFile,
   createEnrollment,
 };

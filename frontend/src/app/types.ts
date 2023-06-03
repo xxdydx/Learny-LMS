@@ -59,8 +59,9 @@ export interface NewSection {
 }
 export interface NewFile {
   name: string;
-  link: string;
-  awskey: string;
+  link?: string;
+  awskey?: string;
+  visibledate?: string;
 }
 
 export interface NewEnrollment {

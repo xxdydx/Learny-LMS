@@ -12,12 +12,23 @@ import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
-import { deleteCourse } from "@/app/reducers/courseReducer";
+import { deleteCourse, updateCourse } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
 import { useRouter } from "next/navigation";
 import { setNotification } from "@/app/reducers/notifReducer";
 import { Notif } from "@/app/types";
 import { AxiosError } from "axios";
+import { NewCourse } from "@/app/types";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  TextField,
+} from "@mui/material";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -40,13 +51,64 @@ export default function CourseMenu({ id }: Props) {
   });
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const router = useRouter();
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleCloseClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+  const handleEditOptionClick = () => {
+    setAnchorEl(null);
+    setOpenDialog(true);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  };
+
+  const handleEdit = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (title.trim().length === 0 || description.trim().length === 0) {
+      const notif: Notif = {
+        type: "info",
+        message: "Title and description cannot be empty",
+      };
+      dispatch(setNotification(notif, 5000));
+    } else {
+      try {
+        const newCourse: NewCourse = {
+          title: title && title.trim(),
+          description: description && description.trim(),
+        };
+        await dispatch(updateCourse(id, newCourse));
+        setTitle("");
+        setDescription("");
+        const notif: Notif = {
+          type: "success",
+          message: "Course created",
+        };
+        dispatch(setNotification(notif, 5000));
+        setOpenDialog(false);
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
   };
 
   const handleDelete = async (event: React.MouseEvent) => {
@@ -77,6 +139,40 @@ export default function CourseMenu({ id }: Props) {
       }
     }
   };
+
+  interface DialogTitleProps {
+    id: string;
+    children?: React.ReactNode;
+    onClose: () => void;
+  }
+
+  const NewDialogTitle = (props: DialogTitleProps) => {
+    const { children, onClose, ...other } = props;
+
+    return (
+      <DialogTitle {...other}>
+        {children}
+        {onClose ? (
+          <IconButton
+            aria-label="close"
+            onClick={onClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        ) : null}
+      </DialogTitle>
+    );
+  };
+
+  const StyledButton = styled(Button)({
+    textTransform: "none",
+  });
 
   const StyledMenu = styled((props: MenuProps) => (
     <Menu
@@ -124,7 +220,7 @@ export default function CourseMenu({ id }: Props) {
           aria-controls={open ? "long-menu" : undefined}
           aria-expanded={open ? "true" : undefined}
           aria-haspopup="true"
-          onClick={handleClick}
+          onClick={handleCloseClick}
         >
           <MoreVertIcon />
         </IconButton>
@@ -143,7 +239,7 @@ export default function CourseMenu({ id }: Props) {
             },
           }}
         >
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleEditOptionClick}>
             <EditIcon />
             Edit
           </MenuItem>
@@ -153,6 +249,47 @@ export default function CourseMenu({ id }: Props) {
             Delete
           </MenuItem>
         </StyledMenu>
+
+        <Dialog
+          open={openDialog}
+          onClose={handleDialogClose}
+          PaperProps={{ style: { backgroundColor: "black" } }}
+        >
+          <NewDialogTitle
+            id="customized-dialog-title"
+            onClose={handleDialogClose}
+          >
+            {" "}
+            Edit course
+          </NewDialogTitle>
+          <DialogContent dividers>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Course Title"
+              type="text"
+              required={true}
+              onChange={({ target }) => setTitle(target.value)}
+              fullWidth
+              variant="standard"
+            />
+            <TextField
+              margin="dense"
+              id="name"
+              label="Description"
+              type="text"
+              required={true}
+              onChange={({ target }) => setDescription(target.value)}
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <StyledButton onClick={handleDialogClose}>Cancel</StyledButton>
+            <StyledButton onClick={handleEdit}>Edit</StyledButton>
+          </DialogActions>
+        </Dialog>
       </div>
     </ThemeProvider>
   );

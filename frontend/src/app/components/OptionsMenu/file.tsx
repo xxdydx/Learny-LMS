@@ -17,18 +17,30 @@ import { useAppDispatch } from "@/app/hooks";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import CloseIcon from "@mui/icons-material/Close";
-import { deleteFile } from "@/app/reducers/courseReducer";
+import { deleteFile, editFile } from "@/app/reducers/courseReducer";
 import { setNotification } from "@/app/reducers/notifReducer";
-import { Notif } from "@/app/types";
+import { File, Notif } from "@/app/types";
 import { AxiosError } from "axios";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
+import {
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  TextField,
+} from "@mui/material";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
   id: number;
+  file: File;
 }
 
-export default function FileMenu({ id }: Props): JSX.Element {
+export default function FileMenu({ id, file }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = createTheme({
     typography: {
@@ -43,10 +55,20 @@ export default function FileMenu({ id }: Props): JSX.Element {
   });
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [name, setName] = useState<string>(file.name ? file.name : "");
+  const [visibleDate, setVisibleDate] = useState<Dayjs | null>(dayjs());
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
+  };
+  const handleEditOptionClick = () => {
+    setAnchorEl(null);
+    setOpenDialog(true);
+  };
+  const handleDialogClose = () => {
+    setOpenDialog(false);
   };
 
   const handleClose = () => {
@@ -57,6 +79,48 @@ export default function FileMenu({ id }: Props): JSX.Element {
   const StyledButton = styled(Button)({
     textTransform: "none",
   });
+
+  const handleEdit = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (name.trim().length === 0) {
+      const notif: Notif = {
+        message: "File name cannot be empty",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+    const date = visibleDate
+      ? visibleDate?.toDate().toISOString()
+      : new Date().toISOString();
+
+    const editedFile = {
+      name: name,
+      visibledate: date,
+    };
+    try {
+      await dispatch(editFile(editedFile, id));
+      const notif: Notif = {
+        type: "success",
+        message: "File edited",
+      };
+      await dispatch(setNotification(notif, 5000));
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const notif: Notif = {
+          message: error.response?.data,
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
+    }
+  };
 
   // Handle delete of file
   const handleDelete = async (event: React.MouseEvent) => {
@@ -181,7 +245,7 @@ export default function FileMenu({ id }: Props): JSX.Element {
             },
           }}
         >
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleEditOptionClick}>
             <EditIcon />
             Edit File
           </MenuItem>
@@ -192,6 +256,49 @@ export default function FileMenu({ id }: Props): JSX.Element {
             Delete
           </MenuItem>
         </StyledMenu>
+        <Dialog
+          open={openDialog}
+          onClose={handleDialogClose}
+          PaperProps={{ style: { backgroundColor: "black" } }}
+        >
+          <NewDialogTitle
+            id="customized-dialog-title"
+            onClose={() => setOpenDialog(false)}
+          >
+            Edit file
+          </NewDialogTitle>
+          <DialogContent dividers>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="File Name"
+              type="text"
+              required={true}
+              onChange={({ target }) => setName(target.value)}
+              defaultValue={file.name}
+              fullWidth
+              variant="standard"
+            />
+
+            <DialogContentText sx={{ mt: 4, mb: 2 }}>
+              Set a date and time for this file to become visible for students.
+            </DialogContentText>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="File visible date"
+                value={visibleDate}
+                onChange={(newValue) => setVisibleDate(newValue)}
+              />
+            </LocalizationProvider>
+          </DialogContent>
+          <DialogActions>
+            <StyledButton onClick={() => setOpenDialog(false)}>
+              Cancel
+            </StyledButton>
+            <StyledButton onClick={handleEdit}>Edit</StyledButton>
+          </DialogActions>
+        </Dialog>
       </div>
     </ThemeProvider>
   );

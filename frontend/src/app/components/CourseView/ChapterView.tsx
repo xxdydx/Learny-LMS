@@ -53,7 +53,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
           <ListItemButton sx={{ pl: 4 }} onClick={() => window.open(file.link)}>
             <ListItemText primary={file.name} className="dark:text-text" />
           </ListItemButton>
-          {user?.role === "teacher" && <FileMenu id={file.id} />}
+          {user?.role === "teacher" && <FileMenu id={file.id} file={file} />}
         </div>
       </List>
     );

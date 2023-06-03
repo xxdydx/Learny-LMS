@@ -165,8 +165,20 @@ export default function SectionMenu({ id, title }: Props) {
         message: "File uploaded",
       };
       await dispatch(setNotification(notif, 5000));
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const notif: Notif = {
+          message: error.response?.data,
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
     }
   };
 

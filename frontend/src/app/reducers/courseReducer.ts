@@ -69,6 +69,16 @@ export const deleteCourse = (
   };
 };
 
+export const updateCourse = (
+  id: number,
+  courseObject: NewCourse
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.update(id, courseObject);
+    dispatch(edit(newCourse));
+  };
+};
+
 export const addChapter = (
   chapter: NewChapter,
   id: number
@@ -114,6 +124,15 @@ export const addFile = (
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.createFile(file, sxnId);
+    dispatch(edit(newCourse));
+  };
+};
+export const editFile = (
+  file: NewFile,
+  fileId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.updateFile(file, fileId);
     dispatch(edit(newCourse));
   };
 };
