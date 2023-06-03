@@ -126,6 +126,20 @@ function NavigationBar() {
                 <MenuItem onClick={handleCloseNavMenu}>
                   <Typography textAlign="center">About this App</Typography>
                 </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
+                >
+                  <Typography textAlign="center">My Courses</Typography>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    window.location.href = "/templates";
+                  }}
+                >
+                  <Typography textAlign="center">My Templates</Typography>
+                </MenuItem>
               </Menu>
             </Box>
             <SchoolIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -164,6 +178,32 @@ function NavigationBar() {
                 }}
               >
                 About This App
+              </Button>
+              <Button
+                onClick={() => {
+                  window.location.href = "/";
+                }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  textTransform: "none",
+                }}
+              >
+                My Courses
+              </Button>
+              <Button
+                onClick={() => {
+                  window.location.href = "/templates";
+                }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  textTransform: "none",
+                }}
+              >
+                My Templates
               </Button>
             </Box>
 
