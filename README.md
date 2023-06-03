@@ -26,6 +26,16 @@ I am a part-time tutor, who mostly teaches via online platforms like Zoom. As pa
 - <b>Grade Tracker: </b> Teachers can easily monitor progression of their students. 🚧
 - <b>Automated uploading of Zoom recording links: </b> After each Zoom lesson, the recording links for each lesson can be synced to our platform. 🚧
 
+## Screenshots
+
+![Home page](/screenshots/home_page.png)
+
+![Course page](/screenshots/course_page.png)
+
+![Add File Modal](/screenshots/add_file.gif)
+
+![Add Student](/screenshots/add_student.gif)
+
 ## Guide to use the App
 
 (coming soon)
