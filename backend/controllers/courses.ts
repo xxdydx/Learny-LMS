@@ -186,10 +186,18 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
 });
 
 // To update details of the course
-router.put("/:id", tokenExtractor, async (req, res, next) => {
+router.put("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user;
   let course = await Course.findByPk(req.params.id);
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
   if (!course) {
     return res.status(404).send("Course not found");
+  }
+  // to ensure only creator of course can edit it
+  if (user.id.toString() !== course.teacherId.toString()) {
+    return res.status(401).send("No permissions to edit course");
   }
   course.set(req.body);
   try {
