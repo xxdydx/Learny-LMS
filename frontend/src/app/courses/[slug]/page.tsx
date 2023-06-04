@@ -70,9 +70,9 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                           <div>
                             <button
                               type="button"
-                              onClick={() =>
-                                window.open(`/courses/${course.id}/settings`)
-                              }
+                              onClick={() => {
+                                window.location.href = `/courses/${course.id}/settings`;
+                              }}
                               className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
                             >
                               <SettingsIcon />

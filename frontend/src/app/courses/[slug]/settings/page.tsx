@@ -14,11 +14,19 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import AddNewStudentForm from "@/app/components/FormModal/AddNewStudent";
+import { useState } from "react";
+import { setNotification } from "@/app/reducers/notifReducer";
+import { Notif } from "@/app/types";
+import { updateCourse } from "@/app/reducers/courseReducer";
+import { AxiosError } from "axios";
+import { NewCourse } from "@/app/types";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function SettingsPage({ params }: { params: { slug: string } }) {
   const courses = useAppSelector((state) => state.courses);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const theme = createTheme({
@@ -57,6 +65,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     return null;
   }
   const course = courses.find((course) => course.id === parseInt(params.slug));
+
   if (course === undefined) {
     return <main className="bg-bg min-h-screen"></main>;
   }
@@ -77,6 +86,49 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
       resizable: true,
     },
   ];
+
+  console.log(description);
+
+  // handle editing of courses in settings page
+  const handleEdit = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (title.trim().length === 0 || description.trim().length === 0) {
+      const notif: Notif = {
+        type: "info",
+        message: "Title and description cannot be empty",
+      };
+      dispatch(setNotification(notif, 5000));
+    } else {
+      try {
+        const newCourse: NewCourse = {
+          title: title && title.trim(),
+          description: description && description.trim(),
+        };
+        await dispatch(updateCourse(course.id, newCourse));
+        setTitle("");
+        setDescription("");
+        const notif: Notif = {
+          type: "success",
+          message: "Course created",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -101,6 +153,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                             label="Course Title"
                             variant="standard"
                             defaultValue={course.title}
+                            onChange={({ target }) => setTitle(target.value)}
                           />
                         </div>
 
@@ -111,6 +164,9 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                             label="Course Description"
                             variant="standard"
                             defaultValue={course.description}
+                            onChange={({ target }) =>
+                              setDescription(target.value)
+                            }
                           />
                         </div>
                       </div>
@@ -118,6 +174,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                         className="flex justify-start	text-heading-4 font-semibold px-2  bg-transparent text-pink hover-hover:hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
                         title="Save"
                         type="button"
+                        onClick={handleEdit}
                       >
                         Save
                       </button>
