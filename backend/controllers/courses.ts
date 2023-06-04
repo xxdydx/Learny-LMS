@@ -202,7 +202,11 @@ router.put("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   course.set(req.body);
   try {
     await course.save();
-    res.status(200).send(course);
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
+    return res.json(editedCourse);
   } catch (error) {
     return next(error);
   }
