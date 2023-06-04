@@ -20,6 +20,41 @@ AWS.config.update({
 });
 const s3 = new AWS.S3();
 
+router.put("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user; // to figure out details about the user (e.g. his token)
+  if (!user) {
+    return res.status(404).send("You need to be logged in");
+  }
+
+  try {
+    let file = await File.findByPk(req.params.id);
+    if (!file) {
+      return res.status(404).send("File not found");
+    }
+    let section = await Section.findByPk(file?.sectionId);
+    let chapter = await Chapter.findByPk(section?.chapterId);
+    let course = await Course.findByPk(chapter?.courseId);
+
+    // check if user has permissions to edit file, only creator of the course can edit the file
+    if (user.id.toString() !== course?.teacherId.toString()) {
+      return res
+        .status(403)
+        .send(`You don't have permissions to edit this file`);
+    }
+
+    file.set(req.body);
+    await file.save();
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
+
+    return res.json(editedCourse);
+  } catch (error) {
+    return next(error);
+  }
+});
+
 // to delete the file
 router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   const user = req.user; // to figure out details about the user (e.g. his token)
