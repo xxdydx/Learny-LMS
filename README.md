@@ -40,7 +40,9 @@ I am a part-time tutor, who mostly teaches via online platforms like Zoom. As pa
 ## Guide to use the App
 
 Demo account (Teacher)
+
 Username: demo_teacher
+
 Password: demo1
 
 ## Tech Stack
