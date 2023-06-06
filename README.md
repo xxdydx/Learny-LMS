@@ -4,8 +4,8 @@
 
 ## Table of contents
 
-- [Features](#features)
 - [Motivations and Aims](#motivations-and-aims)
+- [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Setup](#setup)
 - [Development](#development)
@@ -39,7 +39,9 @@ I am a part-time tutor, who mostly teaches via online platforms like Zoom. As pa
 
 ## Guide to use the App
 
-(coming soon)
+Demo account (Teacher)
+Username: demo_teacher
+Password: demo1
 
 ## Tech Stack
 
