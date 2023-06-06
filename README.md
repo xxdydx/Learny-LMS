@@ -22,6 +22,7 @@ I am a part-time tutor, who mostly teaches via online platforms like Zoom. As pa
 - <b>Easy organisation of content: </b>Each course can have multiple 'chapters', under which there can be multiple 'sections', and each section can host multiple 'files'. ✅
 - <b>File permissions: </b>Teachers can set a 'visible date & time' for files to become 'visible' to students. ✅
 - <b>Course Templates: </b>Teachers can create 'templates' of courses and can create multiple course instances from the same template. 🚧
+- <b>Automated creation of OneNote Notebook: </b>Based on the organisation structure used, Learny can create a OneNote notebook for teachers for each course. 🚧
 - <b>Tracking of assignments: </b> Students can submit assignments through this platform and teachers will receive a notification once submitted. Once teacher has been graded, they can also submit the marked copy on the platform and students will receive a notification that the assignment has been graded. 🚧
 - <b>Grade Tracker: </b> Teachers can easily monitor progression of their students. 🚧
 - <b>Automated uploading of Zoom recording links: </b> After each Zoom lesson, the recording links for each lesson can be synced to our platform. 🚧
