@@ -40,6 +40,7 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
       },
     ],
     order: [
+      ["createdAt", "DESC"],
       [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
       [
         { model: Chapter, as: "chapters" },
