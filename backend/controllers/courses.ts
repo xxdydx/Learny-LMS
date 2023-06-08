@@ -45,6 +45,22 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             ],
           },
         ],
+        order: [
+          [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            "createdAt",
+            "ASC",
+          ],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            { model: File, as: "files" },
+            "createdAt",
+            "ASC",
+          ],
+        ],
       });
       return res.send(courses);
     }
@@ -59,7 +75,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
           template: { [Op.not]: true },
         },
-        order: [["createdAt", "DESC"]],
+
         include: [
           {
             model: User,
@@ -77,25 +93,39 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           {
             model: Chapter,
             as: "chapters",
-            attributes: ["title", "id"],
-            order: [["createdAt", "DESC"]],
+            attributes: ["title", "id", "createdAt"],
             include: [
               {
                 model: Section,
                 as: "sections",
-                order: [["createdAt", "DESC"]],
                 include: [
                   {
                     model: File,
                     as: "files",
-                    order: [["createdAt", "DESC"]],
                   },
                 ],
               },
             ],
           },
         ],
+        order: [
+          [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            "createdAt",
+            "ASC",
+          ],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            { model: File, as: "files" },
+            "createdAt",
+            "ASC",
+          ],
+        ],
       });
+
       return res.send(courses);
     }
 
@@ -147,6 +177,22 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
               },
             ],
           },
+        ],
+        order: [
+          [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            "createdAt",
+            "ASC",
+          ],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            { model: File, as: "files" },
+            "createdAt",
+            "ASC",
+          ],
         ],
       });
       return res.send(courses);

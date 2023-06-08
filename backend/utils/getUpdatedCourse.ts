@@ -39,6 +39,22 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
         ],
       },
     ],
+    order: [
+      [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
+      [
+        { model: Chapter, as: "chapters" },
+        { model: Section, as: "sections" },
+        "createdAt",
+        "ASC",
+      ],
+      [
+        { model: Chapter, as: "chapters" },
+        { model: Section, as: "sections" },
+        { model: File, as: "files" },
+        "createdAt",
+        "ASC",
+      ],
+    ],
   });
 
   return editedCourse;
