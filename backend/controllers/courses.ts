@@ -110,6 +110,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
         ],
         order: [
+          ["createdAt", "DESC"],
           [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
           [
             { model: Chapter, as: "chapters" },
@@ -180,6 +181,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
         ],
         order: [
+          ["createdAt", "DESC"],
           [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
           [
             { model: Chapter, as: "chapters" },
