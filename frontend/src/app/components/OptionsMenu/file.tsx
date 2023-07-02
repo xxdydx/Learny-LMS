@@ -57,7 +57,9 @@ export default function FileMenu({ id, file }: Props): JSX.Element {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [name, setName] = useState<string>(file.name ? file.name : "");
-  const [visibleDate, setVisibleDate] = useState<Dayjs | null>(dayjs());
+  const [visibleDate, setVisibleDate] = useState<Dayjs | null>(
+    dayjs(file.visibledate)
+  );
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -287,7 +289,7 @@ export default function FileMenu({ id, file }: Props): JSX.Element {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateTimePicker
                 label="File visible date"
-                value={visibleDate}
+                defaultValue={dayjs(file.visibledate)}
                 onChange={(newValue) => setVisibleDate(newValue)}
               />
             </LocalizationProvider>
