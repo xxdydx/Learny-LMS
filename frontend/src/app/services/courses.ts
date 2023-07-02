@@ -6,6 +6,8 @@ import {
   NewSection,
   NewFile,
   NewEnrollment,
+  User,
+  NewUser,
 } from "../types";
 const apiBaseUrl = "/api";
 
@@ -149,6 +151,28 @@ const createEnrollment = async (enrollment: NewEnrollment) => {
   return data;
 };
 
+const getZoomRecordings = async (code: string) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.get(
+    `${apiBaseUrl}/recordings?code=${code}`,
+    config
+  );
+
+  return data;
+};
+
+const directSignUp = async (courseId: string, user: NewUser) => {
+  console.log(courseId);
+  const { data } = await axios.post(
+    `${apiBaseUrl}/users/directsignup/${courseId}`,
+    user
+  );
+
+  return data;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getAll,
@@ -165,4 +189,6 @@ export default {
   updateFile,
   removeFile,
   createEnrollment,
+  getZoomRecordings,
+  directSignUp,
 };

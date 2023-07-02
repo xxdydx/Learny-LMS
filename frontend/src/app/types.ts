@@ -31,9 +31,18 @@ enum UserRole {
   Teacher = "teacher",
   Admin = "admin",
 }
+export interface NewUser {
+  courseString: string;
+  name: string;
+  email?: string;
+  password?: string;
+  username: string;
+}
 export interface User {
   id: number;
   name: string;
+  email?: string;
+  password?: string;
   username: string;
   role: UserRole;
   passwordHash?: string;

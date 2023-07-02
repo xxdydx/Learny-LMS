@@ -133,13 +133,15 @@ function NavigationBar() {
                 >
                   <Typography textAlign="center">My Courses</Typography>
                 </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    window.location.href = "/templates";
-                  }}
-                >
-                  <Typography textAlign="center">My Templates</Typography>
-                </MenuItem>
+                {user && user.role === "teacher" ? (
+                  <MenuItem
+                    onClick={() => {
+                      window.location.href = "/templates";
+                    }}
+                  >
+                    <Typography textAlign="center">My Templates</Typography>
+                  </MenuItem>
+                ) : null}
               </Menu>
             </Box>
             <SchoolIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
@@ -192,19 +194,21 @@ function NavigationBar() {
               >
                 My Courses
               </Button>
-              <Button
-                onClick={() => {
-                  window.location.href = "/templates";
-                }}
-                sx={{
-                  my: 2,
-                  color: "white",
-                  display: "block",
-                  textTransform: "none",
-                }}
-              >
-                My Templates
-              </Button>
+              {user && user.role === "teacher" ? (
+                <Button
+                  onClick={() => {
+                    window.location.href = "/templates";
+                  }}
+                  sx={{
+                    my: 2,
+                    color: "white",
+                    display: "block",
+                    textTransform: "none",
+                  }}
+                >
+                  My Templates
+                </Button>
+              ) : null}
             </Box>
 
             <Box sx={{ flexGrow: 0 }}>

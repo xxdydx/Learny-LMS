@@ -38,6 +38,7 @@ const CourseCard = ({ course }: Props) => {
   if (course === undefined) {
     return null;
   }
+
   return (
     <ThemeProvider theme={theme}>
       <Card

@@ -49,7 +49,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   if (course === undefined) {
     return <main className="bg-bg min-h-screen"></main>;
   }
-
+  
   return (
     <div className="dark">
       <div className="dark:bg-bg">
