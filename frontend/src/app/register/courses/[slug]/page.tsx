@@ -1,6 +1,5 @@
 "use client";
 
-import SignUpForm from "@/app/components/SignUp";
 import NotifComponent from "@/app/components/NotifComponent";
 import { Typography } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";

@@ -1,6 +1,6 @@
 "use client";
 
-import SignUpForm from "../components/SignUp";
+import SignUp from "../components/SignUp";
 import { useAuth } from "../hooks";
 import { useAppDispatch } from "../hooks";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export default function MyPage() {
   }
   return (
     <div className="dark">
-      <SignUpForm />
+      <SignUp />
     </div>
   );
 }
