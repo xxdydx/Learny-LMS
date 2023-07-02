@@ -87,8 +87,6 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     },
   ];
 
-  console.log(description);
-
   // handle editing of courses in settings page
   const handleEdit = async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -128,6 +126,35 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
         }
       }
     }
+  };
+
+  const CopyTextbox = () => {
+    // Set the initial text for the textbox
+    const text = `https://learny-lms.vercel.app/register/courses/${course.id}`;
+
+    // Function to handle the "Copy" button click
+    const handleCopy = () => {
+      navigator.clipboard.writeText(text);
+    };
+
+    return (
+      <div className="flex flex-row ">
+        <input
+          type="text"
+          value={text}
+          readOnly
+          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
+        ></input>
+        <button
+          className="flex justify-start	text-heading-4 font-semibold px-2 py-2 bg-transparent text-pink hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
+          title="Copy"
+          type="button"
+          onClick={handleCopy}
+        >
+          Copy
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -179,6 +206,18 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                         Save
                       </button>
                     </a>
+
+                    <div className="mt-12 mx-auto ">
+                      <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
+                        Sharing Link
+                      </h1>
+                      <p className="text-base mb-2 dark:text-text">
+                        Allow students to create an account and directly enroll
+                        into your course.
+                      </p>
+
+                      <CopyTextbox />
+                    </div>
                     <div className="mt-12 mb-8 flex justify-between mx-auto">
                       <h1 className="text-3xl tracking-tight font-semibold text-gray-900 dark:text-white">
                         Students
@@ -189,7 +228,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                       >
                         <button
                           type="button"
-                          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center ml-2 mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
                         >
                           Add Student
                         </button>
