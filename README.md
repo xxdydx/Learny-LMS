@@ -12,7 +12,9 @@
 
 ## Motivations and Aims
 
-I am a part-time tutor, who mostly teaches via online platforms like Zoom. As part of my tuition classes, I also provide worksheets and notes to my students, and I usually upload them online on platforms like Google Drive or Onedrive. However, I've noticed that the navigation experience may not be the most intuitive. I also found that the uploading process could be quite inconvenient, as I would have to upload worksheets and answers (for the same topic) every week, as I didn't want my students to see worksheets/answer keys that are meant for upcoming weeks' lessons. Assignment submission is hard to track on such a platform as well. I have tried platforms like Google Classroom as well, but the structure was too rigid, so I decided to take things into my own hands and created my own Progressive Web App (PWA) to organise and distribute assignments, worksheets and answer keys to my students.
+The process of distributing worksheets and assignments to students can be a challenge for online tutors. Many tutors rely on platforms like Google Drive or Onedrive to store and distribute materials, but these platforms can be inconvenient and inefficient. For example, file permissions (viewing date and time) can be hard to set and assignment submissions for students can be hard to track using existing solutions.
+
+To solve this problem, I developed Learny, a Progressive Web App (PWA) with an intuitive user interface that simplifies the process of organising and distributing assignments, worksheets, and answer keys to students. Learny provides a more efficient solution for online tutors by streamlining the process of setting file permissions and tracking student submissions.
 
 ## Features
 
