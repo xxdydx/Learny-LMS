@@ -19,6 +19,10 @@ Chapter.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    pinned: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
   },
   {
     sequelize,

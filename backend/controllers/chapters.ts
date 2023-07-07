@@ -51,6 +51,40 @@ router.post(
   }
 );
 
+// to edit the chapter
+router.put("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(404).send("You need to be logged in");
+  }
+
+  try {
+    let chapter = await Chapter.findByPk(req.params.id);
+    if (!chapter) {
+      return res.status(404).send("Chapter not found");
+    }
+    let course = await Course.findByPk(chapter?.courseId);
+
+    // check if user has permissions to edit file, only creator of the course can edit the file
+    if (user.id.toString() !== course?.teacherId.toString()) {
+      return res
+        .status(403)
+        .send(`You don't have permissions to edit this chapter`);
+    }
+
+    chapter.set(req.body);
+    await chapter.save();
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
+
+    return res.json(editedCourse);
+  } catch (error) {
+    return next(error);
+  }
+});
+
 // to delete the chapter
 
 router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
@@ -74,43 +108,10 @@ router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
     await chapter.destroy();
 
     // Display the edited course after the chapter is deleted
-
-    const editedCourse = await Course.findByPk(course.id, {
-      attributes: { exclude: ["teacherId"] },
-      include: [
-        {
-          model: User,
-          as: "teacher",
-          attributes: ["name", "username", "id"],
-        },
-        {
-          model: User,
-          as: "students",
-          attributes: ["name", "username", "id"],
-          through: {
-            attributes: [],
-          },
-        },
-        {
-          model: Chapter,
-          as: "chapters",
-          attributes: ["title", "id"],
-          include: [
-            {
-              model: Section,
-              as: "sections",
-              include: [
-                {
-                  model: File,
-                  as: "files",
-                  attributes: ["name", "id"],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
 
     return res.json(editedCourse);
   } catch (err) {

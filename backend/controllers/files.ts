@@ -20,6 +20,7 @@ AWS.config.update({
 });
 const s3 = new AWS.S3();
 
+// to edit details on the file
 router.put("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   const user = req.user; // to figure out details about the user (e.g. his token)
   if (!user) {

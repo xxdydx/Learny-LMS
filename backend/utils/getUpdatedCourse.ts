@@ -20,7 +20,7 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
       {
         model: Chapter,
         as: "chapters",
-        attributes: ["title", "id"],
+        attributes: ["title", "id", "pinned"],
         order: [["createdAt", "DESC"]],
         include: [
           {

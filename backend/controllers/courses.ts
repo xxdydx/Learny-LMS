@@ -94,7 +94,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           {
             model: Chapter,
             as: "chapters",
-            attributes: ["title", "id", "createdAt"],
+            attributes: ["title", "id", "createdAt", "pinned"],
             include: [
               {
                 model: Section,
@@ -160,7 +160,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           {
             model: Chapter,
             as: "chapters",
-            attributes: ["title", "id"],
+            attributes: ["title", "id", "pinned"],
             include: [
               {
                 model: Section,
@@ -307,6 +307,7 @@ router.post(
         title: req.body.title,
         sections: [],
         courseId: course.id,
+        pinned: req.body.pinned,
       });
 
       const editedCourse = await getUpdatedCourse(course.id);
