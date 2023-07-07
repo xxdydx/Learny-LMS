@@ -18,6 +18,7 @@ export interface Chapter {
   title: string;
   sections: Section[];
   id: number;
+  pinned?: boolean;
 }
 
 export interface Teacher {
@@ -62,6 +63,7 @@ export interface NewCourse {
 }
 export interface NewChapter {
   title: string;
+  pinned?: boolean;
 }
 export interface NewSection {
   title: string;

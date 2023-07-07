@@ -68,6 +68,7 @@ export default function NewChapterForm({ courseId }: Props) {
     } else {
       const newChapter: NewChapter = {
         title: title && title.trim(),
+        pinned: false,
       };
       await dispatch(addChapter(newChapter, courseId));
       setTitle("");

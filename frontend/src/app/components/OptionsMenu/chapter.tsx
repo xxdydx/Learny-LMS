@@ -17,7 +17,7 @@ import { deleteCourse } from "@/app/reducers/courseReducer";
 import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
 import { setNotification } from "@/app/reducers/notifReducer";
-import { NewSection, Notif } from "@/app/types";
+import { Chapter, NewSection, Notif } from "@/app/types";
 import { addSection } from "@/app/reducers/courseReducer";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -27,15 +27,19 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
+import { editChapter } from "@/app/reducers/courseReducer";
+import PushPinIcon from "@mui/icons-material/PushPin";
+
 import { AxiosError } from "axios";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
   id: number;
+  chapter: Chapter;
 }
 
-export default function ChapterMenu({ id }: Props): JSX.Element {
+export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = createTheme({
     typography: {
@@ -93,6 +97,40 @@ export default function ChapterMenu({ id }: Props): JSX.Element {
   const StyledButton = styled(Button)({
     textTransform: "none",
   });
+
+  // handle pinning of chapters
+  const pinChapter = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (window.confirm(`Do you want to pin this chapter?`)) {
+      try {
+        const editChp = {
+          ...chapter,
+          pinned: true,
+        };
+        await dispatch(editChapter(editChp, id));
+        setAnchorEl(null);
+        const notif: Notif = {
+          message: "Chapter edited",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
+  };
 
   // Handle delete of chapter
   const handleDelete = async (event: React.MouseEvent) => {
@@ -220,6 +258,10 @@ export default function ChapterMenu({ id }: Props): JSX.Element {
           <MenuItem onClick={handleClose}>
             <EditIcon />
             Edit Chapter
+          </MenuItem>
+          <MenuItem onClick={pinChapter}>
+            <PushPinIcon />
+            Pin Chapter
           </MenuItem>
 
           <MenuItem onClick={handleMenuClick}>

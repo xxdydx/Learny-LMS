@@ -90,6 +90,16 @@ export const addChapter = (
   };
 };
 
+export const editChapter = (
+  chapter: NewChapter,
+  chapterId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.updateChapter(chapter, chapterId);
+    dispatch(edit(newCourse));
+  };
+};
+
 export const deleteChapter = (
   chpId: number
 ): ThunkAction<void, AppState, unknown, Action> => {

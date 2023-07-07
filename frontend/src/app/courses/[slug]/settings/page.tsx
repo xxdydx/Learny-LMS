@@ -135,6 +135,11 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     // Function to handle the "Copy" button click
     const handleCopy = () => {
       navigator.clipboard.writeText(text);
+      const notif: Notif = {
+        message: "Copied to clipboard",
+        type: "info",
+      };
+      dispatch(setNotification(notif, 5000));
     };
 
     return (

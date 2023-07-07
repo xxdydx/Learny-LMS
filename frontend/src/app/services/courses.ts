@@ -76,6 +76,18 @@ const createChapter = async (object: NewChapter, id: number) => {
   return data;
 };
 
+const updateChapter = async (chapter: NewChapter, chapterId: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.put(
+    `${apiBaseUrl}/chapters/${chapterId}`,
+    chapter,
+    config
+  );
+  return data;
+};
+
 const removeChapter = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -182,6 +194,7 @@ export default {
   update,
   setToken,
   createChapter,
+  updateChapter,
   removeChapter,
   createSection,
   removeSection,

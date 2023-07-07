@@ -11,9 +11,8 @@ import { useAuth } from "@/app/hooks";
 import LoadingPage from "@/app/components/LoadingPage";
 import styled from "@mui/material/styles/styled";
 import NewCourseForm from "@/app/components/FormModal/NewCourseForm";
-import { NewChapter } from "@/app/types";
+import { Chapter, NewChapter } from "@/app/types";
 import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
-
 import NotifComponent from "@/app/components/NotifComponent";
 import SettingsIcon from "@mui/icons-material/Settings";
 
@@ -45,11 +44,22 @@ export default function MyPage({ params }: { params: { slug: string } }) {
     return null;
   }
 
-  const course = courses.find((course) => course.id === parseInt(params.slug));
+  let course = courses.find((course) => course.id === parseInt(params.slug));
   if (course === undefined) {
     return <main className="bg-bg min-h-screen"></main>;
   }
-  
+
+  const sortChapterFunc = (a: Chapter, b: Chapter) => {
+    if (a.pinned === true && b.pinned === false) {
+      return -1;
+    }
+    if (b.pinned === true && a.pinned === false) {
+      return 1;
+    } else {
+      return 0;
+    }
+  };
+
   return (
     <div className="dark">
       <div className="dark:bg-bg">
@@ -71,7 +81,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                             <button
                               type="button"
                               onClick={() => {
-                                window.location.href = `/courses/${course.id}/settings`;
+                                window.location.href = `/courses/${course?.id}/settings`;
                               }}
                               className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
                             >
@@ -83,13 +93,14 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                     </div>
                   </div>
 
-                  {course.chapters.map((chapter) => (
+                  {[...course.chapters].sort(sortChapterFunc).map((chapter) => (
                     <ChapterView key={chapter.id} chapter={chapter} />
                   ))}
                 </div>
               </div>
             </div>
           </div>
+
           <NotifComponent />
         </main>
       </div>

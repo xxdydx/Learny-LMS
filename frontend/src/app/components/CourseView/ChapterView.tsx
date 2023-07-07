@@ -23,6 +23,7 @@ import SectionMenu from "../OptionsMenu/section";
 import Typography from "@mui/material/Typography/Typography";
 import { link } from "fs";
 import FileMenu from "../OptionsMenu/file";
+import PushPinIcon from "@mui/icons-material/PushPin";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -126,8 +127,13 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
             }}
           >
             <div className="flex justify-between">
-              {chapter.title}
-              {user?.role === "teacher" && <ChapterMenu id={chapter.id} />}
+              <div>
+                {chapter.pinned === true && <PushPinIcon />} {chapter.title}
+              </div>
+
+              {user?.role === "teacher" && (
+                <ChapterMenu id={chapter.id} chapter={chapter} />
+              )}
             </div>
           </ListSubheader>
         }
