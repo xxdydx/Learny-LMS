@@ -69,7 +69,7 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
 });
 
 // To remove a student into the course
-router.delete("/", tokenExtractor, async (req: CustomRequest, res, next) => {
+router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   try {
     // Check if logged in user (aka the teacher) has permissions to add students
     const teacher = req.user;

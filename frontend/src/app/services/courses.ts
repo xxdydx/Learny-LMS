@@ -163,6 +163,23 @@ const createEnrollment = async (enrollment: NewEnrollment) => {
   return data;
 };
 
+const removeEnrollment = async (student_id: number, course_id: number) => {
+  const config = {
+    headers: { Authorization: token },
+    data: {
+      studentId: student_id,
+      courseId: course_id,
+    },
+  };
+
+  const { data } = await axios.delete(
+    `${apiBaseUrl}/enrollment/${student_id}`,
+    config
+  );
+
+  return data;
+};
+
 const getZoomRecordings = async (code: string) => {
   const config = {
     headers: { Authorization: token },
@@ -202,6 +219,7 @@ export default {
   updateFile,
   removeFile,
   createEnrollment,
+  removeEnrollment,
   getZoomRecordings,
   directSignUp,
 };

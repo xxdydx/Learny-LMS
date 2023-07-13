@@ -165,4 +165,17 @@ export const addEnrollment = (
   };
 };
 
+export const deleteEnrollment = (
+  student_id: number,
+  course_id: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.removeEnrollment(
+      student_id,
+      course_id
+    );
+    dispatch(edit(newCourse));
+  };
+};
+
 export default courseSlice.reducer;

@@ -4,7 +4,10 @@ import { useAppSelector } from "@/app/hooks";
 import { useEffect } from "react";
 import { useAuth } from "@/app/hooks";
 import { useAppDispatch } from "@/app/hooks";
-import { initializeCourses } from "@/app/reducers/courseReducer";
+import {
+  deleteEnrollment,
+  initializeCourses,
+} from "@/app/reducers/courseReducer";
 import { useRouter } from "next/navigation";
 import LoadingPage from "@/app/components/LoadingPage";
 import NotifComponent from "@/app/components/NotifComponent";
@@ -12,7 +15,13 @@ import NavigationBar from "@/app/components/NavigationBar";
 import TextField from "@mui/material/TextField";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridColDef,
+  GridValueGetterParams,
+  GridActionsCellItem,
+  GridRowId,
+} from "@mui/x-data-grid";
 import AddNewStudentForm from "@/app/components/FormModal/AddNewStudent";
 import { useState } from "react";
 import { setNotification } from "@/app/reducers/notifReducer";
@@ -20,6 +29,8 @@ import { Notif } from "@/app/types";
 import { updateCourse } from "@/app/reducers/courseReducer";
 import { AxiosError } from "axios";
 import { NewCourse } from "@/app/types";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -70,6 +81,35 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     return <main className="bg-bg min-h-screen"></main>;
   }
 
+  // handle removal of student from course
+  const handleDeleteClick = (id: GridRowId) => async () => {
+    if (window.confirm(`Do you want to remove this student from the course?`)) {
+      try {
+        const student = Number(id);
+        await dispatch(deleteEnrollment(student, course.id));
+        const notif: Notif = {
+          message: "Student removed from course",
+          type: "success",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
+  };
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "Student ID", flex: 0.5, resizable: true },
     { field: "name", headerName: "Name", flex: 1, resizable: true },
@@ -84,6 +124,24 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
       headerName: "Email",
       flex: 1,
       resizable: true,
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      flex: 0.5,
+      resizable: true,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        return [
+          <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
     },
   ];
 
@@ -148,7 +206,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
           type="text"
           value={text}
           readOnly
-          className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
+          className="sm:w-full md:w-1/2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
         ></input>
         <button
           className="flex justify-start	text-heading-4 font-semibold px-2 py-2 bg-transparent text-pink hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
@@ -156,7 +214,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
           type="button"
           onClick={handleCopy}
         >
-          Copy
+          <ContentCopyIcon />
         </button>
       </div>
     );
@@ -253,6 +311,15 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                         pageSizeOptions={[5, 10]}
                       />
                     </div>
+                  </div>
+                  <div className="mt-12 mx-auto ">
+                    <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
+                      Zoom Integration
+                    </h1>
+                    <p className="text-base mb-2 dark:text-text">
+                      Automatically sync weekly meeting recording links with
+                      Learny. Log in
+                    </p>
                   </div>
                 </div>
               </div>
