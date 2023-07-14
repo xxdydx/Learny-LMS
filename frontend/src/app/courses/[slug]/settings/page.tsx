@@ -31,13 +31,19 @@ import { AxiosError } from "axios";
 import { NewCourse } from "@/app/types";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import Switch, { SwitchProps } from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import { Course } from "@/app/types";
+import { isNull } from "util";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function SettingsPage({ params }: { params: { slug: string } }) {
   const courses = useAppSelector((state) => state.courses);
+  const [course, setCourse] = useState<Course | null>(null);
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [zoomName, setZoomName] = useState<string>("");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const theme = createTheme({
@@ -67,6 +73,21 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     }
   }, [isLoading, user]);
 
+  useEffect(() => {
+    const course1 = courses.find(
+      (course) => course.id === parseInt(params.slug)
+    );
+    setCourse(course1 ? course1 : null);
+  }, [courses, params.slug]);
+
+  useEffect(() => {
+    if (course) {
+      setTitle(course.title);
+      setDescription(course.description ? course.description : "");
+      setZoomName(course.zoomName ? course.zoomName : "");
+    }
+  }, [course]);
+
   // if page is loading and no user => redirect to loading page
   if (isLoading || !user) {
     return <LoadingPage />;
@@ -75,9 +96,8 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     // handle error or return null
     return null;
   }
-  const course = courses.find((course) => course.id === parseInt(params.slug));
 
-  if (course === undefined) {
+  if (course === null) {
     return <main className="bg-bg min-h-screen"></main>;
   }
 
@@ -148,40 +168,43 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
   // handle editing of courses in settings page
   const handleEdit = async (event: React.MouseEvent) => {
     event.preventDefault();
-    if (title.trim().length === 0 || description.trim().length === 0) {
+    if (title.trim().length === 0) {
+      setTitle(course.title);
+    }
+    if (description.trim().length === 0) {
+      setDescription(course.description ? course.description : "");
+    }
+
+    if (zoomName.trim().length === 0) {
+      setZoomName(course.zoomName ? course.zoomName : "");
+    }
+    try {
+      const newCourse: NewCourse = {
+        title: title && title.trim(),
+        description: description && description.trim(),
+        zoomName: zoomName && zoomName.trim(),
+      };
+      await dispatch(updateCourse(course.id, newCourse));
+      setTitle("");
+      setDescription("");
       const notif: Notif = {
-        type: "info",
-        message: "Title and description cannot be empty",
+        type: "success",
+        message: "Course edited",
       };
       dispatch(setNotification(notif, 5000));
-    } else {
-      try {
-        const newCourse: NewCourse = {
-          title: title && title.trim(),
-          description: description && description.trim(),
-        };
-        await dispatch(updateCourse(course.id, newCourse));
-        setTitle("");
-        setDescription("");
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
         const notif: Notif = {
-          type: "success",
-          message: "Course created",
+          message: error.response?.data,
+          type: "error",
         };
         dispatch(setNotification(notif, 5000));
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          const notif: Notif = {
-            message: error.response?.data,
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        } else {
-          const notif: Notif = {
-            message: "Unknown error happpened. Contact support!",
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        }
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
       }
     }
   };
@@ -219,6 +242,62 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
       </div>
     );
   };
+
+  const SwitchComponent = styled((props: SwitchProps) => (
+    <Switch
+      focusVisibleClassName=".Mui-focusVisible"
+      disableRipple
+      {...props}
+    />
+  ))(({ theme }) => ({
+    width: 42,
+    height: 26,
+    padding: 0,
+    "& .MuiSwitch-switchBase": {
+      padding: 0,
+      margin: 2,
+      transitionDuration: "300ms",
+      "&.Mui-checked": {
+        transform: "translateX(16px)",
+        color: "#fff",
+        "& + .MuiSwitch-track": {
+          backgroundColor:
+            theme.palette.mode === "dark" ? "#2ECA45" : "#65C466",
+          opacity: 1,
+          border: 0,
+        },
+        "&.Mui-disabled + .MuiSwitch-track": {
+          opacity: 0.5,
+        },
+      },
+      "&.Mui-focusVisible .MuiSwitch-thumb": {
+        color: "#33cf4d",
+        border: "6px solid #fff",
+      },
+      "&.Mui-disabled .MuiSwitch-thumb": {
+        color:
+          theme.palette.mode === "light"
+            ? theme.palette.grey[100]
+            : theme.palette.grey[600],
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      boxSizing: "border-box",
+      width: 22,
+      height: 22,
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: 26 / 2,
+      backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
+      opacity: 1,
+      transition: theme.transitions.create(["background-color"], {
+        duration: 500,
+      }),
+    },
+  }));
 
   return (
     <ThemeProvider theme={theme}>
@@ -313,13 +392,38 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                     </div>
                   </div>
                   <div className="mt-12 mx-auto ">
-                    <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
-                      Zoom Integration
-                    </h1>
-                    <p className="text-base mb-2 dark:text-text">
+                    <div className="flex justify-between">
+                      <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
+                        Zoom Integration
+                      </h1>
+                      <div className="my-2">
+                        <SwitchComponent
+                          defaultChecked={course.zoomName ? true : false}
+                        />
+                      </div>
+                    </div>
+
+                    <p className="text-base mb-6 dark:text-text">
                       Automatically sync weekly meeting recording links with
-                      Learny. Log in
+                      Learny.
                     </p>
+                    <label className="text-gray-900 dark:text-text mr-4">
+                      Zoom Name
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={course.zoomName}
+                      onChange={({ target }) => setZoomName(target.value)}
+                      className="sm:w-full md:w-1/2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
+                    ></input>
+                    <button
+                      className="flex justify-start	text-heading-4 font-semibold px-2  bg-transparent text-pink hover-hover:hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
+                      title="Save"
+                      type="button"
+                      onClick={handleEdit}
+                    >
+                      Save
+                    </button>
                   </div>
                 </div>
               </div>

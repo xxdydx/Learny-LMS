@@ -1,49 +1,47 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../utils/db";
-import { ChapterType } from "../types";
 
-class Course extends Model {
+import { sequelize } from "../utils/db";
+
+class Recording extends Model {
   public id!: number;
   public title!: string;
-  public description!: string;
-  public teacherId!: number;
-  public chapters!: ChapterType[];
-  public zoomName!: string;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public courseId!: number;
 }
 
-Course.init(
+Recording.init(
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
+    share_url: {
+      type: DataTypes.TEXT,
+      allowNull: false,
+    },
     title: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    description: {
+    start_time: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
+    passcode: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    template: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-    },
-    zoomName: {
+    duration: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
   },
-
   {
     sequelize,
     underscored: true,
     timestamps: true,
-    modelName: "course",
+    modelName: "recording",
   }
 );
 
-export default Course;
+export default Recording;

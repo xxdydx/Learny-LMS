@@ -180,20 +180,30 @@ const removeEnrollment = async (student_id: number, course_id: number) => {
   return data;
 };
 
-const getZoomRecordings = async (code: string) => {
+const getZoomRecordings = async (courseId: number) => {
   const config = {
     headers: { Authorization: token },
   };
+
   const { data } = await axios.get(
-    `${apiBaseUrl}/recordings?code=${code}`,
+    `${apiBaseUrl}/recordings?courseId=${courseId}`,
     config
   );
 
   return data;
 };
 
+const getAllZoomRecordings = async () => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const { data } = await axios.get(`${apiBaseUrl}/recordings/all`, config);
+
+  return data;
+};
+
 const directSignUp = async (courseId: string, user: NewUser) => {
-  console.log(courseId);
   const { data } = await axios.post(
     `${apiBaseUrl}/users/directsignup/${courseId}`,
     user
@@ -221,5 +231,6 @@ export default {
   createEnrollment,
   removeEnrollment,
   getZoomRecordings,
+  getAllZoomRecordings,
   directSignUp,
 };

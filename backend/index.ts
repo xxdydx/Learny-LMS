@@ -8,6 +8,9 @@ import filesRouter from "./controllers/files";
 import loginRouter from "./controllers/login";
 import enrollmentRouter from "./controllers/enrollment";
 import templatesRouter from "./controllers/templates";
+import recordingsRouter from "./controllers/recordings";
+import assignmentsRouter from "./controllers/assignments";
+
 import { PORT } from "./utils/config";
 
 const { errorHandler } = require("./utils/middleware");
@@ -24,6 +27,8 @@ app.use("/api/chapters", chaptersRouter);
 app.use("/api/sections", sectionsRouter);
 app.use("/api/files", filesRouter);
 app.use("/api/enrollment", enrollmentRouter);
+app.use("/api/recordings", recordingsRouter);
+app.use("/api/assignments", assignmentsRouter);
 
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);

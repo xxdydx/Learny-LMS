@@ -7,7 +7,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
@@ -20,6 +20,7 @@ import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { setNotification } from "@/app/reducers/notifReducer";
 import { AxiosError } from "axios";
+import AddIcon from "@mui/icons-material/Add";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -131,13 +132,15 @@ export default function NewCourseForm() {
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <button
-          type="button"
-          onClick={handleClickOpen}
-          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
-        >
-          Create a Course
-        </button>
+        <Tooltip title="Create course" placement="top">
+          <button
+            type="button"
+            onClick={handleClickOpen}
+            className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+          >
+            <AddIcon />
+          </button>
+        </Tooltip>
 
         <Dialog
           open={open}

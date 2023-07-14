@@ -3,7 +3,7 @@
 import ChapterView from "../../components/CourseView/ChapterView";
 import Contents from "../../components/CourseView/Contents";
 import NavigationBar from "../../components/NavigationBar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { initializeCourses } from "@/app/reducers/courseReducer";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,9 @@ import { Chapter, NewChapter } from "@/app/types";
 import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
 import NotifComponent from "@/app/components/NotifComponent";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import { Tooltip } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -22,6 +25,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   const dispatch = useAppDispatch();
   // abstracted GET users and courses into a hook
   const [isLoading, user] = useAuth();
+  const [open, setOpen] = useState(true);
 
   useEffect(() => {
     if (user) {
@@ -73,21 +77,40 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                     <h1 className="mb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
                       {course.title}
                     </h1>
+
                     <div className="flex flex-row">
+                      <Tooltip title="Recordings" placement="top">
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              window.location.href = `/courses/${course?.id}/recordings`;
+                            }}
+                            className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                          >
+                            <PlayCircleIcon />
+                          </button>
+                        </div>
+                      </Tooltip>
+
                       {user?.role === "teacher" ? (
                         <>
-                          <NewChapterForm courseId={course.id} />
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                window.location.href = `/courses/${course?.id}/settings`;
-                              }}
-                              className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
-                            >
-                              <SettingsIcon />
-                            </button>
-                          </div>
+                          <Tooltip title="Add Chapter" placement="top">
+                            <NewChapterForm courseId={course.id} />
+                          </Tooltip>
+                          <Tooltip title="Course Settings" placement="top">
+                            <div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  window.location.href = `/courses/${course?.id}/settings`;
+                                }}
+                                className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                              >
+                                <SettingsIcon />
+                              </button>
+                            </div>
+                          </Tooltip>
                         </>
                       ) : null}
                     </div>

@@ -7,6 +7,7 @@ export interface CustomRequest extends Request {
   decodedToken?: string | JwtPayload;
   user?: User;
   file?: Express.Multer.File;
+  zoomToken?: string;
 }
 
 export interface File {

@@ -60,6 +60,7 @@ export interface UserIdentifier {
 export interface NewCourse {
   title: string;
   description: string;
+  zoomName?: string;
 }
 export interface NewChapter {
   title: string;
@@ -85,12 +86,24 @@ export interface Notif {
   message: string;
 }
 
+export interface Recording {
+  createdAt: string;
+  updatedAt: string;
+  id: number;
+  passcode: string;
+  share_url: string;
+  start_time: string;
+  duration: number;
+  title: string;
+}
+
 export interface Course {
   title: string;
   id: number;
   teacher: Teacher;
   description?: string;
   author?: string;
+  zoomName?: string;
   chapters: Chapter[];
   students: User[];
   createdAt: string;
