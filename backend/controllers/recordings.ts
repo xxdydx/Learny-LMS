@@ -64,7 +64,7 @@ router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
     const { code } = req.query;
     let token: string | null = null;
 
-    const redirectUri = "http://localhost:3000/recordings";
+    const redirectUri = "https://learny-lms.vercel.app/recordings";
     const sendData = encodeURI(
       `grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
     );
