@@ -252,7 +252,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                       type="button"
                       onClick={() => {
                         window.location.href =
-                          "https://zoom.us/oauth/authorize?response_type=code&client_id=W52xPeVSToSqXwW4jbZglg&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Frecordings";
+                          "https://zoom.us/oauth/authorize?response_type=code&client_id=W52xPeVSToSqXwW4jbZglg&redirect_uri=https%3A%2F%2Flearny-lms.vercel.app%2Frecordings";
                       }}
                       className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
                     >
