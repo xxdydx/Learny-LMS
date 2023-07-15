@@ -5,7 +5,11 @@ import { sequelize } from "../utils/db";
 class Recording extends Model {
   public id!: number;
   public title!: string;
-  public courseId!: number;
+  public share_url!: string;
+  public teacherId!: number;
+  public passcode!: number;
+  public start_time!: number;
+  public duration!: number;
 }
 
 Recording.init(

@@ -4,9 +4,11 @@ import Section from "./section";
 import File from "./file";
 import User from "./user";
 import Enrollment from "./enrollment";
+import Recording from "./recording";
 
 // for creator of course - e.g. Teacher
 Course.belongsTo(User, { as: "teacher", foreignKey: "teacherId" });
+Recording.belongsTo(User, { as: "teacher", foreignKey: "teacherId" });
 
 // for mapping students to the course
 Course.belongsToMany(User, {
@@ -72,3 +74,5 @@ export { default as Section } from "./section";
 export { default as File } from "./file";
 export { default as User } from "./user";
 export { default as Enrollment } from "./enrollment";
+
+export { default as Recording } from "./recording";

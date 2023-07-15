@@ -52,7 +52,13 @@ router.get("/all", tokenExtractor, async (req: CustomRequest, res, next) => {
         .json(403)
         .send("You need to be logged in to perform this action");
     }
-    const recordings = await Recording.findAll({});
+    const recordings = await Recording.findAll({
+      where: {
+        teacherId: {
+          [Op.eq]: user.id,
+        },
+      },
+    });
     return res.json(recordings);
   } catch (error) {
     next(error);
@@ -61,6 +67,17 @@ router.get("/all", tokenExtractor, async (req: CustomRequest, res, next) => {
 
 router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
   try {
+    const user = req.user;
+
+    if (!user) {
+      return res
+        .json(403)
+        .send("You need to be logged in to perform this action");
+    }
+
+    if (user.role === "student") {
+      return res.json(403).send("No permissions to add recordings");
+    }
     const { code } = req.query;
     let token: string | null = null;
 
@@ -117,6 +134,7 @@ router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
         passcode: recording.recording_play_passcode,
         share_url: `${recording.share_url}?pwd=${recording.recording_play_passcode}`,
         duration: recording.duration,
+        teacherId: user.id,
       });
     }
 
