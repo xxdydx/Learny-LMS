@@ -49,7 +49,7 @@ router.get("/all", tokenExtractor, async (req: CustomRequest, res, next) => {
 
     if (!user) {
       return res
-        .json(403)
+        .status(403)
         .send("You need to be logged in to perform this action");
     }
     const recordings = await Recording.findAll({
@@ -71,7 +71,7 @@ router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
 
     if (!user) {
       return res
-        .json(403)
+        .status(403)
         .send("You need to be logged in to perform this action");
     }
 
