@@ -26,7 +26,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [isLoading, user]);
 
@@ -35,7 +35,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   }
 
   if (user) {
-    router.push("/");
+    router.push("/dashboard");
   }
 
   const handleSignUp = async (event: React.MouseEvent) => {

@@ -13,7 +13,7 @@ export default function MyPage() {
   const router = useRouter();
   useEffect(() => {
     if (!isLoading && user) {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [isLoading, user]);
 
@@ -22,7 +22,7 @@ export default function MyPage() {
   }
 
   if (user) {
-    router.push("/");
+    router.push("/dashboard");
   }
   return (
     <div className="dark">

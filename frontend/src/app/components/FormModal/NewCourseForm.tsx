@@ -80,7 +80,7 @@ export default function NewCourseForm() {
         };
         dispatch(setNotification(notif, 5000));
         setOpen(false);
-        router.push("/");
+        router.push("/dashboard");
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           const notif: Notif = {

@@ -50,7 +50,7 @@ export default function Header() {
               <li>
                 <Link
                   href="/login"
-                  className="font-medium text-text hover:text-gray-900 px-5 flex items-center transition duration-150 ease-in-out"
+                  className="font-medium text-text hover:text-white px-5 flex items-center transition duration-150 ease-in-out"
                 >
                   Sign in
                 </Link>
@@ -58,7 +58,7 @@ export default function Header() {
               <li>
                 <Link
                   href="/#"
-                  className="font-medium text-text hover:text-gray-900 px-5 flex items-center transition duration-150 ease-in-out"
+                  className="font-medium text-text hover:text-white px-5 flex items-center transition duration-150 ease-in-out"
                 >
                   Pricing
                 </Link>

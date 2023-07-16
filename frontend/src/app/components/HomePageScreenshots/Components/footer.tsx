@@ -33,6 +33,7 @@ export default function Footer() {
                   display: { xs: "none", md: "flex" },
                   fontSize: "h6.fontSize",
                   color: "black",
+                  mt: 0.5,
                   mb: 2.5,
                   mr: 1,
                 }}

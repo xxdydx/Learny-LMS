@@ -1,5 +1,3 @@
-import ModalVideo from "./modal-video";
-
 export default function Hero() {
   return (
     <section className="relative bg-bg">

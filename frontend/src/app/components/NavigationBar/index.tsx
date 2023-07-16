@@ -61,7 +61,6 @@ function NavigationBar() {
 
   // Handle logout function
   const logout = (event: React.MouseEvent<HTMLElement>) => {
-    event.preventDefault();
     window.localStorage.removeItem("AKAppSessionID");
     dispatch(setUser(null));
     router.push("/");
@@ -77,7 +76,7 @@ function NavigationBar() {
               variant="h6"
               noWrap
               component="a"
-              href="/"
+              href="/dashboard"
               sx={{
                 mr: 4,
                 display: { xs: "none", md: "flex" },
@@ -123,12 +122,16 @@ function NavigationBar() {
                   display: { xs: "block", md: "none" },
                 }}
               >
-                <MenuItem onClick={handleCloseNavMenu}>
+                <MenuItem
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
+                >
                   <Typography textAlign="center">About this App</Typography>
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    window.location.href = "/about";
+                    window.location.href = "/dashboard";
                   }}
                 >
                   <Typography textAlign="center">My Courses</Typography>
@@ -171,7 +174,9 @@ function NavigationBar() {
               }}
             >
               <Button
-                onClick={handleCloseNavMenu}
+                onClick={() => {
+                  window.location.href = "/";
+                }}
                 sx={{
                   my: 2,
                   color: "white",
@@ -183,7 +188,7 @@ function NavigationBar() {
               </Button>
               <Button
                 onClick={() => {
-                  window.location.href = "/about";
+                  window.location.href = "/dashboard";
                 }}
                 sx={{
                   my: 2,

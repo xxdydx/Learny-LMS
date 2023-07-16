@@ -95,8 +95,8 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     const codeParam = urlParams.get("code");
     if (codeParam) {
       const response = await courseService.syncZoomRecordings(codeParam);
-      console.log(response);
-      if (response.data === "Process complete") {
+
+      if (response === "Process complete") {
         const notif: Notif = {
           message: "Zoom Cloud Recordings synced",
           type: "success",

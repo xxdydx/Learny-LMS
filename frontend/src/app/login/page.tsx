@@ -38,7 +38,7 @@ export default function MyPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [isLoading, user]);
 
@@ -71,7 +71,7 @@ export default function MyPage() {
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
       courseService.setToken(user.token);
       dispatch(setUser(user));
-      router.push("/");
+      router.push("/dashboard");
     } catch (error: unknown) {
       // Error handling
       if (error instanceof AxiosError) {
@@ -89,10 +89,6 @@ export default function MyPage() {
       }
     }
   };
-
-  if (user) {
-    router.push("/");
-  }
 
   return (
     <ThemeProvider theme={theme}>
