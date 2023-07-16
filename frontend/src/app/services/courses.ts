@@ -205,7 +205,7 @@ const getAllZoomRecordings = async () => {
 
 const syncZoomRecordings = async (codeParam: string) => {
   const config = {
-    headers: { Autorization: token },
+    headers: { Authorization: token },
   };
   const { data } = await axios.post(
     `/api/recordings/sync?code=${codeParam}`,
