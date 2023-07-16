@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 
 import Link from "next/link";
-import Dropdown from "./dropdown";
 import MobileMenu from "./mobile-menu";
-import { Typography } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 
 export default function Header() {

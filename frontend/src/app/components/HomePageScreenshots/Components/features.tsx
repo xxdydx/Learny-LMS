@@ -3,10 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import Image from "next/image";
-import FeaturesBg from "../screenshots/background.png";
-import pic1 from "../screenshots/add_student.gif";
-import FeaturesElement from "../screenshots/add_file.gif";
-import zoom from "../screenshots/zoom_recordings.gif";
+import FeaturesBg from "../Screenshots/background.png";
+import pic1 from "../Screenshots/add_student.gif";
+import FeaturesElement from "../Screenshots/add_file.gif";
+import zoom from "../Screenshots/zoom_recordings.gif";
 
 export default function Features() {
   const [tab, setTab] = useState<number>(1);
