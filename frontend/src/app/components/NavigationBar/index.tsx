@@ -128,7 +128,7 @@ function NavigationBar() {
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    window.location.href = "/";
+                    window.location.href = "/about";
                   }}
                 >
                   <Typography textAlign="center">My Courses</Typography>
@@ -183,7 +183,7 @@ function NavigationBar() {
               </Button>
               <Button
                 onClick={() => {
-                  window.location.href = "/";
+                  window.location.href = "/about";
                 }}
                 sx={{
                   my: 2,

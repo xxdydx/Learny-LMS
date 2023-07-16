@@ -209,6 +209,7 @@ const syncZoomRecordings = async (codeParam: string) => {
   };
   const { data } = await axios.post(
     `/api/recordings/sync?code=${codeParam}`,
+    null,
     config
   );
   return data;
