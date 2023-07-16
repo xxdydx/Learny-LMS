@@ -203,6 +203,14 @@ const getAllZoomRecordings = async () => {
   return data;
 };
 
+const syncZoomRecordings = async (codeParam: string) => {
+  const config = {
+    headers: { Autorization: token },
+  };
+  const { data } = await axios.post(`/api/recordings/sync?code=${codeParam}`);
+  return data;
+};
+
 const directSignUp = async (courseId: string, user: NewUser) => {
   const { data } = await axios.post(
     `${apiBaseUrl}/users/directsignup/${courseId}`,
@@ -232,5 +240,6 @@ export default {
   removeEnrollment,
   getZoomRecordings,
   getAllZoomRecordings,
+  syncZoomRecordings,
   directSignUp,
 };

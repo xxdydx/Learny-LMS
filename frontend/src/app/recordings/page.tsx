@@ -93,14 +93,16 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     event.preventDefault();
     const urlParams = new URLSearchParams(window.location.search);
     const codeParam = urlParams.get("code");
-    const response = await axios.post(`/api/recordings/sync?code=${codeParam}`);
-    console.log(response);
-    if (response.data === "Process complete") {
-      const notif: Notif = {
-        message: "Zoom Cloud Recordings synced",
-        type: "success",
-      };
-      dispatch(setNotification(notif, 5000));
+    if (codeParam) {
+      const response = await courseService.syncZoomRecordings(codeParam);
+      console.log(response);
+      if (response.data === "Process complete") {
+        const notif: Notif = {
+          message: "Zoom Cloud Recordings synced",
+          type: "success",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
     } else {
       const notif: Notif = {
         message:
