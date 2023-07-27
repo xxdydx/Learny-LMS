@@ -5,6 +5,7 @@ import { useAuth } from "./hooks";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import LoadingPage from "./components/LoadingPage";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {
   title: "Learny LMS",
@@ -25,7 +26,10 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <Analytics />
+        </Providers>
       </body>
     </html>
   );
