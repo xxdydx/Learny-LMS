@@ -1,5 +1,12 @@
 import express from "express";
-import { Section, User, File, Chapter } from "../models";
+import {
+  Section,
+  User,
+  File,
+  Chapter,
+  Assignment,
+  Submission,
+} from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
@@ -104,6 +111,16 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                     model: File,
                     as: "files",
                   },
+                  {
+                    model: Assignment,
+                    as: "assignments",
+                    include: [
+                      {
+                        model: Submission,
+                        as: "submissions",
+                      },
+                    ],
+                  },
                 ],
               },
             ],
@@ -122,6 +139,13 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             { model: Chapter, as: "chapters" },
             { model: Section, as: "sections" },
             { model: File, as: "files" },
+            "createdAt",
+            "ASC",
+          ],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            { model: Assignment, as: "assignments" },
             "createdAt",
             "ASC",
           ],
@@ -175,6 +199,15 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                       },
                     },
                   },
+                  {
+                    model: Assignment,
+                    as: "assignments",
+                    where: {
+                      visibledate: {
+                        [Op.lt]: new Date().toISOString(),
+                      },
+                    },
+                  },
                 ],
               },
             ],
@@ -193,6 +226,13 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             { model: Chapter, as: "chapters" },
             { model: Section, as: "sections" },
             { model: File, as: "files" },
+            "createdAt",
+            "ASC",
+          ],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            { model: Assignment, as: "assignments" },
             "createdAt",
             "ASC",
           ],

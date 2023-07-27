@@ -5,6 +5,8 @@ import File from "./file";
 import User from "./user";
 import Enrollment from "./enrollment";
 import Recording from "./recording";
+import Assignment from "./assignment";
+import Submission from "./submission";
 
 // for creator of course - e.g. Teacher
 Course.belongsTo(User, { as: "teacher", foreignKey: "teacherId" });
@@ -68,11 +70,44 @@ File.belongsTo(Section, {
   onDelete: "SET NULL",
 });
 
+Section.hasMany(Assignment, {
+  foreignKey: {
+    name: "sectionId",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+Assignment.belongsTo(Section, {
+  foreignKey: {
+    name: "sectionId",
+    allowNull: false,
+  },
+  onDelete: "SET NULL",
+});
+
+Assignment.hasMany(Submission, {
+  foreignKey: {
+    name: "assignmentId",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+Submission.belongsTo(Assignment, {
+  foreignKey: {
+    name: "assignmentId",
+    allowNull: false,
+  },
+  onDelete: "SET NULL",
+});
+
+Submission.belongsTo(User, { as: "student", foreignKey: "studentId" });
+
 export { default as Course } from "./course";
 export { default as Chapter } from "./chapter";
 export { default as Section } from "./section";
 export { default as File } from "./file";
 export { default as User } from "./user";
 export { default as Enrollment } from "./enrollment";
-
+export { default as Assignment } from "./assignment";
+export { default as Submission } from "./submission";
 export { default as Recording } from "./recording";

@@ -1,4 +1,13 @@
-import { Section, User, File, Chapter, Enrollment, Course } from "../models";
+import {
+  Section,
+  User,
+  File,
+  Chapter,
+  Enrollment,
+  Course,
+  Assignment,
+  Submission,
+} from "../models";
 
 async function getUpdatedCourse(courseId: number): Promise<Course | null> {
   const editedCourse = await Course.findByPk(courseId, {
@@ -21,18 +30,36 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
         model: Chapter,
         as: "chapters",
         attributes: ["title", "id", "pinned"],
-        order: [["createdAt", "DESC"]],
+
         include: [
           {
             model: Section,
             as: "sections",
-            order: [["createdAt", "DESC"]],
+
             include: [
               {
                 model: File,
                 as: "files",
                 attributes: ["name", "id", "link", "awskey", "visibledate"],
-                order: [["createdAt", "DESC"]],
+              },
+              {
+                model: Assignment,
+                as: "assignments",
+                attributes: [
+                  "name",
+                  "id",
+                  "link",
+                  "awskey",
+                  "visibledate",
+                  "deadline",
+                  "marks",
+                ],
+                include: [
+                  {
+                    model: Submission,
+                    as: "submissions",
+                  },
+                ],
               },
             ],
           },
@@ -52,6 +79,21 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
         { model: Chapter, as: "chapters" },
         { model: Section, as: "sections" },
         { model: File, as: "files" },
+        "createdAt",
+        "ASC",
+      ],
+      [
+        { model: Chapter, as: "chapters" },
+        { model: Section, as: "sections" },
+        { model: Assignment, as: "assignments" },
+        "createdAt",
+        "ASC",
+      ],
+      [
+        { model: Chapter, as: "chapters" },
+        { model: Section, as: "sections" },
+        { model: Assignment, as: "assignments" },
+        { model: Submission, as: "submissions" },
         "createdAt",
         "ASC",
       ],

@@ -1,3 +1,5 @@
 backend.bat
 frontend.bat
 database.bat
+backend/migrations/20230713_00_add_zoom_name.js
+backend/migrations/20230713_00_add_zoom_name.js
