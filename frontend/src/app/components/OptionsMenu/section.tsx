@@ -13,7 +13,7 @@ import { Inter } from "next/font/google";
 import { deleteCourse, deleteSection } from "@/app/reducers/courseReducer";
 import { deleteChapter } from "@/app/reducers/courseReducer";
 import { useAppDispatch } from "@/app/hooks";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, NewLifecycle } from "react";
 import { NewFile, Notif } from "@/app/types";
 import { addFile } from "@/app/reducers/courseReducer";
 import { setNotification } from "@/app/reducers/notifReducer";
@@ -35,6 +35,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { AxiosError } from "axios";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -71,8 +76,10 @@ export default function SectionMenu({ id, title }: Props) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [selectedRadio, setSelectedRadio] = useState("");
   const [name, setName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
+  const [url, seturl] = useState<string | null>(null);
   const [visibleDate, setVisibleDate] = useState<Dayjs | null>(dayjs());
 
   const open = Boolean(anchorEl);
@@ -143,9 +150,18 @@ export default function SectionMenu({ id, title }: Props) {
       dispatch(setNotification(notif, 5000));
       return;
     }
-    if (file === null) {
+    if (selectedRadio === "file" && file === null) {
       const notif: Notif = {
         message: "No file uploaded",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+
+    if (selectedRadio === "link" && url === null) {
+      const notif: Notif = {
+        message: "URL cannot be empty",
         type: "error",
       };
       dispatch(setNotification(notif, 5000));
@@ -155,7 +171,12 @@ export default function SectionMenu({ id, title }: Props) {
       ? visibleDate?.toDate().toISOString()
       : new Date().toISOString();
     newFile.append("name", name);
-    newFile.append("file", file as unknown as Blob, file?.name);
+    if (file) {
+      newFile.append("file", file as unknown as Blob, file?.name);
+    }
+    if (url) {
+      newFile.append("link", url);
+    }
     newFile.append("visibledate", date);
 
     try {
@@ -252,6 +273,7 @@ export default function SectionMenu({ id, title }: Props) {
       },
     },
   }));
+  console.log(selectedRadio);
 
   return (
     <ThemeProvider theme={theme}>
@@ -324,18 +346,52 @@ export default function SectionMenu({ id, title }: Props) {
               fullWidth
               variant="standard"
             />
-            <DialogContentText sx={{ mt: 2 }}>
-              Choose a file to upload onto our servers. Only PDF files are
-              accepted for now.
-            </DialogContentText>
-            <div className="mt-2 mb-6">
-              <input
-                type="file"
-                onChange={handleFileUpload}
-                accept=".pdf"
-                required
+            <FormLabel sx={{ mt: 2 }} id="demo-row-radio-buttons-group-label">
+              Upload type:
+            </FormLabel>
+            <RadioGroup
+              row
+              aria-labelledby="demo-row-radio-buttons-group-label"
+              name="row-radio-buttons-group"
+              onChange={({ target }) => setSelectedRadio(target.value)}
+            >
+              <FormControlLabel value="file" control={<Radio />} label="File" />
+              <FormControlLabel
+                value="link"
+                control={<Radio />}
+                label="URL/Link"
               />
-            </div>
+            </RadioGroup>
+            {selectedRadio === "file" && (
+              <>
+                <DialogContentText sx={{ mt: 2 }}>
+                  Choose a file to upload onto our servers. Only PDF files are
+                  accepted for now.
+                </DialogContentText>
+                <div className="mt-2 mb-6">
+                  <input
+                    type="file"
+                    onChange={handleFileUpload}
+                    accept=".pdf"
+                    required
+                  />
+                </div>
+              </>
+            )}
+            {selectedRadio === "link" && (
+              <TextField
+                margin="dense"
+                sx={{ mb: 4 }}
+                id="name"
+                label="URL of File"
+                type="url"
+                required={true}
+                onChange={({ target }) => seturl(target.value)}
+                fullWidth
+                variant="standard"
+              />
+            )}
+
             <DialogContentText sx={{ mb: 4 }}>
               Set a date and time for this file to become visible for students.
             </DialogContentText>
