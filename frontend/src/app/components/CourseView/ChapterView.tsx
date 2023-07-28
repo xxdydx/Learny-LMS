@@ -13,17 +13,18 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import Divider from "@mui/material/Divider";
-import { Chapter, Section, File } from "../../types";
+import { Chapter, Section, File } from "../../../types";
 import ChapterMenu from "../OptionsMenu/chapter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton/IconButton";
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/hooks";
 
 import SectionMenu from "../OptionsMenu/section";
 import Typography from "@mui/material/Typography/Typography";
 import { link } from "fs";
 import FileMenu from "../OptionsMenu/file";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import { Assignment } from "../../../types";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -55,6 +56,37 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
             <ListItemText primary={file.name} className="dark:text-text" />
           </ListItemButton>
           {user?.role === "teacher" && <FileMenu id={file.id} file={file} />}
+        </div>
+      </List>
+    );
+  };
+
+  const IndivListAssignment = ({ assignment }: { assignment: Assignment }) => {
+    // to check if file should be invisible for student, based on visible date set for each file
+    if (
+      user?.role === "student" &&
+      assignment?.visibledate > new Date().toISOString()
+    ) {
+      return null;
+    }
+    return (
+      <List component="div" disablePadding>
+        <Divider light />
+        <div className="flex justify mr-4">
+          <ListItemButton
+            sx={{ pl: 4 }}
+            onClick={() => {
+              window.location.href = `/assignments/${assignment.id}`;
+            }}
+          >
+            <ListItemText
+              primary={assignment.name}
+              className="dark:text-text"
+            />
+          </ListItemButton>
+          {user?.role === "teacher" && (
+            <FileMenu id={assignment.id} file={assignment} />
+          )}
         </div>
       </List>
     );
@@ -99,6 +131,9 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
         <Collapse in={open} timeout="auto" unmountOnExit>
           {section.files.map((file) => (
             <IndivListFile key={file.id} file={file} />
+          ))}
+          {section.assignments.map((assignment) => (
+            <IndivListAssignment key={assignment.id} assignment={assignment} />
           ))}
         </Collapse>
       </>

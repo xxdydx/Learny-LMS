@@ -10,13 +10,13 @@ import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
-import { deleteCourse, deleteSection } from "@/app/reducers/courseReducer";
-import { deleteChapter } from "@/app/reducers/courseReducer";
-import { useAppDispatch } from "@/app/hooks";
+import { deleteCourse, deleteSection } from "@/reducers/courseReducer";
+import { deleteChapter } from "@/reducers/courseReducer";
+import { useAppDispatch } from "@/hooks";
 import React, { useState, useEffect, NewLifecycle } from "react";
-import { NewFile, Notif } from "@/app/types";
-import { addFile } from "@/app/reducers/courseReducer";
-import { setNotification } from "@/app/reducers/notifReducer";
+import { NewFile, Notif } from "@/types";
+import { addFile } from "@/reducers/courseReducer";
+import { setNotification } from "@/reducers/notifReducer";
 import { green } from "@mui/material/colors";
 import {
   Button,
@@ -38,8 +38,8 @@ import { AxiosError } from "axios";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
+import { addAssignment } from "@/reducers/courseReducer";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
@@ -76,11 +76,15 @@ export default function SectionMenu({ id, title }: Props) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openAssignmentDialog, setOpenAssignmentDialog] = useState(false);
+  const [instructions, setInstructions] = useState<string | null>(null);
   const [selectedRadio, setSelectedRadio] = useState("");
   const [name, setName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [url, seturl] = useState<string | null>(null);
   const [visibleDate, setVisibleDate] = useState<Dayjs | null>(dayjs());
+  const [deadline, setDeadline] = useState<Dayjs | null>(dayjs());
+  const [marks, setMarks] = useState<string>("");
 
   const open = Boolean(anchorEl);
 
@@ -95,8 +99,17 @@ export default function SectionMenu({ id, title }: Props) {
     setAnchorEl(null);
     setOpenDialog(true);
   };
+  const handleAssignmentMenuClick = () => {
+    setAnchorEl(null);
+    setOpenAssignmentDialog(true);
+  };
   const handleDialogClose = () => {
+    setSelectedRadio("");
     setOpenDialog(false);
+  };
+
+  const handleAssignmentDialogClose = () => {
+    setOpenAssignmentDialog(false);
   };
 
   // handling deletion of a section
@@ -203,6 +216,81 @@ export default function SectionMenu({ id, title }: Props) {
     }
   };
 
+  // Handle creation of assignment once 'create' button is clicked
+  const handleCreateAssignment = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const newAssignment = new FormData();
+    if (name.trim().length === 0) {
+      const notif: Notif = {
+        message: "File name cannot be empty",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+    if (file === null) {
+      const notif: Notif = {
+        message: "No file uploaded",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+    if (instructions == null) {
+      const notif: Notif = {
+        message: "Add instructions for the assignment.",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+
+    if (deadline == null) {
+      const notif: Notif = {
+        message: "Set a deadline for the assignment.",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+
+    const visibledet = visibleDate
+      ? visibleDate?.toDate().toISOString()
+      : new Date().toISOString();
+
+    const deadlinedet = deadline.toISOString();
+
+    newAssignment.append("name", name);
+    newAssignment.append("file", file as unknown as Blob, file?.name);
+    newAssignment.append("visibledate", visibledet);
+    newAssignment.append("deadline", deadlinedet);
+    newAssignment.append("instructions", instructions);
+    newAssignment.append("marks", marks);
+
+    try {
+      await dispatch(addAssignment(newAssignment, id));
+      const notif: Notif = {
+        type: "success",
+        message: "Assignment created.",
+      };
+      await dispatch(setNotification(notif, 5000));
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const notif: Notif = {
+          message: error.response?.data,
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
+    }
+  };
+
   const StyledButton = styled(Button)({
     textTransform: "none",
   });
@@ -273,7 +361,6 @@ export default function SectionMenu({ id, title }: Props) {
       },
     },
   }));
-  console.log(selectedRadio);
 
   return (
     <ThemeProvider theme={theme}>
@@ -305,11 +392,15 @@ export default function SectionMenu({ id, title }: Props) {
         >
           <MenuItem onClick={handleClose}>
             <EditIcon />
-            Edit Section
+            Section
           </MenuItem>
           <MenuItem onClick={handleMenuClick}>
             <AddIcon />
-            Create File
+            File
+          </MenuItem>
+          <MenuItem onClick={handleAssignmentMenuClick}>
+            <AddIcon />
+            Assignment
           </MenuItem>
 
           <Divider sx={{ my: 0.5 }} />
@@ -326,7 +417,7 @@ export default function SectionMenu({ id, title }: Props) {
         >
           <NewDialogTitle
             id="customized-dialog-title"
-            onClose={() => setOpenDialog(false)}
+            onClose={handleDialogClose}
           >
             Upload file
           </NewDialogTitle>
@@ -404,10 +495,101 @@ export default function SectionMenu({ id, title }: Props) {
             </LocalizationProvider>
           </DialogContent>
           <DialogActions>
-            <StyledButton onClick={() => setOpenDialog(false)}>
+            <StyledButton onClick={handleDialogClose}>Cancel</StyledButton>
+            <StyledButton onClick={handleCreate}>Create</StyledButton>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={openAssignmentDialog}
+          onClose={handleAssignmentDialogClose}
+          PaperProps={{ style: { backgroundColor: "black" } }}
+        >
+          <NewDialogTitle
+            id="customized-dialog-title"
+            onClose={handleAssignmentDialogClose}
+          >
+            Create an Assignment
+          </NewDialogTitle>
+          <DialogContent dividers>
+            <DialogContentText>
+              Create an assignment for your students here. You are uploading in{" "}
+              <b>{title}</b>.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Assignment Name"
+              type="text"
+              required={true}
+              onChange={({ target }) => setName(target.value)}
+              fullWidth
+              variant="standard"
+            />
+
+            <TextField
+              sx={{ mt: 3, mb: 2 }}
+              placeholder="Assignment Instructions (optional)"
+              multiline
+              onChange={({ target }) => setInstructions(target.value)}
+              fullWidth
+              rows={4}
+              maxRows={8}
+            />
+
+            <TextField
+              id="outlined-number"
+              label="Maximum score"
+              type="number"
+              onChange={({ target }) => setMarks(target.value)}
+              sx={{ mt: 2 }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+
+            <DialogContentText sx={{ mt: 2 }}>
+              Choose a file to upload onto our servers. Only PDF files are
+              accepted for now.
+            </DialogContentText>
+            <div className="mt-2 mb-6">
+              <input
+                type="file"
+                onChange={handleFileUpload}
+                accept=".pdf"
+                required
+              />
+            </div>
+            <div className="mb-2">
+              <DialogContentText sx={{ mb: 2 }}>
+                Set a date and time for this file to become visible for
+                students.
+              </DialogContentText>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  label="Assignment visible date"
+                  value={visibleDate}
+                  onChange={(newValue) => setVisibleDate(newValue)}
+                />
+              </LocalizationProvider>
+            </div>
+
+            <DialogContentText sx={{ mb: 2 }}>
+              Set a deadline for this assignment.
+            </DialogContentText>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="Assignment deadline"
+                value={deadline}
+                onChange={(newValue) => setDeadline(newValue)}
+              />
+            </LocalizationProvider>
+          </DialogContent>
+          <DialogActions>
+            <StyledButton onClick={() => setOpenAssignmentDialog(false)}>
               Cancel
             </StyledButton>
-            <StyledButton onClick={handleCreate}>Create</StyledButton>
+            <StyledButton onClick={handleCreateAssignment}>Create</StyledButton>
           </DialogActions>
         </Dialog>
       </div>

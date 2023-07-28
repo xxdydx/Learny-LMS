@@ -4,13 +4,13 @@ import NotifComponent from "@/app/components/NotifComponent";
 import { Typography } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import { useState } from "react";
-import { useAppDispatch } from "@/app/hooks";
-import { setNotification } from "@/app/reducers/notifReducer";
-import { NewUser, Notif, User } from "@/app/types";
-import courseService from "@/app/services/courses";
+import { useAppDispatch } from "@/hooks";
+import { setNotification } from "@/reducers/notifReducer";
+import { NewUser, Notif, User } from "@/types";
+import courseService from "@/services/courses";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
-import { useAuth } from "@/app/hooks";
+import { useAuth } from "@/hooks";
 import { useEffect } from "react";
 import LoadingPage from "@/app/components/LoadingPage";
 

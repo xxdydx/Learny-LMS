@@ -189,10 +189,12 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
               {
                 model: Section,
                 as: "sections",
+
                 include: [
                   {
                     model: File,
                     as: "files",
+                    required: false,
                     where: {
                       visibledate: {
                         [Op.lt]: new Date().toISOString(),
@@ -202,6 +204,7 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                   {
                     model: Assignment,
                     as: "assignments",
+                    required: false,
                     where: {
                       visibledate: {
                         [Op.lt]: new Date().toISOString(),

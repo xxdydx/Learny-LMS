@@ -1,10 +1,10 @@
 "use client";
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/hooks";
 import { useEffect } from "react";
-import { useAuth } from "@/app/hooks";
-import { useAppDispatch } from "@/app/hooks";
-import { initializeCourses } from "@/app/reducers/courseReducer";
+import { useAuth } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
+import { initializeCourses } from "@/reducers/courseReducer";
 import { useRouter } from "next/navigation";
 import LoadingPage from "@/app/components/LoadingPage";
 import NotifComponent from "@/app/components/NotifComponent";
@@ -21,8 +21,8 @@ import {
 } from "@mui/x-data-grid";
 import { useState } from "react";
 import { styled } from "@mui/material/styles";
-import courseService from "@/app/services/courses";
-import { Recording } from "@/app/types";
+import courseService from "@/services/courses";
+import { Recording } from "@/types";
 import LinkIcon from "@mui/icons-material/Link";
 
 const inter = Inter({ subsets: ["latin"] });

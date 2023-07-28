@@ -1,13 +1,10 @@
 "use client";
 
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/hooks";
 import { useEffect } from "react";
-import { useAuth } from "@/app/hooks";
-import { useAppDispatch } from "@/app/hooks";
-import {
-  deleteEnrollment,
-  initializeCourses,
-} from "@/app/reducers/courseReducer";
+import { useAuth } from "@/hooks";
+import { useAppDispatch } from "@/hooks";
+import { deleteEnrollment, initializeCourses } from "@/reducers/courseReducer";
 import { useRouter } from "next/navigation";
 import LoadingPage from "@/app/components/LoadingPage";
 import NotifComponent from "@/app/components/NotifComponent";
@@ -24,17 +21,17 @@ import {
 } from "@mui/x-data-grid";
 import AddNewStudentForm from "@/app/components/FormModal/AddNewStudent";
 import { useState } from "react";
-import { setNotification } from "@/app/reducers/notifReducer";
-import { Notif } from "@/app/types";
-import { updateCourse } from "@/app/reducers/courseReducer";
+import { setNotification } from "@/reducers/notifReducer";
+import { Notif } from "@/types";
+import { updateCourse } from "@/reducers/courseReducer";
 import axios, { AxiosError } from "axios";
-import { NewCourse } from "@/app/types";
+import { NewCourse } from "@/types";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Switch, { SwitchProps } from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import courseService from "@/app/services/courses";
-import { Recording } from "@/app/types";
+import courseService from "@/services/courses";
+import { Recording } from "@/types";
 import LinkIcon from "@mui/icons-material/Link";
 
 const inter = Inter({ subsets: ["latin"] });

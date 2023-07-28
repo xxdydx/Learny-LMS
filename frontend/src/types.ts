@@ -8,9 +8,16 @@ export interface File {
   visibledate: string;
 }
 
+export interface Assignment extends File {
+  deadline: string;
+  marks: number;
+  instructions: string;
+}
+
 export interface Section {
   title: string;
   files: File[];
+  assignments: Assignment[];
   id: number;
 }
 

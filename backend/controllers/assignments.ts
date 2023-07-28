@@ -1,5 +1,12 @@
 import express from "express";
-import { Section, File, Chapter, Assignment, Submission } from "../models";
+import {
+  Section,
+  File,
+  Chapter,
+  Assignment,
+  Submission,
+  Enrollment,
+} from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
@@ -7,6 +14,7 @@ import AWS from "aws-sdk";
 import dotenv from "dotenv";
 const multer = require("multer");
 import getUpdatedCourse from "../utils/getUpdatedCourse";
+import { Op } from "sequelize";
 
 const router = express.Router();
 dotenv.config();
@@ -22,6 +30,49 @@ const s3 = new AWS.S3();
 // configure multer
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+
+router.get("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(404).send("You need to be logged in");
+  }
+  const assignment = await Assignment.findByPk(req.params.id);
+  if (!assignment) {
+    return res.status(404).send("Assignment not found");
+  }
+  let section = await Section.findByPk(assignment?.sectionId);
+  if (!section) {
+    return res.status(404).send("Section not found");
+  }
+  let chapter = await Chapter.findByPk(section?.chapterId);
+  let course = await Course.findByPk(chapter?.courseId);
+  if (!course) {
+    return res.status(404).send("Course missing.");
+  }
+  // check if user has permissions to access the assignment
+  if (user.role === "student") {
+    const check = await Enrollment.findOne({
+      where: {
+        userId: {
+          [Op.eq]: user.id,
+        },
+        courseId: {
+          [Op.eq]: course.id,
+        },
+      },
+    });
+    if (!check) {
+      return res.status(403).send("No permissions to view assignment.");
+    }
+  }
+  if (user.role === "teacher") {
+    if (user.id !== course.teacherId) {
+      return res.status(403).send("No permissions to view assignment.");
+    }
+  }
+
+  return res.json(assignment);
+});
 
 // allowing students to submit their work to assignment
 router.post(
@@ -48,6 +99,28 @@ router.post(
     let course = await Course.findByPk(chapter?.courseId);
     if (!course) {
       return res.status(404).send("Course missing.");
+    }
+    if (user.role !== "student") {
+      return res
+        .status(403)
+        .send("Only students can submit work to assignments.");
+    }
+
+    // check if user has permissions to access the assignment
+    if (user.role === "student") {
+      const check = await Enrollment.findOne({
+        where: {
+          studentId: {
+            [Op.eq]: user.id,
+          },
+          courseId: {
+            [Op.eq]: course.id,
+          },
+        },
+      });
+      if (!check) {
+        return res.status(403).send("No permissions to submit to assignment.");
+      }
     }
 
     // check if current date & time is earlier than the deadline for submission

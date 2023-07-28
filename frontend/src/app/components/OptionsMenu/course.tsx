@@ -12,13 +12,13 @@ import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
-import { deleteCourse, updateCourse } from "@/app/reducers/courseReducer";
-import { useAppDispatch } from "@/app/hooks";
+import { deleteCourse, updateCourse } from "@/reducers/courseReducer";
+import { useAppDispatch } from "@/hooks";
 import { useRouter } from "next/navigation";
-import { setNotification } from "@/app/reducers/notifReducer";
-import { Notif } from "@/app/types";
+import { setNotification } from "@/reducers/notifReducer";
+import { Notif } from "@/types";
 import { AxiosError } from "axios";
-import { NewCourse } from "@/app/types";
+import { NewCourse } from "@/types";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Button,

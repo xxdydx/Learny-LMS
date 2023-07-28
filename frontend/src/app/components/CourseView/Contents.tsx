@@ -1,7 +1,7 @@
 "use client";
 import { Link, List, ListItem } from "@mui/material";
 import { useState } from "react";
-import { Course } from "@/app/types";
+import { Course } from "@/types";
 
 /**
  * MenuInteractiveColumn :

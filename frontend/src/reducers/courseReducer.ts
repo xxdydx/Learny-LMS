@@ -178,4 +178,14 @@ export const deleteEnrollment = (
   };
 };
 
+export const addAssignment = (
+  file: FormData,
+  sxnId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.createAssignment(file, sxnId);
+    dispatch(edit(newCourse));
+  };
+};
+
 export default courseSlice.reducer;

@@ -15,10 +15,10 @@ import MenuItem from "@mui/material/MenuItem";
 import SchoolIcon from "@mui/icons-material/School";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { deepPurple } from "@mui/material/colors";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
+import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useRouter } from "next/navigation";
-import { setUser } from "@/app/reducers/userReducer";
-import { UserIdentifier } from "@/app/types";
+import { setUser } from "@/reducers/userReducer";
+import { UserIdentifier } from "@/types";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });

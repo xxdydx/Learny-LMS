@@ -11,18 +11,18 @@ import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
-import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import courseService from "@/app/services/courses";
+import { useAppDispatch, useAppSelector } from "@/hooks";
+import courseService from "@/services/courses";
 import { useState } from "react";
-import { Chapter, Course, NewCourse } from "@/app/types";
-import { createCourse } from "@/app/reducers/courseReducer";
+import { Chapter, Course, NewCourse } from "@/types";
+import { createCourse } from "@/reducers/courseReducer";
 import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
-import { NewChapter } from "@/app/types";
-import { addChapter } from "@/app/reducers/courseReducer";
+import { NewChapter } from "@/types";
+import { addChapter } from "@/reducers/courseReducer";
 import AddIcon from "@mui/icons-material/Add";
-import { setNotification } from "@/app/reducers/notifReducer";
-import { Notif } from "@/app/types";
+import { setNotification } from "@/reducers/notifReducer";
+import { Notif } from "@/types";
 
 const inter = Inter({ subsets: ["latin"] });
 interface Props {

@@ -6,12 +6,12 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Course } from "@/app/types";
+import { Course } from "@/types";
 import { CardHeader, ThemeProvider, createTheme } from "@mui/material";
 import { Inter } from "next/font/google";
 import { styled } from "@mui/material";
 import CourseMenu from "../OptionsMenu/course";
-import { useAppSelector } from "@/app/hooks";
+import { useAppSelector } from "@/hooks";
 
 interface Props {
   course: Course;

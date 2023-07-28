@@ -224,6 +224,28 @@ const directSignUp = async (courseId: string, user: NewUser) => {
   return data;
 };
 
+const getAssignment = async (id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.get(`${apiBaseUrl}/assignments/${id}`, config);
+
+  return data;
+};
+
+const createAssignment = async (file: FormData, sxnId: number) => {
+  const config = {
+    headers: { Authorization: token, "Content-Type": "multipart/form-data" },
+  };
+
+  const { data } = await axios.post(
+    `${apiBaseUrl}/sections/${sxnId}/assignments`,
+    file,
+    config
+  );
+  return data;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getAll,
@@ -246,4 +268,6 @@ export default {
   getAllZoomRecordings,
   syncZoomRecordings,
   directSignUp,
+  getAssignment,
+  createAssignment,
 };

@@ -189,6 +189,7 @@ router.post(
         awskey: awskey,
         visibledate: req.body.visibledate,
         deadline: req.body.deadline,
+        instructions: req.body.instructions,
         marks: req.body.marks,
       });
 

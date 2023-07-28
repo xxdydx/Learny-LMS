@@ -3,8 +3,8 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAppSelector } from "../hooks";
-import { Notif } from "../types";
+import { useAppSelector } from "../../hooks";
+import { Notif } from "../../types";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(

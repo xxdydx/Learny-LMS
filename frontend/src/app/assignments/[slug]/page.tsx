@@ -18,6 +18,9 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import axios from "axios";
+import { Assignment } from "@/types";
+import courseService from "@/services/courses";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const router = useRouter();
@@ -26,6 +29,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   // abstracted GET users and courses into a hook
   const [isLoading, user] = useAuth();
   const [open, setOpen] = useState(true);
+  const [assignment, setAssignment] = useState<Assignment | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -38,6 +42,11 @@ export default function MyPage({ params }: { params: { slug: string } }) {
       router.push("/login");
     }
   }, [isLoading, user]);
+  useEffect(() => {
+    courseService
+      .getAssignment(parseInt(params.slug))
+      .then((response) => setAssignment(response));
+  });
 
   // if page is loading and no user => redirect to loading page
   if (isLoading || !user) {
@@ -46,11 +55,6 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   if (!Array.isArray(courses)) {
     // handle error or return null
     return null;
-  }
-
-  let course = courses.find((course) => course.id === parseInt(params.slug));
-  if (course === undefined) {
-    return <main className="bg-bg min-h-screen"></main>;
   }
 
   const sortChapterFunc = (a: Chapter, b: Chapter) => {
@@ -63,7 +67,9 @@ export default function MyPage({ params }: { params: { slug: string } }) {
       return 0;
     }
   };
-  console.log(course);
+  if (assignment === null || assignment == undefined) {
+    return <main className="bg-bg min-h-screen"></main>;
+  }
 
   return (
     <div className="dark">
@@ -74,52 +80,31 @@ export default function MyPage({ params }: { params: { slug: string } }) {
             <div className="flex-grow mx-4">
               <div className="bg-white dark:bg-bg min-h-screen">
                 <div className=" w-full lg:max-w-6xl">
-                  <div className="flex justify-between mx-auto ">
-                    <h1 className="mb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
-                      {course.title}
+                  <div className="flex flex-col mx-auto mb-12 ">
+                    <h1 className="mb-2 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
+                      {assignment?.name}
                     </h1>
-
-                    <div className="flex flex-row">
-                      <Tooltip title="Recordings" placement="top">
-                        <div>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              window.location.href = `/courses/${course?.id}/recordings`;
-                            }}
-                            className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
-                          >
-                            <PlayCircleIcon />
-                          </button>
-                        </div>
-                      </Tooltip>
-
-                      {user?.role === "teacher" ? (
-                        <>
-                          <Tooltip title="Add Chapter" placement="top">
-                            <NewChapterForm courseId={course.id} />
-                          </Tooltip>
-                          <Tooltip title="Course Settings" placement="top">
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  window.location.href = `/courses/${course?.id}/settings`;
-                                }}
-                                className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
-                              >
-                                <SettingsIcon />
-                              </button>
-                            </div>
-                          </Tooltip>
-                        </>
-                      ) : null}
-                    </div>
+                    <h2 className="text-lg tracking-tight text-gray-900 dark:text-white">
+                      Assigned deadline:{" "}
+                      {new Date(assignment.deadline)
+                        .toLocaleString("en-GB", {
+                          timeZone: "Asia/Singapore",
+                        })
+                        .slice(0, -3)}
+                    </h2>
+                    <h2 className="text-lg tracking-tight text-gray-900 dark:text-white">
+                      Maximum score: {assignment.marks}
+                    </h2>
                   </div>
 
-                  {[...course.chapters].sort(sortChapterFunc).map((chapter) => (
-                    <ChapterView key={chapter.id} chapter={chapter} />
-                  ))}
+                  <h2 className="mb-3 text-2xl tracking-tight font-semibold text-gray-900 dark:text-white">
+                    <u>Instructions</u>
+                  </h2>
+                  <p className="text-base mb-4 dark:text-text">
+                    {assignment?.instructions
+                      ? assignment.instructions
+                      : "No instructions given."}
+                  </p>
                 </div>
               </div>
             </div>

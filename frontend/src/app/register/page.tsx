@@ -1,8 +1,8 @@
 "use client";
 
 import SignUp from "../components/SignUp";
-import { useAuth } from "../hooks";
-import { useAppDispatch } from "../hooks";
+import { useAuth } from "../../hooks";
+import { useAppDispatch } from "../../hooks";
 import { useRouter } from "next/navigation";
 import LoadingPage from "../components/LoadingPage";
 import { useEffect } from "react";

@@ -2,18 +2,21 @@
 
 import { Typography } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
-import loginService from "../services/login";
-import courseService from "../services/courses";
+import loginService from "../../services/login";
+import courseService from "../../services/courses";
 import Link from "@mui/material";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import userReducer, { initializeUsers, setUser } from "../reducers/userReducer";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import userReducer, {
+  initializeUsers,
+  setUser,
+} from "../../reducers/userReducer";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
-import { useAuth } from "../hooks";
+import { useAuth } from "../../hooks";
 import LoadingPage from "../components/LoadingPage";
-import { setNotification } from "../reducers/notifReducer";
-import { Notif } from "../types";
+import { setNotification } from "../../reducers/notifReducer";
+import { Notif } from "../../types";
 import NotifComponent from "../components/NotifComponent";
 import { Inter } from "next/font/google";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
