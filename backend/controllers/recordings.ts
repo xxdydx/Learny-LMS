@@ -8,8 +8,8 @@ import getUpdatedCourse from "../utils/getUpdatedCourse";
 import axios from "axios";
 import Recording from "../models/recording";
 
-const client_id = "W52xPeVSToSqXwW4jbZglg";
-const client_secret = "uY4Qz9S0YjinrjFjUGS2bIUti2Y2ROh5";
+const client_id = process.env.ZOOM_CLIENT_ID;
+const client_secret = process.env.ZOOM_CLIENT_SECRET;
 const secret = Buffer.from(client_id + ":" + client_secret).toString("base64");
 
 const router = express.Router();

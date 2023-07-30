@@ -35,16 +35,17 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
           {
             model: Section,
             as: "sections",
-
             include: [
               {
                 model: File,
+                required: false,
                 as: "files",
                 attributes: ["name", "id", "link", "awskey", "visibledate"],
               },
               {
                 model: Assignment,
                 as: "assignments",
+                required: false,
                 attributes: [
                   "name",
                   "id",
@@ -58,6 +59,14 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
                   {
                     model: Submission,
                     as: "submissions",
+                    required: false,
+                    include: [
+                      {
+                        model: User,
+                        as: "student",
+                        attributes: ["name", "username", "id", "email", "role"],
+                      },
+                    ],
                   },
                 ],
               },

@@ -12,6 +12,23 @@ export interface Assignment extends File {
   deadline: string;
   marks: number;
   instructions: string;
+  submissions: Submission[];
+}
+
+export interface Submission {
+  id: number;
+  submittedLink: string;
+  markedLink?: string;
+  submittedAwsKey: string;
+  markedAwsKey?: string;
+  score?: number;
+  grade?: string;
+  comments?: string;
+  studentId: number;
+  student: User;
+  createdAt: string;
+  student_name?: string;
+  marked?: boolean;
 }
 
 export interface Section {

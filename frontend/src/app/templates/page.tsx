@@ -1,14 +1,14 @@
 "use client";
-import NavigationBar from "../components/NavigationBar";
-import CourseCard from "../components/CourseCard";
+import NavigationBar from "../../components/NavigationBar";
+import CourseCard from "../../components/CourseCard";
 import { initializeCourses } from "../../reducers/courseReducer";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import { useRouter } from "next/navigation";
-import LoadingPage from "../components/LoadingPage";
+import LoadingPage from "../../components/LoadingPage";
 import { useAuth } from "../../hooks";
-import NewCourseForm from "../components/FormModal/NewCourseForm";
-import NotifComponent from "../components/NotifComponent";
+import NewCourseForm from "../../components/FormModal/NewCourseForm";
+import NotifComponent from "../../components/NotifComponent";
 
 export default function MyPage() {
   // abstracted GET users and courses into a hook

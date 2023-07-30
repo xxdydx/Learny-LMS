@@ -13,7 +13,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
 import Divider from "@mui/material/Divider";
-import { Chapter, Section, File } from "../../../types";
+import { Chapter, Section, File } from "../../types";
 import ChapterMenu from "../OptionsMenu/chapter";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import IconButton from "@mui/material/IconButton/IconButton";
@@ -24,7 +24,7 @@ import Typography from "@mui/material/Typography/Typography";
 import { link } from "fs";
 import FileMenu from "../OptionsMenu/file";
 import PushPinIcon from "@mui/icons-material/PushPin";
-import { Assignment } from "../../../types";
+import { Assignment } from "../../types";
 
 const inter = Inter({ subsets: ["latin"] });
 

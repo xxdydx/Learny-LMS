@@ -1,6 +1,6 @@
 "use client";
 
-import NotifComponent from "@/app/components/NotifComponent";
+import NotifComponent from "@/components/NotifComponent";
 import { Typography } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { useAuth } from "@/hooks";
 import { useEffect } from "react";
-import LoadingPage from "@/app/components/LoadingPage";
+import LoadingPage from "@/components/LoadingPage";
 
 export default function MyPage({ params }: { params: { slug: string } }) {
   const course = params.slug;

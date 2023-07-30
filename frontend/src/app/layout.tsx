@@ -4,7 +4,7 @@ import { Providers } from "../provider";
 import { useAuth } from "../hooks";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import LoadingPage from "./components/LoadingPage";
+import LoadingPage from "../components/LoadingPage";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata = {

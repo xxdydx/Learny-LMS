@@ -1,9 +1,9 @@
 "use client";
 
-import ChapterView from "../components/CourseView/ChapterView";
-import Contents from "../components/CourseView/Contents";
-import NavigationBar from "../components/NavigationBar";
-import CourseCard from "../components/CourseCard";
+import ChapterView from "../../components/CourseView/ChapterView";
+import Contents from "../../components/CourseView/Contents";
+import NavigationBar from "../../components/NavigationBar";
+import CourseCard from "../../components/CourseCard";
 import { initializeCourses } from "../../reducers/courseReducer";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -14,10 +14,10 @@ import { useAppDispatch, useAppSelector } from "../../hooks";
 import { initializeUsers } from "../../reducers/userReducer";
 import { UserIdentifier, Course } from "../../types";
 import { useRouter } from "next/navigation";
-import LoadingPage from "../components/LoadingPage";
+import LoadingPage from "../../components/LoadingPage";
 import { useAuth } from "../../hooks";
-import NewCourseForm from "../components/FormModal/NewCourseForm";
-import NotifComponent from "../components/NotifComponent";
+import NewCourseForm from "../../components/FormModal/NewCourseForm";
+import NotifComponent from "../../components/NotifComponent";
 import { Box, Collapse, Alert, IconButton, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";

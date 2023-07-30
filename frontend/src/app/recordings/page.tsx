@@ -6,9 +6,9 @@ import { useAuth } from "@/hooks";
 import { useAppDispatch } from "@/hooks";
 import { deleteEnrollment, initializeCourses } from "@/reducers/courseReducer";
 import { useRouter } from "next/navigation";
-import LoadingPage from "@/app/components/LoadingPage";
-import NotifComponent from "@/app/components/NotifComponent";
-import NavigationBar from "@/app/components/NavigationBar";
+import LoadingPage from "@/components/LoadingPage";
+import NotifComponent from "@/components/NotifComponent";
+import NavigationBar from "@/components/NavigationBar";
 import TextField from "@mui/material/TextField";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
@@ -19,7 +19,7 @@ import {
   GridActionsCellItem,
   GridRowId,
 } from "@mui/x-data-grid";
-import AddNewStudentForm from "@/app/components/FormModal/AddNewStudent";
+import AddNewStudentForm from "@/components/FormModal/AddNewStudent";
 import { useState } from "react";
 import { setNotification } from "@/reducers/notifReducer";
 import { Notif } from "@/types";

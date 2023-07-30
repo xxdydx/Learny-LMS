@@ -1,19 +1,19 @@
 "use client";
 
-import ChapterView from "../../components/CourseView/ChapterView";
-import Contents from "../../components/CourseView/Contents";
-import NavigationBar from "../../components/NavigationBar";
+import ChapterView from "../../../components/CourseView/ChapterView";
+import Contents from "../../../components/CourseView/Contents";
+import NavigationBar from "../../../components/NavigationBar";
 import { useEffect, useState } from "react";
 import { initializeCourses } from "@/reducers/courseReducer";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
-import LoadingPage from "@/app/components/LoadingPage";
+import LoadingPage from "@/components/LoadingPage";
 import styled from "@mui/material/styles/styled";
-import NewCourseForm from "@/app/components/FormModal/NewCourseForm";
+import NewCourseForm from "@/components/FormModal/NewCourseForm";
 import { Chapter, NewChapter } from "@/types";
-import NewChapterForm from "@/app/components/FormModal/NewChapterForm";
-import NotifComponent from "@/app/components/NotifComponent";
+import NewChapterForm from "@/components/FormModal/NewChapterForm";
+import NotifComponent from "@/components/NotifComponent";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Tooltip } from "@mui/material";
@@ -63,7 +63,6 @@ export default function MyPage({ params }: { params: { slug: string } }) {
       return 0;
     }
   };
-  console.log(course);
 
   return (
     <div className="dark">

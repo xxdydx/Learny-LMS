@@ -118,6 +118,20 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                       {
                         model: Submission,
                         as: "submissions",
+                        required: false,
+                        include: [
+                          {
+                            model: User,
+                            as: "student",
+                            attributes: [
+                              "name",
+                              "username",
+                              "id",
+                              "email",
+                              "role",
+                            ],
+                          },
+                        ],
                       },
                     ],
                   },
@@ -146,6 +160,14 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             { model: Chapter, as: "chapters" },
             { model: Section, as: "sections" },
             { model: Assignment, as: "assignments" },
+            "createdAt",
+            "ASC",
+          ],
+          [
+            { model: Chapter, as: "chapters" },
+            { model: Section, as: "sections" },
+            { model: Assignment, as: "assignments" },
+            { model: Submission, as: "submissions" },
             "createdAt",
             "ASC",
           ],
@@ -210,6 +232,31 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
                         [Op.lt]: new Date().toISOString(),
                       },
                     },
+                    include: [
+                      {
+                        model: Submission,
+                        as: "submissions",
+                        required: false,
+                        where: {
+                          studentId: {
+                            [Op.eq]: user.id,
+                          },
+                        },
+                        include: [
+                          {
+                            model: User,
+                            as: "student",
+                            attributes: [
+                              "name",
+                              "username",
+                              "id",
+                              "email",
+                              "role",
+                            ],
+                          },
+                        ],
+                      },
+                    ],
                   },
                 ],
               },

@@ -14,10 +14,10 @@ import userReducer, {
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { useAuth } from "../../hooks";
-import LoadingPage from "../components/LoadingPage";
+import LoadingPage from "../../components/LoadingPage";
 import { setNotification } from "../../reducers/notifReducer";
 import { Notif } from "../../types";
-import NotifComponent from "../components/NotifComponent";
+import NotifComponent from "../../components/NotifComponent";
 import { Inter } from "next/font/google";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { deepPurple } from "@mui/material/colors";

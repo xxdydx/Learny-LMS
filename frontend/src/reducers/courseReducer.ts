@@ -188,4 +188,24 @@ export const addAssignment = (
   };
 };
 
+export const submitToAssignment = (
+  file: FormData,
+  assignmentId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.submitAssignment(file, assignmentId);
+    dispatch(edit(newCourse));
+  };
+};
+
+export const gradeAssignment = (
+  file: FormData,
+  submissionId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.gradeAssignment(file, submissionId);
+    dispatch(edit(newCourse));
+  };
+};
+
 export default courseSlice.reducer;

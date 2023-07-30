@@ -246,6 +246,32 @@ const createAssignment = async (file: FormData, sxnId: number) => {
   return data;
 };
 
+const submitAssignment = async (file: FormData, assignmentId: number) => {
+  const config = {
+    headers: { Authorization: token, "Content-Type": "multipart/form-data" },
+  };
+
+  const { data } = await axios.post(
+    `${apiBaseUrl}/assignments/${assignmentId}/submissions`,
+    file,
+    config
+  );
+  return data;
+};
+
+const gradeAssignment = async (file: FormData, submissionId: number) => {
+  const config = {
+    headers: { Authorization: token, "Content-Type": "multipart/form-data" },
+  };
+
+  const { data } = await axios.put(
+    `${apiBaseUrl}/submissions/${submissionId}/grade`,
+    file,
+    config
+  );
+  return data;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getAll,
@@ -270,4 +296,6 @@ export default {
   directSignUp,
   getAssignment,
   createAssignment,
+  submitAssignment,
+  gradeAssignment,
 };

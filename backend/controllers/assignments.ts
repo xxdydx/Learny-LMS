@@ -6,6 +6,7 @@ import {
   Assignment,
   Submission,
   Enrollment,
+  User,
 } from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
@@ -36,7 +37,45 @@ router.get("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   if (!user) {
     return res.status(404).send("You need to be logged in");
   }
-  const assignment = await Assignment.findByPk(req.params.id);
+  const assignment =
+    user.role === "student"
+      ? await Assignment.findByPk(req.params.id, {
+          include: [
+            {
+              model: Submission,
+              as: "submissions",
+              required: false,
+              where: {
+                studentId: {
+                  [Op.eq]: user.id,
+                },
+              },
+              include: [
+                {
+                  model: User,
+                  as: "student",
+                  attributes: ["name", "username", "id", "email", "role"],
+                },
+              ],
+            },
+          ],
+        })
+      : await Assignment.findByPk(req.params.id, {
+          include: [
+            {
+              model: Submission,
+              as: "submissions",
+              required: false,
+              include: [
+                {
+                  model: User,
+                  as: "student",
+                  attributes: ["name", "username", "id", "email", "role"],
+                },
+              ],
+            },
+          ],
+        });
   if (!assignment) {
     return res.status(404).send("Assignment not found");
   }
@@ -110,7 +149,7 @@ router.post(
     if (user.role === "student") {
       const check = await Enrollment.findOne({
         where: {
-          studentId: {
+          userId: {
             [Op.eq]: user.id,
           },
           courseId: {
@@ -181,5 +220,49 @@ router.post(
     }
   }
 );
+
+router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user; // to figure out details about the user (e.g. his token)
+  if (!user) {
+    return res.status(404).send("You need to be logged in");
+  }
+  try {
+    let assignment = await Assignment.findByPk(req.params.id);
+    if (!assignment) {
+      return res.status(404).send("Assignment not found");
+    }
+    let section = await Section.findByPk(assignment?.sectionId);
+    let chapter = await Chapter.findByPk(section?.chapterId);
+    let course = await Course.findByPk(chapter?.courseId);
+
+    // check if user has permissions to delete assignment, only creator of the course can delete the assignment
+    if (user.id.toString() !== course?.teacherId.toString()) {
+      return res
+        .status(403)
+        .send(`You don't have permissions to delete this assignment`);
+    }
+
+    // deleting the file on AWS S3 bucket first
+    const params = {
+      Bucket: process.env.AWS_BUCKET_NAME ? process.env.AWS_BUCKET_NAME : "",
+      Key: assignment.awskey,
+    };
+
+    s3.deleteObject(params, function (err, data) {});
+
+    // then delete assignment on database
+    await assignment.destroy();
+
+    // Display the edited course after the chapter is deleted
+
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
+    return res.json(editedCourse);
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;

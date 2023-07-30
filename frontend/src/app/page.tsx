@@ -1,11 +1,11 @@
 "use client";
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import Header from "./components/HomePageScreenshots/Components/header";
-import Hero from "./components/HomePageScreenshots/Components/hero";
-import Features from "./components/HomePageScreenshots/Components/features";
-import CTA from "./components/HomePageScreenshots/Components/cta";
-import Footer from "./components/HomePageScreenshots/Components/footer";
+import Header from "@/components/HomePage/Components/header";
+import Hero from "@/components/HomePage/Components/hero";
+import Features from "@/components/HomePage/Components/features";
+import CTA from "@/components/HomePage/Components/cta";
+import Footer from "@/components/HomePage/Components/footer";
 
 const theme = createTheme({
   palette: {
