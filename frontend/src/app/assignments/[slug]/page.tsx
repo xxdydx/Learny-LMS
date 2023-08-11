@@ -336,17 +336,17 @@ export default function MyPage({ params }: { params: { slug: string } }) {
 
   const checkAssignmentSubmit = (): boolean => {
     const todayDate = new Date();
+
     if (todayDate > new Date(assignment.deadline)) {
-      return false;
+      return true;
     }
     const submissionsWithName = submissions.filter(
       (submission) => submission.student_name === user.name
     );
     if (submissionsWithName.length > 1) {
-      return false;
-    } else {
       return true;
     }
+    return false;
   };
 
   const handleCreate = async (event: React.FormEvent) => {

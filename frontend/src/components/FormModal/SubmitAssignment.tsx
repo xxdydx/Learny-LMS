@@ -151,7 +151,7 @@ export default function SubmitAssignmentForm({
           type="button"
           onClick={handleClickOpen}
           disabled={checkAssignmentSubmit}
-          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+          className="text-white text-heading-4 font-semibold bg-[#ff4081] disabled:cursor-not-allowed hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
         >
           Submit to assignment
         </button>
