@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "dev": "ts-node-dev index.ts",
-    "start": "ts-node index.ts",
+    "start": " node --max_old_space_size=8192 -r ts-node/register ./index.ts",
     "deploy": "flyctl deploy"
   },
   "repository": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/xxdydx/Learning-Management-System#readme",
   "dependencies": {
+    "@sendgrid/mail": "^7.7.0",
     "@types/axios": "^0.14.0",
     "@types/bcryptjs": "^2.4.2",
     "aws-sdk": "^2.1383.0",
@@ -33,6 +34,7 @@
     "jsonwebtoken": "^9.0.0",
     "multer": "^1.4.5-lts.1",
     "next": "^13.4.4",
+    "node-schedule": "^2.1.1",
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
@@ -46,6 +48,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/multer": "^1.4.7",
     "@types/node": "^18.15.11",
+    "@types/node-schedule": "^2.1.0",
     "@types/validator": "^13.7.14",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
