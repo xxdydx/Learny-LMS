@@ -24,6 +24,10 @@ import Typography from "@mui/material/Typography/Typography";
 import { link } from "fs";
 import FileMenu from "../OptionsMenu/file";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import WatchLaterIcon from "@mui/icons-material/WatchLater";
+import { Tooltip } from "@mui/material";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Assignment } from "../../types";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -53,7 +57,17 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
         <Divider light />
         <div className="flex justify mr-4">
           <ListItemButton sx={{ pl: 4 }} onClick={() => window.open(file.link)}>
-            <ListItemText primary={file.name} className="dark:text-text" />
+            <ListItemText primary={file?.name} className="dark:text-text" />
+            {file?.visibledate > new Date().toISOString() && (
+              <div className="mr-2">
+                <Tooltip title="Scheduled file" placement="top">
+                  <WatchLaterIcon sx={{ color: "white" }} />
+                </Tooltip>
+              </div>
+            )}
+            <Tooltip title="File" placement="top">
+              <AttachFileIcon sx={{ color: "white" }} />
+            </Tooltip>
           </ListItemButton>
           {user?.role === "teacher" && <FileMenu id={file.id} file={file} />}
         </div>
@@ -83,7 +97,18 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
               primary={assignment.name}
               className="dark:text-text"
             />
+            {assignment?.visibledate > new Date().toISOString() && (
+              <div className="mr-2">
+                <Tooltip title="Scheduled assignment" placement="top">
+                  <WatchLaterIcon sx={{ color: "white" }} />
+                </Tooltip>
+              </div>
+            )}
+            <Tooltip title="Assignment" placement="top">
+              <AssignmentIcon sx={{ color: "white" }} />
+            </Tooltip>
           </ListItemButton>
+
           {user?.role === "teacher" && (
             <FileMenu id={assignment.id} file={assignment} />
           )}

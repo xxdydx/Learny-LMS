@@ -8,6 +8,8 @@ import { Course } from "@/types";
  * @description
  */
 
+// Unused component
+
 interface Props {
   course: Course;
 }
