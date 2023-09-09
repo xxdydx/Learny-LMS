@@ -1,5 +1,12 @@
 import express from "express";
-import { Section, File, Chapter, Assignment, Submission } from "../models";
+import {
+  Section,
+  File,
+  Chapter,
+  Assignment,
+  Submission,
+  User,
+} from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
@@ -7,6 +14,7 @@ import AWS from "aws-sdk";
 import dotenv from "dotenv";
 const multer = require("multer");
 import getUpdatedCourse from "../utils/getUpdatedCourse";
+import { markedSubmissionNotif } from "../utils/emails/notification/marked_submission";
 
 const router = express.Router();
 dotenv.config();
@@ -41,6 +49,11 @@ router.put(
     if (!submission) {
       return res.status(404).send("Assignment not found");
     }
+    let student = await User.findByPk(submission?.studentId);
+    if (!student) {
+      return res.status(404).send("Student not found");
+    }
+
     let assignment = await Assignment.findByPk(submission?.assignmentId);
     if (!assignment) {
       return res.status(404).send("Section not found");
@@ -100,6 +113,14 @@ router.put(
 
       submission.set(markedSubmission);
       await submission.save();
+      markedSubmissionNotif(
+        student.email,
+        student.name,
+        assignment.name,
+        course.title,
+        assignment.id
+      );
+
       const editedCourse = await getUpdatedCourse(course.id);
       if (!editedCourse) {
         return res.status(404).send("Course not found");

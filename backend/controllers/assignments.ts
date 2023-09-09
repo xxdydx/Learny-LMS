@@ -16,6 +16,7 @@ import dotenv from "dotenv";
 const multer = require("multer");
 import getUpdatedCourse from "../utils/getUpdatedCourse";
 import { Op } from "sequelize";
+import { assignmentSubmission } from "../utils/emails/notification/assignment_submission";
 
 const router = express.Router();
 dotenv.config();
@@ -88,6 +89,7 @@ router.get("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   if (!course) {
     return res.status(404).send("Course missing.");
   }
+
   // check if user has permissions to access the assignment
   if (user.role === "student") {
     const check = await Enrollment.findOne({
@@ -143,6 +145,12 @@ router.post(
       return res
         .status(403)
         .send("Only students can submit work to assignments.");
+    }
+    let teacher = await User.findByPk(course.teacherId);
+    if (!teacher) {
+      return res
+        .status(404)
+        .send("Unknown error. Contact support. (Missing teacher to course)");
     }
 
     // check if user has permissions to access the assignment
@@ -208,6 +216,16 @@ router.post(
         assignmentId: assignment.id,
         submittedAwsKey: awskey,
       });
+
+      // send email to student to notify that submission has been recorded
+      assignmentSubmission(
+        user.email,
+        user.name,
+        teacher?.email,
+        teacher?.name,
+        assignment.name,
+        course.title
+      );
 
       const editedCourse = await getUpdatedCourse(course.id);
       if (!editedCourse) {

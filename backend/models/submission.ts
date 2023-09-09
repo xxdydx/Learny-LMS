@@ -8,6 +8,7 @@ class Submission extends Model {
   public link!: string;
   public awskey!: string;
   public assignmentId!: number;
+  public studentId!: number;
 }
 
 Submission.init(

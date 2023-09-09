@@ -16,6 +16,7 @@
     "@mui/material": "^5.11.15",
     "@mui/x-data-grid": "^6.4.0",
     "@mui/x-date-pickers": "^6.5.0",
+    "@next/bundle-analyzer": "^13.4.19",
     "@next/font": "^13.2.4",
     "@reduxjs/toolkit": "^1.9.3",
     "@types/node": "18.15.10",

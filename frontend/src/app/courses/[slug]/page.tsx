@@ -73,12 +73,12 @@ export default function MyPage({ params }: { params: { slug: string } }) {
             <div className="flex-grow mx-4">
               <div className="bg-white dark:bg-bg min-h-screen">
                 <div className=" w-full lg:max-w-6xl">
-                  <div className="flex justify-between mx-auto ">
-                    <h1 className="mb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
+                  <div className="flex flex-col justify-between md:flex-row mx-auto">
+                    <h1 className="mb-4 md:mb-12 text-4xl text-clip overflow-hidden tracking-tight font-semibold text-gray-900 dark:text-white ">
                       {course.title}
                     </h1>
 
-                    <div className="flex flex-row">
+                    <div className="flex flex-row mb-8 md:mb-0">
                       <Tooltip title="Recordings" placement="top">
                         <div>
                           <button
