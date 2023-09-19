@@ -60,7 +60,14 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
             <ListItemText primary={file?.name} className="dark:text-text" />
             {file?.visibledate > new Date().toISOString() && (
               <div className="mr-2">
-                <Tooltip title="Scheduled file" placement="top">
+                <Tooltip
+                  title={`Scheduled on ${new Date(file.visibledate)
+                    .toLocaleString("en-GB", {
+                      timeZone: "Asia/Singapore",
+                    })
+                    .slice(0, -3)}`}
+                  placement="top"
+                >
                   <WatchLaterIcon sx={{ color: "white" }} />
                 </Tooltip>
               </div>
@@ -99,7 +106,14 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
             />
             {assignment?.visibledate > new Date().toISOString() && (
               <div className="mr-2">
-                <Tooltip title="Scheduled assignment" placement="top">
+                <Tooltip
+                  title={`Scheduled on ${new Date(assignment.visibledate)
+                    .toLocaleString("en-GB", {
+                      timeZone: "Asia/Singapore",
+                    })
+                    .slice(0, -3)}`}
+                  placement="top"
+                >
                   <WatchLaterIcon sx={{ color: "white" }} />
                 </Tooltip>
               </div>

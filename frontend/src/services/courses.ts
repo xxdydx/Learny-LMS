@@ -224,6 +224,12 @@ const directSignUp = async (courseId: string, user: NewUser) => {
   return data;
 };
 
+const userSignUp = async (user: NewUser) => {
+  const { data } = await axios.post(`${apiBaseUrl}/users`, user);
+
+  return data;
+};
+
 const getAssignment = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -294,6 +300,7 @@ export default {
   getAllZoomRecordings,
   syncZoomRecordings,
   directSignUp,
+  userSignUp,
   getAssignment,
   createAssignment,
   submitAssignment,

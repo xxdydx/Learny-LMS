@@ -49,19 +49,17 @@ export interface Teacher {
   id: number;
   name: string;
   username: string;
+  email: string;
+  role: string;
 }
-
-enum UserRole {
-  Student = "student",
-  Teacher = "teacher",
-  Admin = "admin",
-}
+type UserRole = "student" | "teacher" | "admin";
 export interface NewUser {
-  courseString: string;
+  courseString?: string;
   name: string;
   email?: string;
   password?: string;
   username: string;
+  role?: UserRole;
 }
 export interface User {
   id: number;
