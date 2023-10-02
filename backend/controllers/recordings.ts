@@ -65,6 +65,30 @@ router.get("/all", tokenExtractor, async (req: CustomRequest, res, next) => {
   }
 });
 
+router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res
+        .status(403)
+        .send("You need to be logged in to perform this action");
+    }
+    if (user.role === "student") {
+      return res.json(403).send("No permission to add recordings");
+    }
+
+    await Recording.create({
+      start_time: req.body.start_time,
+      title: req.body.title,
+      share_url: req.body.share_url,
+      duration: req.body.duration,
+      teacherId: user.id,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
   try {
     const user = req.user;
@@ -76,7 +100,7 @@ router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
     }
 
     if (user.role === "student") {
-      return res.json(403).send("No permissions to add recordings");
+      return res.json(403).send("No permission to add recordings");
     }
     const { code } = req.query;
     let token: string | null = null;

@@ -41,7 +41,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
 
   // if page is loading and no user => redirect to loading page
   if (isLoading || !user) {
-    return <LoadingPage />;
+    return <main className="bg-bg min-h-screen"></main>;
   }
   if (!Array.isArray(courses)) {
     // handle error or return null

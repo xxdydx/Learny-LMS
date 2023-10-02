@@ -79,6 +79,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
         };
         dispatch(setNotification(notif, 5000));
       } else {
+        console.log(error);
         const notif: Notif = {
           message: "Unknown error happpened. Contact support!",
           type: "error",

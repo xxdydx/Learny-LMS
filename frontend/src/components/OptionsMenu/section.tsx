@@ -10,11 +10,15 @@ import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
-import { deleteCourse, deleteSection } from "@/reducers/courseReducer";
+import {
+  deleteCourse,
+  deleteSection,
+  editSection,
+} from "@/reducers/courseReducer";
 import { deleteChapter } from "@/reducers/courseReducer";
 import { useAppDispatch } from "@/hooks";
 import React, { useState, useEffect, NewLifecycle } from "react";
-import { NewFile, Notif } from "@/types";
+import { NewFile, NewSection, Notif } from "@/types";
 import { addFile } from "@/reducers/courseReducer";
 import { setNotification } from "@/reducers/notifReducer";
 import { green } from "@mui/material/colors";
@@ -76,6 +80,8 @@ export default function SectionMenu({ id, title }: Props) {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [sxnTitle, setsxnTitle] = useState<string>(title ? title : "");
   const [openAssignmentDialog, setOpenAssignmentDialog] = useState(false);
   const [instructions, setInstructions] = useState<string | null>(null);
   const [selectedRadio, setSelectedRadio] = useState("");
@@ -107,9 +113,38 @@ export default function SectionMenu({ id, title }: Props) {
     setSelectedRadio("");
     setOpenDialog(false);
   };
+  const handleEditDialogOpen = () => {
+    setAnchorEl(null);
+    setOpenEditDialog(true);
+  };
+
+  const handleEditDialogClose = () => {
+    setOpenEditDialog(false);
+  };
 
   const handleAssignmentDialogClose = () => {
     setOpenAssignmentDialog(false);
+  };
+
+  // handling editing of a section
+  const handleEditSection = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (sxnTitle.trim().length === 0) {
+      console.log("No empty strings allowed");
+    } else {
+      const section: NewSection = {
+        title: sxnTitle && sxnTitle.trim(),
+      };
+      await dispatch(editSection(section, id));
+      setsxnTitle("");
+      const notif: Notif = {
+        type: "success",
+        message: "Section edited",
+      };
+      await dispatch(setNotification(notif, 5000));
+      setOpenEditDialog(false);
+    }
   };
 
   // handling deletion of a section
@@ -390,7 +425,7 @@ export default function SectionMenu({ id, title }: Props) {
             },
           }}
         >
-          <MenuItem onClick={handleClose}>
+          <MenuItem onClick={handleEditDialogOpen}>
             <EditIcon />
             Section
           </MenuItem>
@@ -409,6 +444,39 @@ export default function SectionMenu({ id, title }: Props) {
             Delete
           </MenuItem>
         </StyledMenu>
+
+        {/* Edit section dialog */}
+        <Dialog
+          open={openEditDialog}
+          onClose={handleEditDialogClose}
+          fullWidth
+          PaperProps={{ style: { backgroundColor: "black" } }}
+        >
+          <NewDialogTitle
+            id="customized-dialog-title"
+            onClose={handleEditDialogClose}
+          >
+            {" "}
+            Edit section title
+          </NewDialogTitle>
+          <DialogContent dividers>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              defaultValue={title}
+              type="text"
+              required={true}
+              onChange={({ target }) => setsxnTitle(target.value)}
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <StyledButton onClick={handleEditDialogClose}>Cancel</StyledButton>
+            <StyledButton onClick={handleEditSection}>Edit</StyledButton>
+          </DialogActions>
+        </Dialog>
 
         <Dialog
           open={openDialog}

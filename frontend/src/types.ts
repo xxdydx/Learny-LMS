@@ -98,6 +98,13 @@ export interface NewFile {
   visibledate?: string;
 }
 
+export interface NewAssignment {
+  name: string;
+  link?: string;
+  visibledate?: string;
+  deadline: string;
+}
+
 export interface NewEnrollment {
   username: string;
   courseId: number;

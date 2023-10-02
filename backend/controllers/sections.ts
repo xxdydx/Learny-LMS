@@ -205,6 +205,42 @@ router.post(
   }
 );
 
+// to edit a section
+router.put("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(404).send("You need to be logged in");
+  }
+  try {
+    let section = await Section.findByPk(req.params.id);
+    if (!section) {
+      return res.status(404).send("Section not found");
+    }
+    let chapter = await Chapter.findByPk(section?.chapterId);
+    let course = await Course.findByPk(chapter?.courseId);
+
+    if (user.id.toString() !== course?.teacherId.toString()) {
+      return res
+        .status(403)
+        .send(`You don't have permissions to edit this section`);
+    }
+
+    await section.update({
+      title: req.body.title,
+    });
+
+    // Display the edited course after the chapter is deleted
+    const editedCourse = await getUpdatedCourse(course.id);
+    if (!editedCourse) {
+      return res.status(404).send("Course not found");
+    }
+
+    return res.json(editedCourse);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // to delete a section
 
 router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {

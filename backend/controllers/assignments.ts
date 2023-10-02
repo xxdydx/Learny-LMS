@@ -239,6 +239,48 @@ router.post(
   }
 );
 
+// edit assignment
+router.put(
+  "/:id",
+  tokenExtractor,
+  upload.single("file"),
+  async (req: CustomRequest, res, next) => {
+    const user = req.user;
+    if (!user) {
+      return res.status(404).send("You need to be logged in");
+    }
+
+    try {
+      let assignment = await Assignment.findByPk(req.params.id);
+      if (!assignment) {
+        return res.status(404).send("Assignment not found");
+      }
+      let section = await Section.findByPk(assignment?.sectionId);
+      let chapter = await Chapter.findByPk(section?.chapterId);
+      let course = await Course.findByPk(chapter?.courseId);
+
+      // check if user has permissions to edit assignment, only creator of the course can edit the assignment
+      if (user.id.toString() !== course?.teacherId.toString()) {
+        return res
+          .status(403)
+          .send(`You don't have permissions to edit this assignment`);
+      }
+
+      assignment.set(req.body);
+      await assignment.save();
+
+      const editedCourse = await getUpdatedCourse(course.id);
+      if (!editedCourse) {
+        return res.status(404).send("Course not found");
+      }
+
+      return res.json(editedCourse);
+    } catch (error) {
+      return next(error);
+    }
+  }
+);
+
 router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   const user = req.user; // to figure out details about the user (e.g. his token)
   if (!user) {

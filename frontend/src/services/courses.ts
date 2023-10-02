@@ -8,6 +8,8 @@ import {
   NewEnrollment,
   User,
   NewUser,
+  Assignment,
+  NewAssignment,
 } from "../types";
 const apiBaseUrl = "/api";
 
@@ -103,6 +105,17 @@ const createSection = async (section: NewSection, chpId: number) => {
 
   const { data } = await axios.post(
     `${apiBaseUrl}/chapters/${chpId}/sections`,
+    section,
+    config
+  );
+  return data;
+};
+const updateSection = async (section: NewSection, sxnId: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.put(
+    `${apiBaseUrl}/sections/${sxnId}`,
     section,
     config
   );
@@ -252,6 +265,32 @@ const createAssignment = async (file: FormData, sxnId: number) => {
   return data;
 };
 
+const updateAssignment = async (
+  assignment: NewAssignment,
+  assignmentId: number
+) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.put(
+    `${apiBaseUrl}/assignments/${assignmentId}`,
+    assignment,
+    config
+  );
+  return data;
+};
+
+const removeAssignment = async (id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.delete(
+    `${apiBaseUrl}/assignments/${id}`,
+    config
+  );
+  return data;
+};
+
 const submitAssignment = async (file: FormData, assignmentId: number) => {
   const config = {
     headers: { Authorization: token, "Content-Type": "multipart/form-data" },
@@ -290,6 +329,7 @@ export default {
   updateChapter,
   removeChapter,
   createSection,
+  updateSection,
   removeSection,
   createFile,
   updateFile,
@@ -303,6 +343,8 @@ export default {
   userSignUp,
   getAssignment,
   createAssignment,
+  updateAssignment,
+  removeAssignment,
   submitAssignment,
   gradeAssignment,
 };

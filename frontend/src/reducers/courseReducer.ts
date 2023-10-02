@@ -1,6 +1,8 @@
 import { Action, PayloadAction, createSlice } from "@reduxjs/toolkit";
 import {
+  Assignment,
   Course,
+  NewAssignment,
   NewCourse,
   NewEnrollment,
   NewFile,
@@ -119,6 +121,16 @@ export const addSection = (
   };
 };
 
+export const editSection = (
+  section: NewSection,
+  sxnId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.updateSection(section, sxnId);
+    dispatch(edit(newCourse));
+  };
+};
+
 export const deleteSection = (
   sxnId: number
 ): ThunkAction<void, AppState, unknown, Action> => {
@@ -184,6 +196,27 @@ export const addAssignment = (
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
     const newCourse = await courseService.createAssignment(file, sxnId);
+    dispatch(edit(newCourse));
+  };
+};
+export const editAssignment = (
+  assignment: NewAssignment,
+  assignmentId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.updateAssignment(
+      assignment,
+      assignmentId
+    );
+    dispatch(edit(newCourse));
+  };
+};
+
+export const deleteAssignment = (
+  assignmentId: number
+): ThunkAction<void, AppState, unknown, Action> => {
+  return async (dispatch) => {
+    const newCourse = await courseService.removeAssignment(assignmentId);
     dispatch(edit(newCourse));
   };
 };

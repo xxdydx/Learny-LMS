@@ -29,6 +29,7 @@ import { Tooltip } from "@mui/material";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import { Assignment } from "../../types";
+import AssignmentMenu from "../OptionsMenu/assignment";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -124,7 +125,7 @@ export default function ChapterView({ chapter }: { chapter: Chapter }) {
           </ListItemButton>
 
           {user?.role === "teacher" && (
-            <FileMenu id={assignment.id} file={assignment} />
+            <AssignmentMenu id={assignment.id} assignment={assignment} />
           )}
         </div>
       </List>

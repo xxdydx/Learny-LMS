@@ -13,33 +13,38 @@ import { styled, alpha, ThemeProvider } from "@mui/material/styles";
 import { Divider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { Inter } from "next/font/google";
-import { deleteCourse } from "@/reducers/courseReducer";
-import { deleteChapter } from "@/reducers/courseReducer";
 import { useAppDispatch } from "@/hooks";
-import { setNotification } from "@/reducers/notifReducer";
-import { Chapter, NewChapter, NewSection, Notif } from "@/types";
-import { addSection } from "@/reducers/courseReducer";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
-import { editChapter } from "@/reducers/courseReducer";
-import PushPinIcon from "@mui/icons-material/PushPin";
-
+import {
+  deleteAssignment,
+  editAssignment,
+  editFile,
+} from "@/reducers/courseReducer";
+import { setNotification } from "@/reducers/notifReducer";
+import { Assignment, File, NewAssignment, Notif } from "@/types";
 import { AxiosError } from "axios";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
+import {
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  TextField,
+} from "@mui/material";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
 interface Props {
   id: number;
-  chapter: Chapter;
+  assignment: Assignment;
 }
 
-export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
+export default function AssignmentMenu({ id, assignment }: Props): JSX.Element {
   const dispatch = useAppDispatch();
   const theme = createTheme({
     typography: {
@@ -54,74 +59,31 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
   });
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [openNSDialog, setOpenNSDialog] = useState(false);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [chapterName, setChapterName] = useState<string>(
-    chapter.title ? chapter.title : ""
+  const [openDialog, setOpenDialog] = useState(false);
+  const [name, setName] = useState<string>(
+    assignment.name ? assignment.name : ""
   );
-  const [title, setTitle] = useState<string>("");
+  const [visibleDate, setVisibleDate] = useState<Dayjs | null>(
+    dayjs(assignment.visibledate)
+  );
+  const [deadline, setDeadline] = useState<Dayjs | null>(
+    dayjs(assignment.deadline)
+  );
+
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleNSDialogOpen = () => {
+  const handleEditOptionClick = () => {
     setAnchorEl(null);
-    setOpenNSDialog(true);
+    setOpenDialog(true);
   };
-  const handleEditDialogOpen = () => {
-    setAnchorEl(null);
-    setOpenEditDialog(true);
+  const handleDialogClose = () => {
+    setOpenDialog(false);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
-  };
-  const handleNSDialogClose = () => {
-    setOpenNSDialog(false);
-  };
-  const handleEditDialogClose = () => {
-    setOpenEditDialog(false);
-  };
-
-  // to handle new section responses once 'create' button is clicked
-  const handleCreate = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (title.trim().length === 0) {
-      console.log("No empty strings allowed");
-    } else {
-      const newSection: NewSection = {
-        title: title && title.trim(),
-      };
-
-      await dispatch(addSection(newSection, id));
-      setTitle("");
-      const notif: Notif = {
-        type: "success",
-        message: "Section created",
-      };
-      await dispatch(setNotification(notif, 5000));
-      setOpenNSDialog(false);
-    }
-  };
-
-  const handleEditChapter = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (chapterName.trim().length === 0) {
-      console.log("No empty strings allowed");
-    } else {
-      const chapter: NewChapter = {
-        title: chapterName && chapterName.trim(),
-      };
-
-      await dispatch(editChapter(chapter, id));
-      setChapterName("");
-      const notif: Notif = {
-        type: "success",
-        message: "Chapter edited",
-      };
-      await dispatch(setNotification(notif, 5000));
-      setOpenEditDialog(false);
-    }
   };
 
   // to ensure button's text is not all CAPS
@@ -129,49 +91,62 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
     textTransform: "none",
   });
 
-  // handle pinning of chapters
-  const pinChapter = async (event: React.MouseEvent) => {
+  const handleEdit = async (event: React.MouseEvent) => {
     event.preventDefault();
-    if (window.confirm(`Do you want to pin this chapter?`)) {
-      try {
-        const editChp = {
-          ...chapter,
-          pinned: true,
-        };
-        await dispatch(editChapter(editChp, id));
-        setAnchorEl(null);
+    if (name.trim().length === 0) {
+      const notif: Notif = {
+        message: "Assignment name cannot be empty",
+        type: "error",
+      };
+      dispatch(setNotification(notif, 5000));
+      return;
+    }
+    const date = visibleDate
+      ? visibleDate?.toDate().toISOString()
+      : new Date().toISOString();
+
+    const deadline1 = deadline
+      ? deadline?.toDate().toISOString()
+      : assignment.deadline;
+
+    const editedAssignment: NewAssignment = {
+      name: name,
+      visibledate: date,
+      deadline: deadline1,
+    };
+    try {
+      await dispatch(editAssignment(editedAssignment, id));
+      const notif: Notif = {
+        type: "success",
+        message: "Assignment edited",
+      };
+      await dispatch(setNotification(notif, 5000));
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
         const notif: Notif = {
-          message: "Chapter edited",
-          type: "info",
+          message: error.response?.data,
+          type: "error",
         };
         dispatch(setNotification(notif, 5000));
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          const notif: Notif = {
-            message: error.response?.data,
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        } else {
-          const notif: Notif = {
-            message: "Unknown error happpened. Contact support!",
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        }
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
       }
     }
   };
 
-  // Handle delete of chapter
+  // Handle delete of assignment
   const handleDelete = async (event: React.MouseEvent) => {
     event.preventDefault();
-    if (window.confirm(`Do you want to delete this chapter?`)) {
+    if (window.confirm(`Do you want to delete this assignment?`)) {
       try {
-        await dispatch(deleteChapter(id));
+        await dispatch(deleteAssignment(id));
         setAnchorEl(null);
         const notif: Notif = {
-          message: "Chapter deleted",
+          message: "Assignment deleted",
           type: "info",
         };
         dispatch(setNotification(notif, 5000));
@@ -183,6 +158,7 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
           };
           dispatch(setNotification(notif, 5000));
         } else {
+          console.log(error);
           const notif: Notif = {
             message: "Unknown error happpened. Contact support!",
             type: "error",
@@ -286,18 +262,9 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
             },
           }}
         >
-          <MenuItem onClick={handleEditDialogOpen}>
+          <MenuItem onClick={handleEditOptionClick}>
             <EditIcon />
-            Edit Chapter
-          </MenuItem>
-          <MenuItem onClick={pinChapter}>
-            <PushPinIcon />
-            Pin Chapter
-          </MenuItem>
-
-          <MenuItem onClick={handleNSDialogOpen}>
-            <AddIcon />
-            Add Section
+            Edit
           </MenuItem>
 
           <Divider sx={{ my: 0.5 }} />
@@ -306,70 +273,58 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
             Delete
           </MenuItem>
         </StyledMenu>
-
         <Dialog
-          open={openNSDialog}
-          onClose={handleClose}
-          fullWidth
+          open={openDialog}
+          onClose={handleDialogClose}
           PaperProps={{ style: { backgroundColor: "black" } }}
         >
           <NewDialogTitle
             id="customized-dialog-title"
-            onClose={handleNSDialogClose}
+            onClose={() => setOpenDialog(false)}
           >
-            {" "}
-            Create section
-          </NewDialogTitle>
-          <DialogContent dividers>
-            <DialogContentText>Add a section here.</DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Section Title"
-              type="text"
-              required={true}
-              onChange={({ target }) => setTitle(target.value)}
-              fullWidth
-              variant="standard"
-            />
-          </DialogContent>
-          <DialogActions>
-            <StyledButton onClick={handleNSDialogClose}>Cancel</StyledButton>
-            <StyledButton onClick={handleCreate}>Create</StyledButton>
-          </DialogActions>
-        </Dialog>
-
-        {/* Edit chapter dialog */}
-        <Dialog
-          open={openEditDialog}
-          onClose={handleEditDialogClose}
-          fullWidth
-          PaperProps={{ style: { backgroundColor: "black" } }}
-        >
-          <NewDialogTitle
-            id="customized-dialog-title"
-            onClose={handleEditDialogClose}
-          >
-            {" "}
-            Edit chapter title
+            Edit assignment
           </NewDialogTitle>
           <DialogContent dividers>
             <TextField
               autoFocus
               margin="dense"
               id="name"
-              defaultValue={chapter.title}
+              label="Assignment Name"
               type="text"
               required={true}
-              onChange={({ target }) => setChapterName(target.value)}
+              onChange={({ target }) => setName(target.value)}
+              defaultValue={assignment.name}
               fullWidth
               variant="standard"
             />
+
+            <DialogContentText sx={{ mt: 4, mb: 2 }}>
+              Set a date and time for this file to become visible for students.
+            </DialogContentText>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="File visible date"
+                defaultValue={dayjs(assignment.visibledate)}
+                onChange={(newValue) => setVisibleDate(newValue)}
+              />
+            </LocalizationProvider>
+
+            <DialogContentText sx={{ mt: 4, mb: 2 }}>
+              Set a deadline for this assignment.
+            </DialogContentText>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimePicker
+                label="Assignment deadline"
+                defaultValue={dayjs(assignment.deadline)}
+                onChange={(newValue) => setDeadline(newValue)}
+              />
+            </LocalizationProvider>
           </DialogContent>
           <DialogActions>
-            <StyledButton onClick={handleEditDialogClose}>Cancel</StyledButton>
-            <StyledButton onClick={handleEditChapter}>Edit</StyledButton>
+            <StyledButton onClick={() => setOpenDialog(false)}>
+              Cancel
+            </StyledButton>
+            <StyledButton onClick={handleEdit}>Edit</StyledButton>
           </DialogActions>
         </Dialog>
       </div>
