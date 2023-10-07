@@ -27,6 +27,9 @@ User.init(
       type: DataTypes.TEXT,
       allowNull: false,
       unique: true,
+      validate: {
+        is: /^(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/g,
+      },
     },
     role: {
       type: DataTypes.ENUM("student", "teacher", "admin"),
