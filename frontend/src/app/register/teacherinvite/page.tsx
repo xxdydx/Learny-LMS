@@ -45,6 +45,10 @@ export default function MyPage({ params }: { params: { slug: string } }) {
     username: Yup.string()
       .min(2, "Too Short!")
       .max(50, "Too Long!")
+      .matches(
+        /^(?!.*[.]{2})[a-zA-Z0-9.]+(?<![_.])$/g,
+        "No spaces or special characters allowed"
+      )
       .required("Required"),
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string()
