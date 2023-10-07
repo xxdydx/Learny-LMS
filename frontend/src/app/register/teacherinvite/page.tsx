@@ -78,7 +78,9 @@ export default function MyPage({ params }: { params: { slug: string } }) {
       // Error handling
       if (error instanceof AxiosError) {
         const notif: Notif = {
-          message: error.response?.data.error,
+          message: error.response?.data.error
+            ? error.response?.data.error
+            : error.response?.data,
           type: "error",
         };
         dispatch(setNotification(notif, 5000));
@@ -115,15 +117,12 @@ export default function MyPage({ params }: { params: { slug: string } }) {
               Learny LMS
             </Typography>
           </div>
-          <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-bg ">
+          <div className="w-full bg-white overflow-y-auto	rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-bg ">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Register for a teacher account
               </h1>
-              <span className="help-block mt-4 text-white text-xs">
-                Thank you for your continued support in trying to Learny LMS
-                better for everyone! Reach out to us if you face any issues.
-              </span>
+
               <Formik
                 initialValues={{
                   name: "",
