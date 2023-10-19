@@ -10,6 +10,7 @@ import {
   NewUser,
   Assignment,
   NewAssignment,
+  NewRecording,
 } from "../types";
 const apiBaseUrl = "/api";
 
@@ -193,6 +194,20 @@ const removeEnrollment = async (student_id: number, course_id: number) => {
   return data;
 };
 
+const addRecording = async (recording: NewRecording) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const { data } = await axios.post(
+    `${apiBaseUrl}/recordings`,
+    recording,
+    config
+  );
+
+  return data;
+};
+
 const getZoomRecordings = async (courseId: number) => {
   const config = {
     headers: { Authorization: token },
@@ -336,6 +351,7 @@ export default {
   removeFile,
   createEnrollment,
   removeEnrollment,
+  addRecording,
   getZoomRecordings,
   getAllZoomRecordings,
   syncZoomRecordings,

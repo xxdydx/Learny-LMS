@@ -78,12 +78,13 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
     }
 
     await Recording.create({
-      start_time: req.body.start_time,
+      start_time: req.body.startTime,
       title: req.body.title,
-      share_url: req.body.share_url,
+      share_url: req.body.shareUrl,
       duration: req.body.duration,
       teacherId: user.id,
     });
+    return res.status(200).send("Recording added");
   } catch (error) {
     next(error);
   }
@@ -141,7 +142,9 @@ router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
 
     if (recordingData) {
       await Recording.destroy({
-        where: {},
+        where: {
+          teacherId: user.id,
+        },
         truncate: true,
       });
     }
@@ -168,5 +171,58 @@ router.post("/sync", tokenExtractor, async (req: CustomRequest, res, next) => {
     return res.json(error);
   }
 });
+
+router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  const user = req.user;
+  if (!user) {
+    return res
+      .status(403)
+      .send("You need to be logged in to perform this action");
+  }
+
+  if (user.role === "student") {
+    return res.json(403).send("No permission to delete recordings");
+  }
+
+  let recording = await Recording.findByPk(req.params.id);
+  if (!recording) {
+    return res.status(404).send("Recording not found");
+  }
+  if (recording.teacherId !== user.id) {
+    return res.status(403).send("No permission to delete this recording");
+  }
+
+  try {
+    await recording.destroy();
+    res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+router.delete(
+  "/clearall",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    const user = req.user;
+    if (!user) {
+      return res
+        .status(403)
+        .send("You need to be logged in to perform this action");
+    }
+
+    if (user.role === "student") {
+      return res.json(403).send("No permission to delete recordings");
+    }
+
+    await Recording.destroy({
+      where: {
+        teacherId: user.id,
+      },
+      truncate: true,
+    });
+    return res.status(200).send("Process complete (Clearing all recordings)");
+  }
+);
 
 export default router;
