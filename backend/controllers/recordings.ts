@@ -78,9 +78,9 @@ router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
     }
 
     await Recording.create({
-      start_time: req.body.start_time,
+      start_time: req.body.startTime,
       title: req.body.title,
-      share_url: req.body.share_url,
+      share_url: req.body.shareUrl,
       duration: req.body.duration,
       teacherId: user.id,
     });

@@ -33,6 +33,11 @@ import { styled } from "@mui/material/styles";
 import courseService from "@/services/courses";
 import { Recording } from "@/types";
 import LinkIcon from "@mui/icons-material/Link";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import AddNewRecording from "@/components/FormModal/AddNewRecording";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -43,6 +48,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
   const [isLoading, user] = useAuth();
   const [show, setShow] = useState<boolean>(false);
   const [recordings, setRecordings] = useState<Recording[]>();
+  const [method, setMethod] = useState("");
   // if page is loaded + no user => redirect to login page
   useEffect(() => {
     if (!isLoading && !user) {
@@ -83,8 +89,11 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
   }
 
   if (user.role === "student") {
-    router.push("/");
+    router.push("/dashboard");
   }
+  const handleChangeMethod = (event: SelectChangeEvent) => {
+    setMethod(event.target.value);
+  };
 
   const handleSync = async (event: React.MouseEvent) => {
     event.preventDefault();
@@ -244,28 +253,73 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                       </ol>
                     </p>
 
-                    <h1 className="text-2xl tracking-tight font-semibold text-gray-900 dark:text-white mb-8">
-                      Sync Recordings
-                    </h1>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        window.location.href =
-                          "https://zoom.us/oauth/authorize?response_type=code&client_id=W52xPeVSToSqXwW4jbZglg&redirect_uri=https%3A%2F%2Flearny-lms.vercel.app%2Frecordings";
-                      }}
-                      className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
-                    >
-                      Log in with Zoom
-                    </button>
-
-                    {show && (
-                      <button
-                        type="button"
-                        onClick={handleSync}
-                        className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                    <div className="mb-6">
+                      <FormControl
+                        variant="standard"
+                        sx={{ m: 1, minWidth: 240 }}
                       >
-                        Sync Recordings
-                      </button>
+                        <InputLabel id="demo-simple-select-standard-label">
+                          Method
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-standard-label"
+                          id="demo-simple-select-standard"
+                          value={method}
+                          sx={{ minWidth: 240, color: "white" }}
+                          onChange={handleChangeMethod}
+                          label="Method"
+                        >
+                          <MenuItem value={"manual"}>Manually</MenuItem>
+                          <MenuItem value={"zoom"}>
+                            Sync Zoom Recordings
+                          </MenuItem>
+                          <MenuItem value={"teams"}>
+                            Sync Teams Recordings
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </div>
+
+                    {method === "manual" && (
+                      <>
+                        <h1 className="text-2xl tracking-tight font-semibold text-gray-900 dark:text-white mb-4">
+                          Add Recordings manually
+                        </h1>
+
+                        <AddNewRecording />
+                      </>
+                    )}
+
+                    {method === "zoom" && (
+                      <>
+                        <h1 className="text-2xl tracking-tight font-semibold text-gray-900 dark:text-white mb-4">
+                          Sync Zoom Recordings
+                        </h1>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            window.location.href =
+                              "https://zoom.us/oauth/authorize?response_type=code&client_id=W52xPeVSToSqXwW4jbZglg&redirect_uri=https%3A%2F%2Flearny-lms.vercel.app%2Frecordings";
+                          }}
+                          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                        >
+                          Log in with Zoom
+                        </button>
+
+                        {show && (
+                          <button
+                            type="button"
+                            onClick={handleSync}
+                            className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500 font-medium rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                          >
+                            Sync Recordings
+                          </button>
+                        )}
+                      </>
+                    )}
+
+                    {method === "teams" && (
+                      <p>Not available yet, but it's coming soon!</p>
                     )}
 
                     <h1 className="text-2xl tracking-tight font-semibold text-gray-900 dark:text-white mt-12 mb-8">

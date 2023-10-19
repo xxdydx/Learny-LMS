@@ -110,6 +110,13 @@ export interface NewEnrollment {
   courseId: number;
 }
 
+export interface NewRecording {
+  title: string;
+  shareUrl: string;
+  duration: number;
+  startTime: string;
+}
+
 export interface Notif {
   type: AlertColor;
   message: string;
