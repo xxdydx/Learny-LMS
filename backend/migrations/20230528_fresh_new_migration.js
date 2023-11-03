@@ -60,6 +60,10 @@ module.exports = {
         allowNull: false,
         onDelete: "CASCADE",
       },
+      zoom_name: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       description: {
         type: DataTypes.TEXT,
         allowNull: true,
