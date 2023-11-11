@@ -10,6 +10,8 @@ class Assignment extends Model {
   public sectionId!: number;
   public marks!: number;
   public deadline!: string;
+  public instructions!: string;
+  public visibledate!: string;
 }
 
 Assignment.init(

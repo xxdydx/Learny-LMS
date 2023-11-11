@@ -1,11 +1,13 @@
 import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from "../utils/db";
+import Section from "./section";
 
 class Chapter extends Model {
   public id!: number;
   public title!: string;
   public courseId!: number;
+  public sections !: Section[];
 }
 
 Chapter.init(

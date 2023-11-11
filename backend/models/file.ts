@@ -8,6 +8,7 @@ class File extends Model {
   public link!: string;
   public awskey!: string;
   public sectionId!: number;
+  public visibledate !: Date;
 }
 
 File.init(

@@ -170,7 +170,7 @@ router.post(
         link = data.Location;
         awskey = data.Key;
       } catch (err) {
-        res.status(500).send("Internal server error");
+        res.status(500).send("Something's wrong with our servers. Try again or contact support.");
       }
 
       // check whether link and awskey are empty, before a file is created in database
