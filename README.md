@@ -1,6 +1,7 @@
 # Learny LMS
 
-### Site is deployed [here](https://learny-lms.vercel.app)!
+### Site is deployed [here](https://learny-lms.com)!
+
 
 ## Table of contents
 
@@ -28,6 +29,7 @@ To solve this problem, I developed Learny, a Progressive Web App (PWA) with an i
 - <b>Course Templates: </b>Teachers can create 'templates' of courses and can create multiple course instances from the same template. 🚧
 - <b>Automated creation of OneNote Notebook: </b>Based on the organisation structure used, Learny can create a OneNote notebook for teachers for each course. 🚧
 - <b>Grade Tracker: </b> Teachers can easily monitor progression of their students. 🚧
+- <b>Payment Tracking:</b> An easy way for teachers to track if their students have paid their fees for the month.
 
 ## Screenshots
 
@@ -82,10 +84,10 @@ git clone git@github.com:xxdydx/Learny-LMS.git
 
 ### Initializing PostgreSQL database
 
-Assuming you have Docker on your system installed, you can run the following command in the backend directory to start a Postgres Docker image. Replace 'mysecretpassword' with the password of your choice.
+Assuming you have Docker on your system installed, you can run the following command in the backend directory to start a Postgres Docker image. If you want to change the credentials of the database, you can do so in the `docker-compose.yml` file.
 
 ```bash
-docker run -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres
+docker-compose up -d
 ```
 
 ### Initializing environment variables
@@ -95,18 +97,13 @@ I use the Amazon S3 service to upload files. To ensure you have access to all th
 The .env file should contain the following:
 
 ```bash
-DATABASE_URL=postgres://postgres:mysecretpassword@localhost:5432/postgres (replace 'mysecretpassword' with the password you defined earlier)
-
+DATABASE_URL=postgresql://postgres:secret@localhost:5432/postgres
+JWT_SECRET= (For Login purposes)
 ACCESS_KEY_ID= (From AWS)
-
 SECRET_ACCESS_KEY= (From AWS)
-
 AWS_REGION= (From AWS)
-
 AWS_BUCKET_NAME= (From AWS)
-
-PORT=3001 (or any port of your choice)
-
+PORT=3001
 ```
 
 ## Development
@@ -135,3 +132,8 @@ npm run dev
 The app should now be running locally on `localhost:3000`.
 
 The website should be now be live and connected with the backend server and database.
+
+### Some errors that may occur during the setup process
+
+1. `PostgreSQL: Role postgres does not exist`
+This error can possibly happen in MacOS systems, to fix this you may follow the steps outlined in this [Stack Overflow article](https://stackoverflow.com/questions/33339246/postgresql-role-postgres-does-not-exist)
