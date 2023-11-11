@@ -3,11 +3,20 @@ import User from "../models/user";
 import { Course, Enrollment } from "../models";
 import { QueryTypes } from "sequelize";
 import getUpdatedCourse from "../utils/getUpdatedCourse";
+import { tokenExtractor } from "../utils/middleware";
+import { CustomRequest } from "../types";
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
-router.get("/", async (_req, res) => {
+router.get("/", tokenExtractor, async (req: CustomRequest, res) => {
+  const user = req.user;
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+  if (user.role !== "admin") {
+    return res.status(403).send("Unauthorized to view this page.");
+  }
   const users = await User.findAll({});
   res.json(users);
 });
