@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 import express from "express";
 import { SECRET } from "../utils/config";
 import User from "../models/user";
+import Session from "../models/session";
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
@@ -33,6 +34,11 @@ router.post("/", async (request, response, next) => {
     };
 
     const token = jwt.sign(userForToken, SECRET);
+
+    await Session.create({
+      username: user.username,
+      login_time: new Date(),
+    });
 
     response
       .status(200)

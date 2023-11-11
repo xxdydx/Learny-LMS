@@ -7,6 +7,7 @@ import Enrollment from "./enrollment";
 import Recording from "./recording";
 import Assignment from "./assignment";
 import Submission from "./submission";
+import Session from "./session";
 
 // for creator of course - e.g. Teacher
 Course.belongsTo(User, { as: "teacher", foreignKey: "teacherId" });
@@ -111,3 +112,4 @@ export { default as Enrollment } from "./enrollment";
 export { default as Assignment } from "./assignment";
 export { default as Submission } from "./submission";
 export { default as Recording } from "./recording";
+export { default as Session } from "./session";
