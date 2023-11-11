@@ -90,6 +90,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
 
   if (user.role === "student") {
     router.push("/dashboard");
+    return <LoadingPage />;
   }
   const handleChangeMethod = (event: SelectChangeEvent) => {
     setMethod(event.target.value);
