@@ -244,8 +244,8 @@ function NavigationBar() {
                 <MenuItem onClick={handleCloseUserMenu}>
                   <Typography textAlign="center">Profile</Typography>
                 </MenuItem>
-                <MenuItem onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center" onClick={logout}>
+                <MenuItem onClick={logout}>
+                  <Typography textAlign="center" >
                     Log out
                   </Typography>
                 </MenuItem>
