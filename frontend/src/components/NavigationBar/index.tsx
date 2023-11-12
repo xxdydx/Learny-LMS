@@ -104,6 +104,9 @@ function NavigationBar() {
               >
                 <MenuIcon />
               </IconButton>
+
+            {/* Mobile view */}
+
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorElNav}
@@ -139,14 +142,17 @@ function NavigationBar() {
                 {user && user.role === "teacher" ? (
                   <MenuItem
                     onClick={() => {
-                      window.location.href = "/templates";
+                      window.location.href = "/recordings";
                     }}
                   >
-                    <Typography textAlign="center">My Templates</Typography>
+                    <Typography textAlign="center">My Recordings</Typography>
                   </MenuItem>
                 ) : null}
               </Menu>
             </Box>
+
+            {/* Desktop view */}
+            
             <SchoolIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography
               variant="h5"
@@ -202,7 +208,7 @@ function NavigationBar() {
               {user && user.role === "teacher" ? (
                 <Button
                   onClick={() => {
-                    window.location.href = "/templates";
+                    window.open('recordings','_blank');
                   }}
                   sx={{
                     my: 2,
@@ -211,7 +217,7 @@ function NavigationBar() {
                     textTransform: "none",
                   }}
                 >
-                  My Templates
+                  My Recordings
                 </Button>
               ) : null}
             </Box>
