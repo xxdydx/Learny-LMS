@@ -139,10 +139,10 @@ function NavigationBar() {
                 {user && user.role === "teacher" ? (
                   <MenuItem
                     onClick={() => {
-                      window.location.href = "/templates";
+                      window.location.href = "/recordings";
                     }}
                   >
-                    <Typography textAlign="center">My Templates</Typography>
+                    <Typography textAlign="center">My Recordings</Typography>
                   </MenuItem>
                 ) : null}
               </Menu>
@@ -202,7 +202,7 @@ function NavigationBar() {
               {user && user.role === "teacher" ? (
                 <Button
                   onClick={() => {
-                    window.location.href = "/templates";
+                    window.location.href = "/recordings";
                   }}
                   sx={{
                     my: 2,
@@ -211,7 +211,7 @@ function NavigationBar() {
                     textTransform: "none",
                   }}
                 >
-                  My Templates
+                  My Recordings
                 </Button>
               ) : null}
             </Box>
