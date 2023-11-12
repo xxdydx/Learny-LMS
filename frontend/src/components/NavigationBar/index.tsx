@@ -202,7 +202,7 @@ function NavigationBar() {
               {user && user.role === "teacher" ? (
                 <Button
                   onClick={() => {
-                    window.location.href = "/recordings";
+                    window.open('recordings','_blank');
                   }}
                   sx={{
                     my: 2,
