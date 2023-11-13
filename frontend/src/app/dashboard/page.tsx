@@ -54,7 +54,7 @@ export default function MyPage() {
     return null;
   }
 
-  const InfoComponent = () => {
+{/*  const InfoComponent = () => {
     return (
       <Box sx={{ width: "100%", mb: 6 }}>
         <Collapse in={open}>
@@ -79,7 +79,7 @@ export default function MyPage() {
         </Collapse>
       </Box>
     );
-  };
+  }; */}
 
   return (
     <div className="dark">
@@ -87,7 +87,7 @@ export default function MyPage() {
         <NavigationBar />
         <div className="flex flex-col px-4 pt-6 pb-10 mx-auto min-h-screen max-w-7xl ">
           <div>
-            <InfoComponent />
+           {/* <InfoComponent /> */}
             <div className="flex justify-between mx-auto">
               <h1 className="pb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
                 My Courses
