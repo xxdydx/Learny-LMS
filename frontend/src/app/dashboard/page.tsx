@@ -54,7 +54,7 @@ export default function MyPage() {
     return null;
   }
 
-{/*  const InfoComponent = () => {
+/*  const InfoComponent = () => {
     return (
       <Box sx={{ width: "100%", mb: 6 }}>
         <Collapse in={open}>
@@ -79,7 +79,7 @@ export default function MyPage() {
         </Collapse>
       </Box>
     );
-  }; */}
+  }; */
 
   return (
     <div className="dark">
