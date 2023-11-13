@@ -11,6 +11,7 @@ import templatesRouter from "./controllers/templates";
 import recordingsRouter from "./controllers/recordings";
 import assignmentsRouter from "./controllers/assignments";
 import submissionsRouter from "./controllers/submissions";
+import sessionsRouter from "./controllers/sessions";
 
 import { PORT } from "./utils/config";
 
@@ -31,6 +32,7 @@ app.use("/api/enrollment", enrollmentRouter);
 app.use("/api/recordings", recordingsRouter);
 app.use("/api/assignments", assignmentsRouter);
 app.use("/api/submissions", submissionsRouter);
+app.use("/api/sessions", sessionsRouter);
 
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);

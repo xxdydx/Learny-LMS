@@ -41,7 +41,11 @@ export default function MyPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push("/dashboard");
+      if(user.role === "admin") {
+        router.push("/admin")
+      } else {
+        router.push("/dashboard");
+      }
     }
   }, [isLoading, user]);
 
@@ -72,9 +76,16 @@ export default function MyPage() {
       const user = await loginService.login({ username, password });
       // Set token (issued by backend) in localstorage
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
+      console.log(user)
       courseService.setToken(user.token);
       dispatch(setUser(user));
-      router.push("/dashboard");
+      console.log(user.role === "admin")
+      if (user.role === "admin") {
+        router.push('/admin')
+      } else {
+        router.push("/dashboard");
+      }
+      
     } catch (error: unknown) {
       // Error handling
       if (error instanceof AxiosError) {

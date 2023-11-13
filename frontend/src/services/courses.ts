@@ -332,6 +332,38 @@ const gradeAssignment = async (file: FormData, submissionId: number) => {
   return data;
 };
 
+const getAllUsers = async () => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.get(`${apiBaseUrl}/users`, config);
+
+  return data;
+};
+
+const deleteUser = async (id: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.delete(`${apiBaseUrl}/users/${id}`, config);
+  return data;
+};
+
+const changePasswordAdmin = async (id: number, newPassword: string) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const obj = {
+    password: newPassword
+  }
+  const { data } = await axios.put(
+    `${apiBaseUrl}/users/${id}/changepwd`,
+    obj,
+    config
+  );
+  return data;
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   getAll,
@@ -363,4 +395,7 @@ export default {
   removeAssignment,
   submitAssignment,
   gradeAssignment,
+  getAllUsers,
+  deleteUser,
+  changePasswordAdmin
 };
