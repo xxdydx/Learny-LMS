@@ -160,7 +160,7 @@ router.post("/directsignup/:id", async (req, res, next) => {
 });
 
 // route to delete users
-router.delete("/:id", tokenExtractor, async (req: CustomRequest, res) => {
+router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
   const user = req.user;
   if (!user) {
     return res.status(404).send("User not found");
@@ -170,8 +170,15 @@ router.delete("/:id", tokenExtractor, async (req: CustomRequest, res) => {
   }
   const userToDelete = await User.findByPk(req.params.id);
   if (userToDelete) {
-    await userToDelete.destroy();
-    res.status(204).end();
+    try {
+      await userToDelete.destroy();
+      const newUserList = await User.findAll({});
+      res.json(newUserList);
+    }
+    catch (err){
+      next(err)
+    }
+
   } else {
     res.status(404).end();
   }
