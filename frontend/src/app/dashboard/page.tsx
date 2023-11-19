@@ -85,7 +85,7 @@ export default function MyPage() {
     <div className="dark">
       <div className="dark:bg-bg">
         <NavigationBar />
-        <div className="flex flex-col px-4 pt-6 pb-10 mx-auto min-h-screen max-w-7xl ">
+        <div className="flex flex-col px-4 pt-16 pb-10 mx-auto min-h-screen max-w-7xl ">
           <div>
            {/* <InfoComponent /> */}
             <div className="flex justify-between mx-auto">
