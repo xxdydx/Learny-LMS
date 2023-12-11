@@ -21,7 +21,8 @@ import NotifComponent from "../../components/NotifComponent";
 import { Inter } from "next/font/google";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { deepPurple } from "@mui/material/colors";
-
+import { Formik, Form, Field } from "formik";
+import * as Yup from "yup";
 const inter = Inter({ subsets: ["latin"] });
 const theme = createTheme({
   typography: {
@@ -35,6 +36,7 @@ const theme = createTheme({
 export default function MyPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [isLoading, user] = useAuth();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -53,26 +55,18 @@ export default function MyPage() {
     return <LoadingPage />;
   }
 
+  const DisplayingErrorMessagesSchema = Yup.object().shape({
+    username: Yup.string()
+      .required("Username is required!"),
+    password: Yup.string()
+      .required("How are you going to log in without a password? 🙄"),
+  });
+
   // attempts login thru API, sets token in local storage, dispatches token to reducers and authenticates user
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleLogin = async (values: any) => {
+    const {username, password} = values
     try {
-      // See if username is empty -> error notif
-      if (username.trim().length === 0) {
-        const notif: Notif = {
-          message: "Enter a username",
-          type: "info",
-        };
-        dispatch(setNotification(notif, 5000));
-      }
-      // Likewise, to see if password is empty
-      if (password.trim().length === 0) {
-        const notif: Notif = {
-          message: "Enter a password",
-          type: "info",
-        };
-        dispatch(setNotification(notif, 5000));
-      }
+      setLoading(true)
       const user = await loginService.login({ username, password });
       // Set token (issued by backend) in localstorage
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
@@ -88,12 +82,28 @@ export default function MyPage() {
       
     } catch (error: unknown) {
       // Error handling
+      setLoading(false)
       if (error instanceof AxiosError) {
-        const notif: Notif = {
-          message: error.response?.data.error,
-          type: "error",
-        };
-        dispatch(setNotification(notif, 5000));
+        if (error.code === 'ECONNRESET') {
+          const notif: Notif = {
+            message: "Connection reset by server. Please try again later.",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+        else if (error.response?.status === 500) {
+          const notif: Notif = {
+            message: "Server error. Please try again later.",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }  else {
+          const notif: Notif = {
+            message: error.response?.data.error ? error.response?.data.error : "Unknown error happened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
       } else {
         const notif: Notif = {
           message: "Unknown error happpened. Contact support!",
@@ -107,6 +117,7 @@ export default function MyPage() {
   return (
     <ThemeProvider theme={theme}>
       <div className="dark">
+      {loading && <LoadingPage/>}
         <section className="bg-white dark:bg-bg min-h-screen">
           <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
@@ -132,10 +143,19 @@ export default function MyPage() {
                 <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                   Sign in to your account
                 </h1>
-                <form
+                <Formik
+                initialValues={{
+                  username: "",
+                  password: "",
+                }}
+                validationSchema={DisplayingErrorMessagesSchema}
+                onSubmit={(values) => {
+                  handleLogin(values);
+                }}
+              >
+                  {({ errors, touched }) => (
+                <Form
                   className="space-y-4 md:space-y-6"
-                  action="#"
-                  onSubmit={handleLogin}
                 >
                   <div>
                     <label
@@ -144,13 +164,17 @@ export default function MyPage() {
                     >
                       Your username
                     </label>
-                    <input
-                      type="text"
-                      name="username"
-                      id="username"
-                      onChange={({ target }) => setUsername(target.value)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
-                    ></input>
+                    <Field
+                        type="username"
+                        name="username"
+                        id="username"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-bg  dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow dark:focus:border-yellow"
+                      />
+                    {touched.username && errors.username && (
+                        <div className="mt-1 text-xs text-red-600">
+                          {errors.username}
+                        </div>
+                      )}
                   </div>
                   <div>
                     <label
@@ -159,14 +183,18 @@ export default function MyPage() {
                     >
                       Password
                     </label>
-                    <input
-                      type="password"
-                      name="password"
-                      id="password"
-                      placeholder="••••••••"
-                      onChange={({ target }) => setPassword(target.value)}
-                      className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-bg  dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow dark:focus:border-yellow"
-                    ></input>
+                    <Field
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="••••••••"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-bg  dark:placeholder-gray-400 dark:text-white dark:focus:ring-yellow dark:focus:border-yellow"
+                      />
+                      {touched.password && errors.password && (
+                        <div className="mt-1 text-xs text-red-600">
+                          {errors.password}
+                        </div>
+                      )}
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-start">
@@ -206,7 +234,9 @@ export default function MyPage() {
                       Sign up
                     </a>
                   </p>
-                </form>
+                </Form>
+                  )}
+                </Formik>
               </div>
             </div>
           </div>
