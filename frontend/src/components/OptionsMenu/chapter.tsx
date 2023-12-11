@@ -141,7 +141,40 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
         await dispatch(editChapter(editChp, id));
         setAnchorEl(null);
         const notif: Notif = {
-          message: "Chapter edited",
+          message: "Chapter pinned",
+          type: "info",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
+  };
+
+  const unpinChapter = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (window.confirm(`Do you want to unpin this chapter?`)) {
+      try {
+        const editChp = {
+          ...chapter,
+          pinned: false,
+        };
+        await dispatch(editChapter(editChp, id));
+        setAnchorEl(null);
+        const notif: Notif = {
+          message: "Chapter unpinned",
           type: "info",
         };
         dispatch(setNotification(notif, 5000));
@@ -290,11 +323,19 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
             <EditIcon />
             Edit Chapter
           </MenuItem>
-          <MenuItem onClick={pinChapter}>
-            <PushPinIcon />
-            Pin Chapter
-          </MenuItem>
-
+          {
+            chapter.pinned ? (
+              <MenuItem onClick={unpinChapter}>
+                <PushPinIcon />
+                Unpin 
+              </MenuItem>
+            ) : (
+              <MenuItem onClick={pinChapter}>
+                <PushPinIcon />
+                Pin Chapter
+              </MenuItem>
+            )
+          }
           <MenuItem onClick={handleNSDialogOpen}>
             <AddIcon />
             Add Section
