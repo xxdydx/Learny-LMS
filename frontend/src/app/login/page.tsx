@@ -70,7 +70,6 @@ export default function MyPage() {
       const user = await loginService.login({ username, password });
       // Set token (issued by backend) in localstorage
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
-      console.log(user)
       courseService.setToken(user.token);
       dispatch(setUser(user));
       console.log(user.role === "admin")
