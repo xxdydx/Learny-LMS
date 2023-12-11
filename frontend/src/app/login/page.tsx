@@ -23,7 +23,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { deepPurple } from "@mui/material/colors";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-
 const inter = Inter({ subsets: ["latin"] });
 const theme = createTheme({
   typography: {
@@ -37,6 +36,7 @@ const theme = createTheme({
 export default function MyPage() {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [isLoading, user] = useAuth();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -66,6 +66,7 @@ export default function MyPage() {
   const handleLogin = async (values: any) => {
     const {username, password} = values
     try {
+      setLoading(true)
       const user = await loginService.login({ username, password });
       // Set token (issued by backend) in localstorage
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
@@ -81,6 +82,7 @@ export default function MyPage() {
       
     } catch (error: unknown) {
       // Error handling
+      setLoading(false)
       if (error instanceof AxiosError) {
         if (error.code === 'ECONNRESET') {
           const notif: Notif = {
@@ -115,6 +117,7 @@ export default function MyPage() {
   return (
     <ThemeProvider theme={theme}>
       <div className="dark">
+      {loading && <LoadingPage/>}
         <section className="bg-white dark:bg-bg min-h-screen">
           <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
             <div className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white">
