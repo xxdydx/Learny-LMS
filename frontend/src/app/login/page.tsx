@@ -82,7 +82,14 @@ export default function MyPage() {
     } catch (error: unknown) {
       // Error handling
       if (error instanceof AxiosError) {
-        if (error.response?.status === 500) {
+        if (error.code === 'ECONNRESET') {
+          const notif: Notif = {
+            message: "Connection reset by server. Please try again later.",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+        else if (error.response?.status === 500) {
           const notif: Notif = {
             message: "Server error. Please try again later.",
             type: "error",
@@ -90,7 +97,7 @@ export default function MyPage() {
           dispatch(setNotification(notif, 5000));
         }  else {
           const notif: Notif = {
-            message: error.response?.data.error,
+            message: error.response?.data.error ? error.response?.data.error : "Unknown error happened. Contact support!",
             type: "error",
           };
           dispatch(setNotification(notif, 5000));
