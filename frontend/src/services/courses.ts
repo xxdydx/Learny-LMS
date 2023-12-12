@@ -341,6 +341,15 @@ const getAllUsers = async () => {
   return data;
 };
 
+const getAllSessions = async () => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.get(`${apiBaseUrl}/sessions`, config);
+
+  return data;
+}
+
 const deleteUser = async (id: number) => {
   const config = {
     headers: { Authorization: token },
@@ -396,6 +405,7 @@ export default {
   submitAssignment,
   gradeAssignment,
   getAllUsers,
+  getAllSessions,
   deleteUser,
   changePasswordAdmin
 };
