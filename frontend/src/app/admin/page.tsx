@@ -36,6 +36,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
   // abstracted GET users and courses into a hook
   const [isLoading, user] = useAuth();
   const [allUsers, setAllUsers] = useState<User[]>();
+  const [allSessions, setAllSessions] = useState<any>();
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [activeId, setActiveId] = useState<number | null>(null);
 
@@ -50,6 +51,9 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     if (user && user.role === "admin") {
       courseService.getAllUsers().then((response) => {
         setAllUsers(response);
+      });
+      courseService.getAllSessions().then((response) => {
+        setAllSessions(response);
       });
     }
   }, [dispatch, user]);
@@ -66,7 +70,6 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
       },
     },
   });
-
 
   // if page is loading and no user => redirect to loading page
   if (isLoading || !user) {
@@ -88,7 +91,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     setOpenModal(false);
   };
   
-  const columns: GridColDef[] = [
+  const userColumns: GridColDef[] = [
     { field: "id", headerName: "ID", flex: 0.5, resizable: true },
     { field: "username", headerName: "Username", flex: 1, resizable: true },
     {
@@ -129,6 +132,16 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
           
         ];
       },
+    },
+  ];
+
+  const sessionColumns: GridColDef[] = [
+    { field: "username", headerName: "Username", flex: 0.5, resizable: true },
+    {
+      field: "login_time",
+      headerName: "Last login time",
+      flex: 0.5,
+      resizable: true,
     },
   ];
 
@@ -195,6 +208,13 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     }
   };
 
+  const sessionsMapped = allSessions?.map((item: any) => {
+    const dateObj = new Date(item.login_time).toLocaleString("en-GB", {
+      timeZone: "Asia/Singapore",
+    });
+    return { ...item, login_time: dateObj };
+  });
+
   return (
     <ThemeProvider theme={theme}>
       <div className="dark">
@@ -216,7 +236,28 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                     <div style={{ width: "100%", maxHeight: 800 }}>
                       <DataGrid
                         rows={allUsers ? allUsers : []}
-                        columns={columns}
+                        columns={userColumns}
+                        autoHeight
+                        slots={{
+                          noRowsOverlay: CustomNoRowsOverlay,
+                        }}
+                        initialState={{
+                          pagination: {
+                            paginationModel: { page: 0, pageSize: 10 },
+                          },
+                        }}
+                        pageSizeOptions={[5, 10]}
+                      />
+                    </div>
+
+                    <h1 className="text-2xl tracking-tight font-semibold text-gray-900 dark:text-white mt-14 mb-8">
+                      List of sessions
+                    </h1>
+
+                    <div style={{ width: "100%", maxHeight: 800 }}>
+                      <DataGrid
+                        rows={sessionsMapped ? sessionsMapped : []}
+                        columns={sessionColumns}
                         autoHeight
                         slots={{
                           noRowsOverlay: CustomNoRowsOverlay,
@@ -233,8 +274,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
                 </div>
                 {
                   openModal && activeId && (<AdminChangePassword openState={openModal} accountId = {activeId} handleClose={handleClose} />)
-                }
-                
+                } 
               </div>
             </div>
             <NotifComponent />

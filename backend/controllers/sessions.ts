@@ -21,7 +21,9 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res) => {
     }
 
     // Get all sessions
-    const sessions = await Session.findAll({});
+    const sessions = await Session.findAll({
+      order: [['login_time', 'DESC']]
+    });
     res.json(sessions);
   } catch (error) {
     console.error(error);
