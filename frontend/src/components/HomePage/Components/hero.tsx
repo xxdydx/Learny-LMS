@@ -1,6 +1,6 @@
 export default function Hero() {
   return (
-    <section className="relative bg-bg">
+    <section className="relative bg-black">
       {/* Illustration behind hero content */}
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6">

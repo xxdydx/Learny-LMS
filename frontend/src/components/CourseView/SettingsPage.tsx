@@ -35,12 +35,13 @@ import { isNull } from "util";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function SettingsPage({ params }: { params: { slug: string } }) {
+export default function SettingsPage({ courseId }: { courseId : number }) {
   const courses = useAppSelector((state) => state.courses);
-  const [course, setCourse] = useState<Course | null>(null);
-  const [title, setTitle] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [zoomName, setZoomName] = useState<string>("");
+  const user = useAppSelector((state) => state.user);
+  const [course, setCourse] = useState<Course | null>(courses.find((course) => course.id === courseId) ?? null);
+  const [title, setTitle] = useState<string>(course?.title ? course.title : '');
+  const [description, setDescription] = useState<string>(course?.description ? course.description : "");
+  const [zoomName, setZoomName] = useState<string>(course?.zoomName ? course.zoomName : "");
   const [copyClicked, setCopyClicked] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -56,46 +57,8 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
       },
     },
   });
-  // abstracted GET users and courses into a hook
-  const [isLoading, user] = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      dispatch(initializeCourses());
-    }
-  }, [dispatch, user]);
-  // if page is loaded + no user => redirect to login page
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login");
-    }
-  }, [isLoading, user]);
-
-  useEffect(() => {
-    const course1 = courses.find(
-      (course) => course.id === parseInt(params.slug)
-    );
-    setCourse(course1 ? course1 : null);
-  }, [courses, params.slug]);
-
-  useEffect(() => {
-    if (course) {
-      setTitle(course.title);
-      setDescription(course.description ? course.description : "");
-      setZoomName(course.zoomName ? course.zoomName : "");
-    }
-  }, [course]);
-
-  // if page is loading and no user => redirect to loading page
-  if (isLoading || !user) {
-    return <LoadingPage />;
-  }
-  if (!Array.isArray(courses)) {
-    // handle error or return null
-    return null;
-  }
-
-  if (course === null) {
+  if (course === null || !user || user.role !== "teacher") {
     return <main className="bg-bg min-h-screen"></main>;
   }
 
@@ -304,8 +267,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     <ThemeProvider theme={theme}>
       <div className="dark">
         <div className="dark:bg-bg">
-          <NavigationBar />
-          <main className="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-bg">
+          <main className="pt-8 pb-16 lg:pt-10 lg:pb-24 bg-white dark:bg-bg">
             <div className="min-h-screen flex justify-between px-4 mx-auto max-w-6xl">
               <div className="flex-grow mx-4">
                 <div className="bg-white dark:bg-bg min-h-screen">
