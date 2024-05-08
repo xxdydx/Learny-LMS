@@ -7,22 +7,16 @@ import { initializeCourses } from "@/reducers/courseReducer";
 import { useAppDispatch, useAppSelector } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
-import LoadingPage from "@/components/LoadingPage";
-import styled from "@mui/material/styles/styled";
-import NewCourseForm from "@/components/FormModal/NewCourseForm";
 import { Chapter, NewChapter } from "@/types";
 import NewChapterForm from "@/components/FormModal/NewChapterForm";
 import NotifComponent from "@/components/NotifComponent";
-import SettingsIcon from "@mui/icons-material/Settings";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import { Tooltip } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import { Inter } from "next/font/google";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
-import Badge from '@mui/material/Badge';
-import CampaignIcon from '@mui/icons-material/Campaign';
+import Badge from "@mui/material/Badge";
+import CampaignIcon from "@mui/icons-material/Campaign";
 import RecordingsPage from "@/components/CourseView/RecordingPage";
 import SettingsPage from "@/components/CourseView/SettingsPage";
 
@@ -48,7 +42,6 @@ export default function MyPage({ params }: { params: { slug: string } }) {
       },
     },
   });
-  
 
   useEffect(() => {
     if (user) {
@@ -97,10 +90,9 @@ export default function MyPage({ params }: { params: { slug: string } }) {
     setValue(newValue);
   };
 
-  
   function CustomTabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
-  
+
     return (
       <div
         role="tabpanel"
@@ -109,84 +101,113 @@ export default function MyPage({ params }: { params: { slug: string } }) {
         aria-labelledby={`simple-tab-${index}`}
         {...other}
       >
-        {value === index && (
-          <Box>
-            {children}
-          </Box>
-        )}
+        {value === index && <Box>{children}</Box>}
       </div>
     );
   }
 
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+  function a11yProps(index: number) {
+    return {
+      id: `simple-tab-${index}`,
+      "aria-controls": `simple-tabpanel-${index}`,
+    };
+  }
 
   return (
-  <ThemeProvider theme={theme}>
-    <div className="dark">
-      <div className="dark:bg-bg">
-        <NavigationBar />
-        <main className="pt-6 pb-16 lg:pt-6 lg:pb-24 bg-white dark:bg-bg">
-          <div className="min-h-screen flex justify-between px-4 mx-auto max-w-6xl">
-            <div className="flex-grow mx-4">
-              <div className="bg-white dark:bg-bg min-h-screen">
-                <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <Tabs value={value} onChange={handleChange} textColor="primary" indicatorColor="primary" centered scrollButtons="auto" aria-label="course tabs">
-                    <Tab label="Coursework" sx={{textTransform: 'none'}} {...a11yProps(0)}/>
-                    <Tab label="Announcements" icon={<Badge badgeContent={4} color="error"><CampaignIcon color="action" /></Badge>} sx={{textTransform: 'none'}} iconPosition="end" {...a11yProps(1)}  />
-                    <Tab label="Lesson Recordings" sx={{textTransform: 'none'}} {...a11yProps(2)} />
-                    {user.role === "teacher" && (<Tab label="Settings" sx={{textTransform: 'none'}} {...a11yProps(3)} />)}
-                  </Tabs>
-                </Box>
-                <CustomTabPanel value={value} index={0}>
-                  <div className=" w-full lg:max-w-6xl pt-10">
-                    <div className="flex flex-col justify-between md:flex-row mx-auto">
-                      <h1 className="mb-4 md:mb-12 text-4xl text-clip overflow-hidden tracking-tight font-semibold text-gray-900 dark:text-white ">
-                        {course.title}
-                      </h1>
+    <ThemeProvider theme={theme}>
+      <div className="dark">
+        <div className="dark:bg-bg">
+          <NavigationBar />
+          <main className="pt-6 pb-16 lg:pt-6 lg:pb-24 bg-white dark:bg-bg">
+            <div className="min-h-screen flex justify-between px-4 mx-auto max-w-6xl">
+              <div className="flex-grow mx-4">
+                <div className="bg-white dark:bg-bg min-h-screen">
+                  <Box sx={{ width: "100%" }}>
+                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                      <Tabs
+                        value={value}
+                        onChange={handleChange}
+                        textColor="primary"
+                        indicatorColor="primary"
+                        centered
+                        scrollButtons="auto"
+                        aria-label="course tabs"
+                      >
+                        <Tab
+                          label="Coursework"
+                          sx={{ textTransform: "none" }}
+                          {...a11yProps(0)}
+                        />
+                        <Tab
+                          label="Announcements"
+                          icon={
+                            <Badge badgeContent={4} color="error">
+                              <CampaignIcon color="action" />
+                            </Badge>
+                          }
+                          sx={{ textTransform: "none" }}
+                          iconPosition="end"
+                          {...a11yProps(1)}
+                        />
+                        <Tab
+                          label="Lesson Recordings"
+                          sx={{ textTransform: "none" }}
+                          {...a11yProps(2)}
+                        />
+                        {user.role === "teacher" && (
+                          <Tab
+                            label="Settings"
+                            sx={{ textTransform: "none" }}
+                            {...a11yProps(3)}
+                          />
+                        )}
+                      </Tabs>
+                    </Box>
+                    <CustomTabPanel value={value} index={0}>
+                      <div className=" w-full lg:max-w-6xl pt-10">
+                        <div className="flex flex-col justify-between md:flex-row mx-auto">
+                          <h1 className="mb-4 md:mb-12 text-4xl text-clip overflow-hidden tracking-tight font-semibold text-gray-900 dark:text-white ">
+                            {course.title}
+                          </h1>
 
-                      <div className="flex flex-row mb-8 md:mb-0">
-                        {user?.role === "teacher" ? (
-                          <>
-                            <Tooltip title="Add Chapter" placement="top">
-                              <NewChapterForm courseId={course.id} />
-                            </Tooltip>
-                          </>
-                        ) : null}
+                          <div className="flex flex-row mb-8 md:mb-0">
+                            {user?.role === "teacher" ? (
+                              <>
+                                <Tooltip title="Add Chapter" placement="top">
+                                  <NewChapterForm courseId={course.id} />
+                                </Tooltip>
+                              </>
+                            ) : null}
+                          </div>
+                        </div>
+
+                        {[...course.chapters]
+                          .sort(sortChapterFunc)
+                          .map((chapter) => (
+                            <ChapterView key={chapter.id} chapter={chapter} />
+                          ))}
                       </div>
-                    </div>
-
-                    {[...course.chapters].sort(sortChapterFunc).map((chapter) => (
-                      <ChapterView key={chapter.id} chapter={chapter} />
-                    ))}
-                  </div>
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={1}>
-                  Item Two
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                  <RecordingsPage courseId={course.id} />
-                </CustomTabPanel>
-                {user.role === "teacher" && (<CustomTabPanel value={value} index={3}>
-                  <SettingsPage courseId={course.id} />
-                </CustomTabPanel>) }
-               
-              </Box>
-                
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={1}>
+                      Item Two
+                    </CustomTabPanel>
+                    <CustomTabPanel value={value} index={2}>
+                      <RecordingsPage courseId={course.id} />
+                    </CustomTabPanel>
+                    {user.role === "teacher" && (
+                      <CustomTabPanel value={value} index={3}>
+                        <SettingsPage courseId={course.id} />
+                      </CustomTabPanel>
+                    )}
+                  </Box>
+                </div>
               </div>
             </div>
-          </div>
 
-          <NotifComponent />
-        </main>
+            <NotifComponent />
+          </main>
+        </div>
       </div>
-    </div>
-  </ThemeProvider>
+    </ThemeProvider>
   );
 }
