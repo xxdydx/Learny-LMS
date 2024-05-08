@@ -208,7 +208,7 @@ function NavigationBar() {
               {user && user.role === "teacher" ? (
                 <Button
                   onClick={() => {
-                    window.open('recordings','_blank');
+                    window.open("/recordings", "_blank");
                   }}
                   sx={{
                     my: 2,
