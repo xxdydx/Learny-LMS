@@ -6,6 +6,7 @@ import {
   Chapter,
   Assignment,
   Submission,
+  Announcement,
 } from "../models";
 import { Course } from "../models";
 import { tokenExtractor } from "../utils/middleware";
@@ -97,6 +98,10 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
             through: {
               attributes: [],
             },
+          },
+          {
+            model: Announcement,
+            as: "announcements"
           },
           {
             model: Chapter,
@@ -398,6 +403,44 @@ router.post(
         sections: [],
         courseId: course.id,
         pinned: req.body.pinned,
+      });
+
+      const editedCourse = await getUpdatedCourse(course.id);
+      if (!editedCourse) {
+        return res.status(404).send("Course not found");
+      }
+      return res.json(editedCourse);
+    } catch (err) {
+      return next(err);
+    }
+  }
+);
+
+
+router.post(
+  "/:id/announcements",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    const user = req.user;
+    if (!user) {
+      return res.status(404).send("You need to be logged in");
+    }
+    try {
+      let course = await Course.findByPk(req.params.id);
+      if (!course) {
+        return res.status(404).send("Course not found");
+      }
+      if (user.id.toString() !== course.teacherId.toString()) {
+        return res
+          .status(403)
+          .send(`You don't have permissions to create announcements for this course.`);
+      }
+
+      await Announcement.create({
+        title: req.body.title,
+        message: req.body.message,
+        courseId: course.id,
+        expiry: req.body.expiry,
       });
 
       const editedCourse = await getUpdatedCourse(course.id);
