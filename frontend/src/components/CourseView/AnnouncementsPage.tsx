@@ -1,12 +1,9 @@
 "use client";
 
 import { useAppSelector } from "@/hooks";
-import { useAppDispatch } from "@/hooks";
-import { useRouter } from "next/navigation";
 import NotifComponent from "@/components/NotifComponent";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Inter } from "next/font/google";
-import { useState } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
@@ -17,10 +14,6 @@ const inter = Inter({ subsets: ["latin"] });
 export default function AnnouncementsPage({ courseId }: { courseId: number }) {
   const courses = useAppSelector((state) => state.courses);
   const course = courses.find((course) => course.id === courseId);
-  const user = useAppSelector((state) => state.user);
-  const [announcements, setAnnouncements] = useState();
-  const router = useRouter();
-  const dispatch = useAppDispatch();
   const theme = createTheme({
     typography: {
       fontFamily: inter.style.fontFamily,
@@ -34,7 +27,6 @@ export default function AnnouncementsPage({ courseId }: { courseId: number }) {
     },
   });
 
-  console.log(course?.announcements);
   interface AnnouncementCardProps {
     title: string;
     message: string;
