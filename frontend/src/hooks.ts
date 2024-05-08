@@ -31,3 +31,21 @@ export const useAuth = (): UseAuthReturnType => {
 
   return [isLoading, user];
 };
+
+export const useIsMobile = (): boolean => {
+  const [isMobile, setIsMobile] = useState(false);
+  const mobileWidth = 768;
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < mobileWidth);
+    };
+
+    handleResize(); // Set initial state based on client's window size
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return isMobile;
+};

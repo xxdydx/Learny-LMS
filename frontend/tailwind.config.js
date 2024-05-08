@@ -92,7 +92,6 @@ module.exports = {
         "Segoe UI Symbol",
         "Noto Color Emoji",
       ],
-      sans: ["var(--font-inter)", ...fontFamily.sans],
       display: ["var(--font-dm-sans)", ...fontFamily.sans],
     },
   },

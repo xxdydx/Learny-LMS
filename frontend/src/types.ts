@@ -133,11 +133,19 @@ export interface Recording {
   title: string;
 }
 
+export interface Announcement {
+  id: number;
+  title: string;
+  message: string;
+  expiry: string;
+}
+
 export interface Course {
   title: string;
   id: number;
   teacher: Teacher;
   description?: string;
+  announcements?: Announcement[];
   author?: string;
   zoomName?: string;
   chapters: Chapter[];
