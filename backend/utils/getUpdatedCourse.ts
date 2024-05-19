@@ -8,6 +8,7 @@ import {
   Assignment,
   Submission,
 } from "../models";
+import { Announcement } from "../models";
 
 async function getUpdatedCourse(courseId: number): Promise<Course | null> {
   const editedCourse = await Course.findByPk(courseId, {
@@ -25,6 +26,10 @@ async function getUpdatedCourse(courseId: number): Promise<Course | null> {
         through: {
           attributes: [],
         },
+      },
+      {
+        model: Announcement,
+        as: "announcements",
       },
       {
         model: Chapter,

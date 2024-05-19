@@ -27,8 +27,9 @@ import LinkIcon from "@mui/icons-material/Link";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function SettingsPage({ params }: { params: { slug: string } }) {
+export default function RecordingsPage({ courseId }: { courseId: number }) {
   const courses = useAppSelector((state) => state.courses);
+  const user = useAppSelector((state) => state.user);
   const [recordings, setRecordings] = useState<Recording[]>();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -44,39 +45,17 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
       },
     },
   });
-  // abstracted GET users and courses into a hook
-  const [isLoading, user] = useAuth();
+
 
   useEffect(() => {
     if (user) {
-      dispatch(initializeCourses());
       courseService
-        .getZoomRecordings(parseInt(params.slug))
-        .then((response) => {
-          setRecordings(response);
-        });
-    }
-  }, [dispatch, user]);
-  // if page is loaded + no user => redirect to login page
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/login");
-    }
-  }, [isLoading, user]);
+      .getZoomRecordings(courseId)
+      .then((response) => {
+        setRecordings(response);
+      });
+  }},[user, courseId]);
 
-  // if page is loading and no user => redirect to loading page
-  if (isLoading || !user) {
-    return <LoadingPage />;
-  }
-  if (!Array.isArray(courses)) {
-    // handle error or return null
-    return null;
-  }
-  const course = courses.find((course) => course.id === parseInt(params.slug));
-
-  if (course === undefined) {
-    return <main className="bg-bg min-h-screen"></main>;
-  }
 
   const columns: GridColDef[] = [
     { field: "sn", headerName: "S/N", flex: 0.5, resizable: true },
@@ -167,8 +146,7 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     <ThemeProvider theme={theme}>
       <div className="dark">
         <div className="dark:bg-bg">
-          <NavigationBar />
-          <main className="pt-8 pb-16 lg:pt-16 lg:pb-24 bg-white dark:bg-bg">
+          <main className="pt-8 pb-16 lg:pt-10 lg:pb-24 bg-white dark:bg-bg">
             <div className="min-h-screen flex justify-between px-4 mx-auto max-w-6xl">
               <div className="flex-grow mx-4">
                 <div className="bg-white dark:bg-bg min-h-screen">

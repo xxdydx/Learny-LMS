@@ -1,7 +1,6 @@
 "use client";
 
 import ChapterView from "../../components/CourseView/ChapterView";
-import Contents from "../../components/CourseView/Contents";
 import NavigationBar from "../../components/NavigationBar";
 import CourseCard from "../../components/CourseCard";
 import { initializeCourses } from "../../reducers/courseReducer";

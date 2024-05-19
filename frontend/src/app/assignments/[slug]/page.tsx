@@ -1,7 +1,6 @@
 "use client";
 
 import ChapterView from "../../../components/CourseView/ChapterView";
-import Contents from "../../../components/CourseView/Contents";
 import NavigationBar from "../../../components/NavigationBar";
 import { useEffect, useState } from "react";
 import { gradeAssignment, initializeCourses } from "@/reducers/courseReducer";

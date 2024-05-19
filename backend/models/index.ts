@@ -8,10 +8,26 @@ import Recording from "./recording";
 import Assignment from "./assignment";
 import Submission from "./submission";
 import Session from "./session";
+import Announcement from "./announcement";
 
 // for creator of course - e.g. Teacher
 Course.belongsTo(User, { as: "teacher", foreignKey: "teacherId" });
 Recording.belongsTo(User, { as: "teacher", foreignKey: "teacherId" });
+
+Course.hasMany(Announcement, {
+  foreignKey: {
+    name: "courseId",
+    allowNull: false,
+  },
+  onDelete: "CASCADE",
+});
+Announcement.belongsTo(Course, {
+  foreignKey: {
+    name: "courseId",
+    allowNull: false,
+  },
+  onDelete: "SET NULL",
+});
 
 // for mapping students to the course
 Course.belongsToMany(User, {
@@ -113,3 +129,4 @@ export { default as Assignment } from "./assignment";
 export { default as Submission } from "./submission";
 export { default as Recording } from "./recording";
 export { default as Session } from "./session";
+export { default as Announcement } from "./announcement";
