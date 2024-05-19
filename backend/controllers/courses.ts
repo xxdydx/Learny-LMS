@@ -101,7 +101,13 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
           },
           {
             model: Announcement,
-            as: "announcements"
+            as: "announcements",
+            required: false,
+            where: {
+              expiry: {
+                [Op.gt]: new Date(),
+              },
+            },
           },
           {
             model: Chapter,
