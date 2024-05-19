@@ -138,6 +138,7 @@ export interface Announcement {
   title: string;
   message: string;
   expiry: string;
+  createdAt: string;
 }
 
 export interface Course {

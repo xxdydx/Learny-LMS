@@ -31,23 +31,29 @@ export default function AnnouncementsPage({ courseId }: { courseId: number }) {
     title: string;
     message: string;
     expiryDate: string;
+    createdAt: string;
   }
 
   const AnnouncementCard = ({
     title,
     message,
     expiryDate,
+    createdAt,
   }: AnnouncementCardProps) => (
     <ThemeProvider theme={theme}>
       <Card sx={{ marginBottom: 2 }}>
         <CardContent>
-          <Typography variant="h5" component="div">
+          <Typography
+            component="div"
+            style={{ fontWeight: "600", fontSize: "1.8rem" }}
+          >
             {title}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Expires on: {expiryDate}
+          <Typography sx={{ mb: 1.5 }} variant="body2" color="text.secondary">
+            Created at: {new Date(createdAt).toLocaleDateString()}, Expires on:{" "}
+            {new Date(expiryDate).toLocaleDateString()}
           </Typography>
-          <Typography variant="body2">{message}</Typography>
+          <Typography variant="body1">{message}</Typography>
         </CardContent>
       </Card>
     </ThemeProvider>
@@ -64,17 +70,24 @@ export default function AnnouncementsPage({ courseId }: { courseId: number }) {
                   <h1 className="text-4xl tracking-tight font-semibold text-gray-900 dark:text-white mb-8">
                     Announcements
                   </h1>
-                  <Container>
-                    {course?.announcements &&
-                      course.announcements.map((announcement) => (
+
+                  {course?.announcements && course?.announcements.length > 0 ? (
+                    course.announcements.map((announcement) => (
+                      <Container>
                         <AnnouncementCard
                           key={announcement.id}
                           title={announcement.title}
                           message={announcement.message}
+                          createdAt={announcement.createdAt}
                           expiryDate={announcement.expiry}
                         />
-                      ))}
-                  </Container>
+                      </Container>
+                    ))
+                  ) : (
+                    <Typography color="text.secondary">
+                      No announcements found.
+                    </Typography>
+                  )}
                 </div>
               </div>
             </div>

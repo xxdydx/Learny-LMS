@@ -189,7 +189,14 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                           <Tab
                             label="Announcements"
                             icon={
-                              <Badge badgeContent={4} color="error">
+                              <Badge
+                                badgeContent={
+                                  course.announcements?.length
+                                    ? course.announcements?.length
+                                    : null
+                                }
+                                color="error"
+                              >
                                 <CampaignIcon color="action" />
                               </Badge>
                             }
