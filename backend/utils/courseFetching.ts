@@ -10,7 +10,7 @@ import {
   Announcement,
 } from "../models";
 
-export const getCommonInclude = (role: string, userId?: number) => {
+export const getCommonInclude = (role: string = "teacher", userId?: number) => {
   const baseInclude: any[] = [
     {
       model: User,
