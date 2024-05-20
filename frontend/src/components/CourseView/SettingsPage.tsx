@@ -23,7 +23,7 @@ import AddNewStudentForm from "@/components/FormModal/AddNewStudent";
 import { useState } from "react";
 import { setNotification } from "@/reducers/notifReducer";
 import { Notif } from "@/types";
-import { updateCourse } from "@/reducers/courseReducer";
+import { updateCourse, deleteCourse } from "@/reducers/courseReducer";
 import { AxiosError } from "axios";
 import { NewCourse } from "@/types";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -32,16 +32,23 @@ import Switch, { SwitchProps } from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { Course } from "@/types";
 import { isNull } from "util";
+import { Button } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function SettingsPage({ courseId }: { courseId : number }) {
+export default function SettingsPage({ courseId }: { courseId: number }) {
   const courses = useAppSelector((state) => state.courses);
   const user = useAppSelector((state) => state.user);
-  const [course, setCourse] = useState<Course | null>(courses.find((course) => course.id === courseId) ?? null);
-  const [title, setTitle] = useState<string>(course?.title ? course.title : '');
-  const [description, setDescription] = useState<string>(course?.description ? course.description : "");
-  const [zoomName, setZoomName] = useState<string>(course?.zoomName ? course.zoomName : "");
+  const [course, setCourse] = useState<Course | null>(
+    courses.find((course) => course.id === courseId) ?? null
+  );
+  const [title, setTitle] = useState<string>(course?.title ? course.title : "");
+  const [description, setDescription] = useState<string>(
+    course?.description ? course.description : ""
+  );
+  const [zoomName, setZoomName] = useState<string>(
+    course?.zoomName ? course.zoomName : ""
+  );
   const [copyClicked, setCopyClicked] = useState<boolean>(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -71,6 +78,40 @@ export default function SettingsPage({ courseId }: { courseId : number }) {
         const notif: Notif = {
           message: "Student removed from course",
           type: "success",
+        };
+        dispatch(setNotification(notif, 5000));
+      } catch (error: unknown) {
+        if (error instanceof AxiosError) {
+          const notif: Notif = {
+            message: error.response?.data,
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        } else {
+          const notif: Notif = {
+            message: "Unknown error happpened. Contact support!",
+            type: "error",
+          };
+          dispatch(setNotification(notif, 5000));
+        }
+      }
+    }
+  };
+
+  // handle deletion of course
+  const handleDeleteCourse = async (event: React.MouseEvent) => {
+    event.preventDefault();
+    if (
+      window.confirm(
+        `Are you sure you want to delete this course? This action cannot be undone.`
+      )
+    ) {
+      try {
+        await dispatch(deleteCourse(courseId));
+        router.push("/dashboard");
+        const notif: Notif = {
+          message: "Course deleted",
+          type: "info",
         };
         dispatch(setNotification(notif, 5000));
       } catch (error: unknown) {
@@ -175,7 +216,7 @@ export default function SettingsPage({ courseId }: { courseId : number }) {
     const text = `https://learny-lms.vercel.app/register/courses/${course.id}`;
     // Function to handle the "Copy" button click
     const handleCopy = () => {
-      setCopyClicked(true)
+      setCopyClicked(true);
       setTimeout(() => {
         setCopyClicked(false);
       }, 2000);
@@ -193,7 +234,11 @@ export default function SettingsPage({ courseId }: { courseId : number }) {
           type="text"
           value={text}
           readOnly
-          className={`sm:w-full md:w-1/2 bg-gray-50 border ${copyClicked ? "border-pink" : "border-gray-300"} text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 ${copyClicked ? "dark:text-pink" : "dark:text-white"} dark:hover:ring-yellow dark:focus:border-yellow`}
+          className={`sm:w-full md:w-1/2 bg-gray-50 border ${
+            copyClicked ? "border-pink" : "border-gray-300"
+          } text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 ${
+            copyClicked ? "dark:text-pink" : "dark:text-white"
+          } dark:hover:ring-yellow dark:focus:border-yellow`}
         ></input>
         <button
           className="flex justify-start	text-heading-4 font-semibold px-2 py-2 bg-transparent text-pink hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
@@ -206,62 +251,6 @@ export default function SettingsPage({ courseId }: { courseId : number }) {
       </div>
     );
   };
-
-  const SwitchComponent = styled((props: SwitchProps) => (
-    <Switch
-      focusVisibleClassName=".Mui-focusVisible"
-      disableRipple
-      {...props}
-    />
-  ))(({ theme }) => ({
-    width: 42,
-    height: 26,
-    padding: 0,
-    "& .MuiSwitch-switchBase": {
-      padding: 0,
-      margin: 2,
-      transitionDuration: "300ms",
-      "&.Mui-checked": {
-        transform: "translateX(16px)",
-        color: "#fff",
-        "& + .MuiSwitch-track": {
-          backgroundColor:
-            theme.palette.mode === "dark" ? "#2ECA45" : "#65C466",
-          opacity: 1,
-          border: 0,
-        },
-        "&.Mui-disabled + .MuiSwitch-track": {
-          opacity: 0.5,
-        },
-      },
-      "&.Mui-focusVisible .MuiSwitch-thumb": {
-        color: "#33cf4d",
-        border: "6px solid #fff",
-      },
-      "&.Mui-disabled .MuiSwitch-thumb": {
-        color:
-          theme.palette.mode === "light"
-            ? theme.palette.grey[100]
-            : theme.palette.grey[600],
-      },
-      "&.Mui-disabled + .MuiSwitch-track": {
-        opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
-      },
-    },
-    "& .MuiSwitch-thumb": {
-      boxSizing: "border-box",
-      width: 22,
-      height: 22,
-    },
-    "& .MuiSwitch-track": {
-      borderRadius: 26 / 2,
-      backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
-      opacity: 1,
-      transition: theme.transitions.create(["background-color"], {
-        duration: 500,
-      }),
-    },
-  }));
 
   return (
     <ThemeProvider theme={theme}>
@@ -355,38 +344,49 @@ export default function SettingsPage({ courseId }: { courseId : number }) {
                     </div>
                   </div>
                   <div className="mt-12 mx-auto ">
-                    <div className="flex justify-between">
-                      <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
-                        Zoom Integration
-                      </h1>
-                      <div className="my-2">
-                        <SwitchComponent
-                          defaultChecked={course.zoomName ? true : false}
-                        />
-                      </div>
-                    </div>
-
+                    <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
+                      Zoom Integration
+                    </h1>
                     <p className="text-base mb-6 dark:text-text">
                       Automatically sync weekly meeting recording links with
                       Learny.
                     </p>
-                    <label className="text-gray-900 dark:text-text mr-4">
-                      Zoom Name
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={course.zoomName}
-                      onChange={({ target }) => setZoomName(target.value)}
-                      className="sm:w-full md:w-1/2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
-                    ></input>
-                    <button
-                      className="flex justify-start	text-heading-4 font-semibold px-2  bg-transparent text-pink hover-hover:hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
-                      title="Save"
-                      type="button"
-                      onClick={handleEdit}
+                    <div className="flex flex-row">
+                      <label className="mt-2 text-gray-900 dark:text-text mr-4">
+                        Zoom Name
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue={course.zoomName}
+                        onChange={({ target }) => setZoomName(target.value)}
+                        className="sm:w-full md:w-1/2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 p-2.5 dark:bg-bg dark:placeholder-gray-400 dark:text-white dark:hover:ring-yellow dark:focus:border-yellow"
+                      ></input>
+                      <button
+                        className="ml-3 mt-2 flex justify-start	text-heading-4 font-semibold px-2  bg-transparent text-pink hover-hover:hover:text-darkerpink hover-hover:active:text-darkerpink hover-hover:focus-visible:text-darkerpink"
+                        title="Save"
+                        type="button"
+                        onClick={handleEdit}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                  <div className="mt-12 mx-auto ">
+                    <h1 className="text-3xl mb-2 tracking-tight font-semibold text-gray-900 dark:text-white">
+                      Deletion of course
+                    </h1>
+                    <p className="text-base mb-6 dark:text-text">
+                      Delete <b>{course.title}</b>.
+                    </p>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={handleDeleteCourse}
+                      style={{ textTransform: "none", fontSize: "16px" }}
                     >
-                      Save
-                    </button>
+                      Delete Course
+                    </Button>
                   </div>
                 </div>
               </div>
