@@ -36,19 +36,17 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   if (user) {
     router.push("/dashboard");
   }
+  const usernameRegex = /^(?=[a-zA-Z0-9._-]{4,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
   const DisplayingErrorMessagesSchema = Yup.object().shape({
     name: Yup.string()
       .min(2, "Too Short!")
-      .max(50, "Too Long!")
+      .max(20, "Too Long!")
       .required("Required"),
     username: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .matches(
-        /^(?!.*[.]{2})[a-zA-Z0-9.]+(?<![_.])$/g,
-        "No spaces or special characters allowed"
-      )
+      .min(4, "Too Short!")
+      .max(16, "Too Long!")
+      .matches(usernameRegex, "No spaces or special characters allowed")
       .required("Required"),
     email: Yup.string().email("Invalid email").required("Required"),
     password: Yup.string()
