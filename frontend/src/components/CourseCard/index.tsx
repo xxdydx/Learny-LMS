@@ -49,12 +49,7 @@ const CourseCard = ({ course }: Props) => {
           backgroundColor: "#242527",
         }}
       >
-        <CardHeader
-          subheader="Course"
-          action={
-            user?.role === "teacher" ? <CourseMenu id={course.id} /> : null
-          }
-        />
+        <CardHeader subheader="Course" />
 
         <CardContent>
           <Typography variant="h5" fontWeight="600" component="div">
