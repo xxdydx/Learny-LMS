@@ -21,6 +21,7 @@ import SettingsPage from "@/components/CourseView/SettingsPage";
 import { Button, Menu, MenuItem, Badge } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AnnouncementsPage from "@/components/CourseView/AnnouncementsPage";
+import { Typography } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -237,11 +238,17 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                           </div>
                         </div>
 
-                        {[...course.chapters]
-                          .sort(sortChapterFunc)
-                          .map((chapter) => (
-                            <ChapterView key={chapter.id} chapter={chapter} />
-                          ))}
+                        {course.chapters.length > 0 ? (
+                          [...course.chapters]
+                            .sort(sortChapterFunc)
+                            .map((chapter) => (
+                              <ChapterView key={chapter.id} chapter={chapter} />
+                            ))
+                        ) : (
+                          <Typography color="text.secondary">
+                            No course work found.
+                          </Typography>
+                        )}
                       </div>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
