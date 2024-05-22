@@ -30,6 +30,7 @@ import RecordingsPage from "@/components/CourseView/RecordingPage";
 import SettingsPage from "@/components/CourseView/SettingsPage";
 import NotFoundPage from "@/components/NotFoundPage";
 import { Inter } from "next/font/google";
+import { Typography } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -251,11 +252,17 @@ export default function CoursePage({ params }: { params: { slug: string } }) {
                           </div>
                         </div>
 
-                        {[...course.chapters]
-                          .sort(sortChapterFunc)
-                          .map((chapter) => (
-                            <ChapterView key={chapter.id} chapter={chapter} />
-                          ))}
+                        {course.chapters.length > 0 ? (
+                          [...course.chapters]
+                            .sort(sortChapterFunc)
+                            .map((chapter) => (
+                              <ChapterView key={chapter.id} chapter={chapter} />
+                            ))
+                        ) : (
+                          <Typography color="text.secondary">
+                            No course work found.
+                          </Typography>
+                        )}
                       </div>
                     </CustomTabPanel>
                     <CustomTabPanel value={value} index={1}>
