@@ -10,49 +10,69 @@ import {
   Announcement,
 } from "../models";
 
-export const getCommonInclude = (role: string = "teacher", userId?: number) => {
-  const baseInclude: any[] = [
-    {
-      model: User,
-      as: "teacher",
-      attributes: ["name", "username", "id", "email", "role"],
-    },
-    {
-      model: Announcement,
-      as: "announcements",
-      required: false,
-      where: {
-        expiry: {
-          [Op.gt]: new Date(),
-        },
-      },
-    },
-    {
-      model: Chapter,
-      as: "chapters",
-      attributes: ["title", "id", "createdAt", "pinned"],
-      include: [
+export const getCommonInclude = (
+  allCourses: boolean,
+  role: string = "teacher",
+  userId?: number
+) => {
+  const baseInclude: any[] = allCourses
+    ? [
         {
-          model: Section,
-          as: "sections",
+          model: User,
+          as: "teacher",
+          attributes: ["name", "username", "id", "email", "role"],
+        },
+      ]
+    : [
+        {
+          model: User,
+          as: "teacher",
+          attributes: ["name", "username", "id", "email", "role"],
+        },
+        {
+          model: Announcement,
+          as: "announcements",
+          required: false,
+          where: {
+            expiry: {
+              [Op.gt]: new Date(),
+            },
+          },
+        },
+        {
+          model: Chapter,
+          as: "chapters",
+          attributes: ["title", "id", "createdAt", "pinned"],
           include: [
             {
-              model: File,
-              as: "files",
-              attributes: ["name"],
-            },
-            {
-              model: Assignment,
-              as: "assignments",
+              model: Section,
+              as: "sections",
               include: [
                 {
-                  model: Submission,
-                  as: "submissions",
+                  model: File,
+                  as: "files",
+                  attributes: ["name"],
+                },
+                {
+                  model: Assignment,
+                  as: "assignments",
                   include: [
                     {
-                      model: User,
-                      as: "student",
-                      attributes: ["name", "username", "id", "email", "role"],
+                      model: Submission,
+                      as: "submissions",
+                      include: [
+                        {
+                          model: User,
+                          as: "student",
+                          attributes: [
+                            "name",
+                            "username",
+                            "id",
+                            "email",
+                            "role",
+                          ],
+                        },
+                      ],
                     },
                   ],
                 },
@@ -60,9 +80,7 @@ export const getCommonInclude = (role: string = "teacher", userId?: number) => {
             },
           ],
         },
-      ],
-    },
-  ];
+      ];
 
   if (role === "student" && userId) {
     baseInclude.push({
@@ -113,10 +131,36 @@ export const getCommonOrder = (): any[] => [
 
 export const getCoursesByRole = async (user: User) => {
   const commonAttributes = { exclude: ["teacherId"] };
-  const commonInclude = getCommonInclude(user.role, user.id);
-  const commonOrder = getCommonOrder();
+  const commonInclude = getCommonInclude(true, user.role, user.id);
 
   let where = {};
+  if (user.role === "teacher") {
+    where = {
+      teacherId: { [Op.eq]: user.id },
+      template: { [Op.not]: true },
+    };
+  } else if (user.role === "student") {
+    where = {
+      template: { [Op.not]: true },
+    };
+  } else if (user.role === "admin") {
+    where = {};
+  }
+
+  return await Course.findAll({
+    attributes: commonAttributes,
+    where,
+    include: commonInclude,
+    order: [["createdAt", "DESC"]],
+  });
+};
+
+export const getOneCourseByRole = async (user: User, courseId: number) => {
+  const commonAttributes = { exclude: ["teacherId"] };
+  const commonInclude = getCommonInclude(false, user.role, user.id);
+  const commonOrder = getCommonOrder();
+
+  let where: any = { id: courseId };
   if (user.role === "teacher") {
     where = {
       teacherId: { [Op.eq]: user.id },

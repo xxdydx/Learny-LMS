@@ -13,7 +13,7 @@ import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
 import { Op } from "sequelize";
 import getUpdatedCourse from "../utils/getUpdatedCourse";
-import { getCoursesByRole } from "../utils/courseFetching";
+import { getCoursesByRole, getOneCourseByRole } from "../utils/courseFetching";
 
 const router = express.Router();
 
@@ -31,6 +31,20 @@ router.get("/", tokenExtractor, async (req: CustomRequest, res, next) => {
   }
 });
 
+// To get one course
+router.get("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const courseId = req.params.id;
+    const course = await getOneCourseByRole(user, Number(courseId));
+    return res.send(course);
+  } catch (err) {
+    return next(err);
+  }
+});
 // To create a brand new and empty course without any chapters
 router.post("/", tokenExtractor, async (req: CustomRequest, res, next) => {
   try {
