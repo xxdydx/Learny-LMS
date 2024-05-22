@@ -7,26 +7,33 @@ import { initializeCourses } from "@/reducers/courseReducer";
 import { useAppDispatch, useAppSelector, useIsMobile } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
-import { Chapter, NewChapter } from "@/types";
+import { Chapter } from "@/types";
 import NewChapterForm from "@/components/FormModal/NewChapterForm";
 import NotifComponent from "@/components/NotifComponent";
-import { Tooltip } from "@mui/material";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { Inter } from "next/font/google";
-import { Box, createTheme, ThemeProvider } from "@mui/material";
+import {
+  Tooltip,
+  Tabs,
+  Tab,
+  Box,
+  createTheme,
+  ThemeProvider,
+  Button,
+  Menu,
+  MenuItem,
+  Badge,
+  CircularProgress,
+} from "@mui/material";
 import CampaignIcon from "@mui/icons-material/Campaign";
-import RecordingsPage from "@/components/CourseView/RecordingPage";
-import SettingsPage from "@/components/CourseView/SettingsPage";
-import { Button, Menu, MenuItem, Badge } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AnnouncementsPage from "@/components/CourseView/AnnouncementsPage";
-import LoadingPage from "@/components/LoadingPage";
+import RecordingsPage from "@/components/CourseView/RecordingPage";
+import SettingsPage from "@/components/CourseView/SettingsPage";
 import NotFoundPage from "@/components/NotFoundPage";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function MyPage({ params }: { params: { slug: string } }) {
+export default function CoursePage({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const courses = useAppSelector((state) => state.courses);
   const isMobile = useIsMobile();
@@ -66,7 +73,11 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   }, [isLoading, user, router]);
 
   if (isLoading || getCourseLoading) {
-    return <LoadingPage />;
+    return (
+      <main className="bg-bg min-h-screen flex items-center justify-center">
+        <CircularProgress style={{ color: "#fec006" }} />
+      </main>
+    );
   }
 
   if (!Array.isArray(courses)) {
