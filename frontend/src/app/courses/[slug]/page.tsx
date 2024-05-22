@@ -7,31 +7,40 @@ import { initializeCourses } from "@/reducers/courseReducer";
 import { useAppDispatch, useAppSelector, useIsMobile } from "@/hooks";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks";
-import { Chapter, NewChapter } from "@/types";
+import { Chapter } from "@/types";
 import NewChapterForm from "@/components/FormModal/NewChapterForm";
 import NotifComponent from "@/components/NotifComponent";
-import { Tooltip } from "@mui/material";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import { Inter } from "next/font/google";
-import { Box, createTheme, ThemeProvider } from "@mui/material";
+import {
+  Tooltip,
+  Tabs,
+  Tab,
+  Box,
+  createTheme,
+  ThemeProvider,
+  Button,
+  Menu,
+  MenuItem,
+  Badge,
+  CircularProgress,
+} from "@mui/material";
 import CampaignIcon from "@mui/icons-material/Campaign";
-import RecordingsPage from "@/components/CourseView/RecordingPage";
-import SettingsPage from "@/components/CourseView/SettingsPage";
-import { Button, Menu, MenuItem, Badge } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AnnouncementsPage from "@/components/CourseView/AnnouncementsPage";
+import RecordingsPage from "@/components/CourseView/RecordingPage";
+import SettingsPage from "@/components/CourseView/SettingsPage";
+import NotFoundPage from "@/components/NotFoundPage";
+import { Inter } from "next/font/google";
 import { Typography } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function MyPage({ params }: { params: { slug: string } }) {
+export default function CoursePage({ params }: { params: { slug: string } }) {
   const router = useRouter();
   const courses = useAppSelector((state) => state.courses);
   const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
-  // abstracted GET users and courses into a hook
   const [isLoading, user] = useAuth();
+  const [getCourseLoading, setGetCourseLoading] = useState(true);
   const [value, setValue] = useState(0);
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
@@ -49,40 +58,47 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   });
 
   useEffect(() => {
-    if (user) {
-      dispatch(initializeCourses());
-    }
-  }, [dispatch, user]);
-  // if page is loaded + no user => redirect to login page
+    const fetchCourse = async () => {
+      if (user) {
+        await dispatch(initializeCourses(parseInt(params.slug)));
+        setGetCourseLoading(false);
+      }
+    };
+    fetchCourse();
+  }, [dispatch, user, params.slug]);
+
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/login");
     }
-  }, [isLoading, user]);
+  }, [isLoading, user, router]);
 
-  // if page is loading and no user => redirect to loading page
-  if (isLoading || !user) {
-    return <main className="bg-bg min-h-screen"></main>;
+  if (isLoading || getCourseLoading) {
+    return (
+      <main className="bg-bg min-h-screen flex items-center justify-center">
+        <CircularProgress style={{ color: "#fec006" }} />
+      </main>
+    );
   }
+
   if (!Array.isArray(courses)) {
-    // handle error or return null
     return null;
   }
 
-  let course = courses.find((course) => course.id === parseInt(params.slug));
-  if (course === undefined) {
-    return <main className="bg-bg min-h-screen"></main>;
+  const course = courses.find((course) => course.id === parseInt(params.slug));
+
+  if (!course) {
+    return <NotFoundPage />;
   }
 
   const sortChapterFunc = (a: Chapter, b: Chapter) => {
-    if (a.pinned === true && b.pinned === false) {
+    if (a.pinned && !b.pinned) {
       return -1;
     }
-    if (b.pinned === true && a.pinned === false) {
+    if (b.pinned && !a.pinned) {
       return 1;
-    } else {
-      return 0;
     }
+    return 0;
   };
 
   interface TabPanelProps {
@@ -121,7 +137,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   }
 
   const labels = ["Coursework", "Announcements", "Lesson Recordings"];
-  if (user.role === "teacher") {
+  if (user && user.role === "teacher") {
     labels.push("Settings");
   }
 
@@ -210,7 +226,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                             sx={{ textTransform: "none" }}
                             {...a11yProps(2)}
                           />
-                          {user.role === "teacher" && (
+                          {user && user.role === "teacher" && (
                             <Tab
                               label="Settings"
                               sx={{ textTransform: "none" }}
@@ -229,11 +245,9 @@ export default function MyPage({ params }: { params: { slug: string } }) {
 
                           <div className="flex flex-row mb-8 md:mb-0">
                             {user?.role === "teacher" ? (
-                              <>
-                                <Tooltip title="Add Chapter" placement="top">
-                                  <NewChapterForm courseId={course.id} />
-                                </Tooltip>
-                              </>
+                              <Tooltip title="Add Chapter" placement="top">
+                                <NewChapterForm courseId={course.id} />
+                              </Tooltip>
                             ) : null}
                           </div>
                         </div>
@@ -257,7 +271,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                     <CustomTabPanel value={value} index={2}>
                       <RecordingsPage courseId={course.id} />
                     </CustomTabPanel>
-                    {user.role === "teacher" && (
+                    {user && user.role === "teacher" && (
                       <CustomTabPanel value={value} index={3}>
                         <SettingsPage courseId={course.id} />
                       </CustomTabPanel>

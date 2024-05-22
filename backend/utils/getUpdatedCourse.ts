@@ -1,117 +1,15 @@
-import {
-  Section,
-  User,
-  File,
-  Chapter,
-  Enrollment,
-  Course,
-  Assignment,
-  Submission,
-} from "../models";
-import { Announcement } from "../models";
+import { Course } from "../models";
+import { getCommonInclude, getCommonOrder } from "./courseFetching";
 
 async function getUpdatedCourse(courseId: number): Promise<Course | null> {
-  const editedCourse = await Course.findByPk(courseId, {
-    attributes: { exclude: ["teacherId"] },
-    include: [
-      {
-        model: User,
-        as: "teacher",
-        attributes: ["name", "username", "id", "email", "role"],
-      },
-      {
-        model: User,
-        as: "students",
-        attributes: ["name", "username", "id", "email", "role"],
-        through: {
-          attributes: [],
-        },
-      },
-      {
-        model: Announcement,
-        as: "announcements",
-      },
-      {
-        model: Chapter,
-        as: "chapters",
-        attributes: ["title", "id", "pinned"],
+  const commonAttributes = { exclude: ["teacherId"] };
+  const commonInclude = getCommonInclude();
+  const commonOrder = getCommonOrder();
 
-        include: [
-          {
-            model: Section,
-            as: "sections",
-            include: [
-              {
-                model: File,
-                required: false,
-                as: "files",
-                attributes: ["name", "id", "link", "awskey", "visibledate"],
-              },
-              {
-                model: Assignment,
-                as: "assignments",
-                required: false,
-                attributes: [
-                  "name",
-                  "id",
-                  "link",
-                  "awskey",
-                  "visibledate",
-                  "deadline",
-                  "marks",
-                ],
-                include: [
-                  {
-                    model: Submission,
-                    as: "submissions",
-                    required: false,
-                    include: [
-                      {
-                        model: User,
-                        as: "student",
-                        attributes: ["name", "username", "id", "email", "role"],
-                      },
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
-    ],
-    order: [
-      ["createdAt", "DESC"],
-      [{ model: Chapter, as: "chapters" }, "createdAt", "DESC"],
-      [
-        { model: Chapter, as: "chapters" },
-        { model: Section, as: "sections" },
-        "createdAt",
-        "ASC",
-      ],
-      [
-        { model: Chapter, as: "chapters" },
-        { model: Section, as: "sections" },
-        { model: File, as: "files" },
-        "createdAt",
-        "ASC",
-      ],
-      [
-        { model: Chapter, as: "chapters" },
-        { model: Section, as: "sections" },
-        { model: Assignment, as: "assignments" },
-        "createdAt",
-        "ASC",
-      ],
-      [
-        { model: Chapter, as: "chapters" },
-        { model: Section, as: "sections" },
-        { model: Assignment, as: "assignments" },
-        { model: Submission, as: "submissions" },
-        "createdAt",
-        "ASC",
-      ],
-    ],
+  const editedCourse = await Course.findByPk(courseId, {
+    attributes: commonAttributes,
+    include: commonInclude,
+    order: commonOrder,
   });
 
   return editedCourse;
