@@ -28,7 +28,7 @@ User.init(
       allowNull: false,
       unique: true,
       validate: {
-        is: /^(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/g,
+        is: /^(?=[a-zA-Z0-9._-]{4,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/,
       },
     },
     role: {
