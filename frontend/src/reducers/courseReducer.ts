@@ -41,15 +41,18 @@ const courseSlice = createSlice({
 
 export const { create, edit, setCourses, remove } = courseSlice.actions;
 
-export const initializeCourses = (): ThunkAction<
-  void,
-  AppState,
-  unknown,
-  Action
-> => {
+export const initializeCourses = (
+  id: number = -1
+): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
-    const courses = await courseService.getAll();
-    dispatch(setCourses(courses));
+    if (id === -1) {
+      const courses = await courseService.getAll();
+      dispatch(setCourses(courses));
+    } else {
+      const course = await courseService.getOne(id);
+      console.log(course);
+      dispatch(setCourses(course));
+    }
   };
 };
 

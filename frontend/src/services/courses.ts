@@ -29,7 +29,10 @@ const getAll = async () => {
 };
 
 const getOne = async (id: number) => {
-  const { data } = await axios.get(`${apiBaseUrl}/courses/${id}`);
+  const config = {
+    headers: { Authorization: token },
+  };
+  const { data } = await axios.get(`${apiBaseUrl}/courses/${id}`, config);
 
   return data;
 };
