@@ -3,7 +3,7 @@ import { getCommonInclude, getCommonOrder } from "./courseFetching";
 
 async function getUpdatedCourse(courseId: number): Promise<Course | null> {
   const commonAttributes = { exclude: ["teacherId"] };
-  const commonInclude = getCommonInclude();
+  const commonInclude = getCommonInclude(false);
   const commonOrder = getCommonOrder();
 
   const editedCourse = await Course.findByPk(courseId, {
