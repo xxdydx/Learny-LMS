@@ -43,6 +43,7 @@ export const getCommonInclude = (
           model: Chapter,
           as: "chapters",
           attributes: ["title", "id", "createdAt", "pinned"],
+          required: false,
           include: [
             {
               model: Section,
@@ -51,14 +52,17 @@ export const getCommonInclude = (
                 {
                   model: File,
                   as: "files",
+                  required: false,
                 },
                 {
                   model: Assignment,
                   as: "assignments",
+                  required: false,
                   include: [
                     {
                       model: Submission,
                       as: "submissions",
+                      required: false,
                       include: [
                         {
                           model: User,
