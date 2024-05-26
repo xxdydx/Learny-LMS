@@ -78,6 +78,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
       dispatch(initializeCourses());
     }
   }, [dispatch, user]);
+
   // if page is loaded + no user => redirect to login page
   useEffect(() => {
     if (!isLoading && !user) {
@@ -342,7 +343,7 @@ export default function MyPage({ params }: { params: { slug: string } }) {
     const submissionsWithName = submissions.filter(
       (submission) => submission.student_name === user.name
     );
-    if (submissionsWithName.length > 1) {
+    if (submissionsWithName.length >= 1) {
       return true;
     }
     return false;
@@ -383,7 +384,11 @@ export default function MyPage({ params }: { params: { slug: string } }) {
     }
 
     try {
-      await dispatch(gradeAssignment(newFile, submission.id));
+      const newAssignmentObj = await courseService.gradeAssignment(
+        newFile,
+        submission.id
+      );
+      setAssignment(newAssignmentObj);
       setOpen(false);
       const notif: Notif = {
         type: "success",
@@ -405,6 +410,10 @@ export default function MyPage({ params }: { params: { slug: string } }) {
         dispatch(setNotification(notif, 5000));
       }
     }
+  };
+
+  const handleSubmissionStateChange = (newAssignmentObj: Assignment) => {
+    setAssignment(newAssignmentObj);
   };
 
   if (assignment === null || assignment === undefined) {
@@ -450,6 +459,9 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                           <SubmitAssignmentForm
                             title={assignment?.name}
                             id={assignment.id}
+                            handleSubmissionStateChange={
+                              handleSubmissionStateChange
+                            }
                             checkAssignmentSubmit={checkAssignmentSubmit()}
                           />
                         )}
