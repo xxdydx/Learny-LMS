@@ -121,12 +121,31 @@ router.put(
         assignment.id
       );
 
-      const editedCourse = await getUpdatedCourse(course.id);
-      if (!editedCourse) {
-        return res.status(404).send("Course not found");
+      const editedAssignment = await Assignment.findByPk(
+        submission?.assignmentId,
+        {
+          include: [
+            {
+              model: Submission,
+              as: "submissions",
+              required: false,
+              include: [
+                {
+                  model: User,
+                  as: "student",
+                  attributes: ["name", "username", "id", "email", "role"],
+                },
+              ],
+            },
+          ],
+        }
+      );
+
+      if (!editedAssignment) {
+        return res.status(404).send("Assignment not found");
       }
 
-      return res.json(editedCourse);
+      return res.json(editedAssignment);
     } catch (error) {
       next(error);
     }

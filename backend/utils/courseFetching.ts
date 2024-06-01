@@ -84,11 +84,8 @@ export const getCommonInclude = (
           ],
         },
       ];
-  const appendWhereClauseToFile = (includeArray: any) => {
+  const appendWhereClauseToFile = (includeArray: any, userId: number) => {
     includeArray.forEach((includeItem: any) => {
-      if (includeItem.include) {
-        appendWhereClauseToFile(includeItem.include);
-      }
       if (includeItem.model === File) {
         includeItem.where = {
           visibledate: {
@@ -103,6 +100,16 @@ export const getCommonInclude = (
           },
         };
       }
+      if (includeItem.model === Submission) {
+        includeItem.where = {
+          studentId: {
+            [Op.eq]: userId,
+          },
+        };
+      }
+      if (includeItem.include) {
+        appendWhereClauseToFile(includeItem.include, userId);
+      }
     });
   };
   if (role === "student" && userId) {
@@ -113,7 +120,7 @@ export const getCommonInclude = (
       attributes: ["name", "username", "id", "email", "role"],
       through: { attributes: [] },
     });
-    appendWhereClauseToFile(baseInclude);
+    appendWhereClauseToFile(baseInclude, userId);
   }
 
   if (role === "teacher") {

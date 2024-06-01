@@ -20,6 +20,7 @@ import styled from "@mui/material/styles/styled";
 import { useRouter } from "next/navigation";
 import { setNotification } from "@/reducers/notifReducer";
 import { AxiosError } from "axios";
+import { Assignment } from "@/types";
 import AddIcon from "@mui/icons-material/Add";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -27,10 +28,12 @@ const inter = Inter({ subsets: ["latin"] });
 export default function SubmitAssignmentForm({
   title,
   id,
+  handleSubmissionStateChange,
   checkAssignmentSubmit,
 }: {
   title: string;
   id: number;
+  handleSubmissionStateChange: (newAssignmentObj: Assignment) => void;
   checkAssignmentSubmit: boolean;
 }) {
   const [open, setOpen] = useState<boolean>(false);
@@ -90,7 +93,11 @@ export default function SubmitAssignmentForm({
     }
 
     try {
-      await dispatch(submitToAssignment(newFile, id));
+      const newAssignmentObj = await courseService.submitAssignment(
+        newFile,
+        id
+      );
+      handleSubmissionStateChange(newAssignmentObj);
       setOpen(false);
       const notif: Notif = {
         type: "success",
