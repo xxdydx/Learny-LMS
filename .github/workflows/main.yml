@@ -12,9 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl scale memory 2048 --app learny-app
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
       - run: flyctl deploy --remote-only --app learny-app ./backend
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
-
-
+      - run: flyctl scale memory 512 --app learny-app
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - run: flyctl scale memory 512 --app learny-app
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
