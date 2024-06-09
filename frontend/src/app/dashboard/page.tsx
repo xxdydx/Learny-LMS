@@ -21,6 +21,12 @@ import { Box, Collapse, Alert, IconButton, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import SyncIcon from "@mui/icons-material/Sync";
+import { Typography } from "@mui/material";
+import { createTheme } from "@mui/material";
+import { Inter } from "next/font/google";
+import { ThemeProvider } from "@mui/material";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export default function MyPage() {
   // abstracted GET users and courses into a hook
@@ -29,6 +35,18 @@ export default function MyPage() {
   const courses = useAppSelector((state) => state.courses);
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  const theme = createTheme({
+    typography: {
+      fontFamily: inter.style.fontFamily,
+    },
+    palette: {
+      mode: "dark",
+      primary: {
+        main: "#fec006",
+      },
+    },
+  });
 
   // if page is loaded + no user => redirect to home page
   useEffect(() => {
@@ -53,7 +71,7 @@ export default function MyPage() {
     return null;
   }
 
-/*  const InfoComponent = () => {
+  /*  const InfoComponent = () => {
     return (
       <Box sx={{ width: "100%", mb: 6 }}>
         <Collapse in={open}>
@@ -81,50 +99,58 @@ export default function MyPage() {
   }; */
 
   return (
-    <div className="dark">
-      <div className="dark:bg-bg">
-        <NavigationBar />
-        <div className="flex flex-col px-4 pt-16 pb-10 mx-auto min-h-screen max-w-7xl ">
-          <div>
-           {/* <InfoComponent /> */}
-            <div className="flex justify-between mx-auto">
-              <h1 className="pb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
-                My Courses
-              </h1>
-              <div className="flex flex-row">
-                {user?.role === "teacher" ? (
-                  <>
-                    <NewCourseForm />
-                    <Tooltip title="Sync Recordings" placement="top">
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            window.location.href = `/recordings`;
-                          }}
-                          className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
-                        >
-                          <RadioButtonCheckedIcon />
-                        </button>
-                      </div>
-                    </Tooltip>
-                  </>
-                ) : null}
+    <ThemeProvider theme={theme}>
+      <div className="dark">
+        <div className="dark:bg-bg">
+          <NavigationBar />
+          <div className="flex flex-col px-4 pt-16 pb-10 mx-auto min-h-screen max-w-7xl ">
+            <div>
+              {/* <InfoComponent /> */}
+              <div className="flex justify-between mx-auto">
+                <h1 className="pb-12 text-4xl tracking-tight font-semibold text-gray-900 dark:text-white">
+                  My Courses
+                </h1>
+                <div className="flex flex-row">
+                  {user?.role === "teacher" ? (
+                    <>
+                      <NewCourseForm />
+                      <Tooltip title="Sync Recordings" placement="top">
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              window.location.href = `/recordings`;
+                            }}
+                            className="text-white text-heading-4 font-semibold bg-[#ff4081] hover:bg-canary-500  rounded-2xl px-5 py-2.5 text-center mr-2 mb-2 dark:bg-[#ff4081] dark:hover:bg-[#f01b68]"
+                          >
+                            <RadioButtonCheckedIcon />
+                          </button>
+                        </div>
+                      </Tooltip>
+                    </>
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <div className="grid gap-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
-              {courses.map((course) => (
-                <div key={course.id} className="mx-auto max-w-xs">
-                  <CourseCard course={course} />
+            <div>
+              {courses.length > 0 ? (
+                <div className="grid gap-12 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center">
+                  {courses.map((course) => (
+                    <div key={course.id} className="mx-auto max-w-xs">
+                      <CourseCard course={course} />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <Typography color="text.secondary">
+                  No courses found. Create one!
+                </Typography>
+              )}
             </div>
           </div>
+          <NotifComponent />
         </div>
-        <NotifComponent />
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
