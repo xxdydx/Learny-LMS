@@ -203,16 +203,21 @@ export default function MyPage({ params }: { params: { slug: string } }) {
   };
 
   const columns: GridColDef[] = [
-    { field: "sn", headerName: "S/N", flex: 0.5, resizable: true },
     {
       field: "student_name",
       headerName: "Student Name",
-      flex: 1,
+      flex: 0.5,
       resizable: true,
     },
     {
       field: "createdAt",
       headerName: "Submission Time",
+      flex: 0.5,
+      resizable: true,
+    },
+    {
+      field: "comments",
+      headerName: "Comments",
       flex: 1,
       resizable: true,
     },
@@ -511,6 +516,16 @@ export default function MyPage({ params }: { params: { slug: string } }) {
                           rows={submissions}
                           columns={columns}
                           autoHeight
+                          getRowHeight={() => "auto"}
+                          getEstimatedRowHeight={() => 250}
+                          sx={{
+                            "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell":
+                              { py: "8px" },
+                            "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell":
+                              { py: "15px" },
+                            "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell":
+                              { py: "22px" },
+                          }}
                           slots={{
                             noRowsOverlay: CustomNoRowsOverlay,
                           }}
