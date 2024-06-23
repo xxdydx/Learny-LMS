@@ -102,6 +102,24 @@ const removeChapter = async (id: number) => {
   return data;
 };
 
+const copyChapter = async (id: number, newCourseId: number) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const object = {
+    newCourseId: newCourseId,
+  };
+
+  const { data } = await axios.post(
+    `${apiBaseUrl}/chapters/${id}/copy`,
+    object,
+    config
+  );
+
+  return data;
+};
+
 const createSection = async (section: NewSection, chpId: number) => {
   const config = {
     headers: { Authorization: token },
@@ -387,6 +405,7 @@ export default {
   createChapter,
   updateChapter,
   removeChapter,
+  copyChapter,
   createSection,
   updateSection,
   removeSection,
@@ -410,5 +429,5 @@ export default {
   getAllUsers,
   getAllSessions,
   deleteUser,
-  changePasswordAdmin
+  changePasswordAdmin,
 };

@@ -1,11 +1,15 @@
 import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from "../utils/db";
+import File from "./file";
+import Assignment from "./assignment";
 
 class Section extends Model {
   public id!: number;
   public title!: string;
   public chapterId!: number;
+  public files!: File[];
+  public assignments!: Assignment[];
 }
 
 Section.init(
