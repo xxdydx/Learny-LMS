@@ -29,8 +29,12 @@ import TextField from "@mui/material/TextField";
 import CloseIcon from "@mui/icons-material/Close";
 import { editChapter } from "@/reducers/courseReducer";
 import PushPinIcon from "@mui/icons-material/PushPin";
-
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { List, ListItem, ListItemText, ListItemButton } from "@mui/material";
+import courseService from "@/services/courses";
+import { useEffect } from "react";
 import { AxiosError } from "axios";
+import { Course } from "@/types";
 
 const ITEM_HEIGHT = 36;
 const inter = Inter({ subsets: ["latin"] });
@@ -56,6 +60,9 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [openNSDialog, setOpenNSDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openCopyDialog, setOpenCopyDialog] = useState(false);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<number | null>(null);
   const [chapterName, setChapterName] = useState<string>(
     chapter.title ? chapter.title : ""
   );
@@ -72,6 +79,10 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
     setAnchorEl(null);
     setOpenEditDialog(true);
   };
+  const handleCopyDialogOpen = () => {
+    setAnchorEl(null);
+    setOpenCopyDialog(true);
+  };
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -81,6 +92,12 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
   const handleEditDialogClose = () => {
     setOpenEditDialog(false);
   };
+
+  useEffect(() => {
+    courseService.getAll().then((response) => {
+      setCourses(response);
+    });
+  }, []);
 
   // to handle new section responses once 'create' button is clicked
   const handleCreate = async (event: React.FormEvent) => {
@@ -121,6 +138,37 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
       };
       await dispatch(setNotification(notif, 5000));
       setOpenEditDialog(false);
+    }
+  };
+
+  const handleCopyChapter = async (newCourseId: number) => {
+    try {
+      await courseService.copyChapter(id, newCourseId);
+
+      const successNotif: Notif = {
+        type: "success",
+        message: "Chapter copied. Refresh the page to see changes.",
+      };
+      await dispatch(setNotification(successNotif, 5000));
+
+      setOpenCopyDialog(false);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        const notif: Notif = {
+          message: error.response?.data.error
+            ? error.response?.data.error
+            : error.response?.data,
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      } else {
+        console.log(error);
+        const notif: Notif = {
+          message: "Unknown error happened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
     }
   };
 
@@ -321,21 +369,23 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
         >
           <MenuItem onClick={handleEditDialogOpen}>
             <EditIcon />
-            Edit Chapter
+            Edit
           </MenuItem>
-          {
-            chapter.pinned ? (
-              <MenuItem onClick={unpinChapter}>
-                <PushPinIcon />
-                Unpin 
-              </MenuItem>
-            ) : (
-              <MenuItem onClick={pinChapter}>
-                <PushPinIcon />
-                Pin Chapter
-              </MenuItem>
-            )
-          }
+          <MenuItem onClick={handleCopyDialogOpen}>
+            <ContentCopyIcon />
+            Copy
+          </MenuItem>
+          {chapter.pinned ? (
+            <MenuItem onClick={unpinChapter}>
+              <PushPinIcon />
+              Unpin
+            </MenuItem>
+          ) : (
+            <MenuItem onClick={pinChapter}>
+              <PushPinIcon />
+              Pin Chapter
+            </MenuItem>
+          )}
           <MenuItem onClick={handleNSDialogOpen}>
             <AddIcon />
             Add Section
@@ -411,6 +461,51 @@ export default function ChapterMenu({ id, chapter }: Props): JSX.Element {
           <DialogActions>
             <StyledButton onClick={handleEditDialogClose}>Cancel</StyledButton>
             <StyledButton onClick={handleEditChapter}>Edit</StyledButton>
+          </DialogActions>
+        </Dialog>
+
+        {/* Copy chapter dialog */}
+        <Dialog
+          open={openCopyDialog}
+          onClose={() => setOpenCopyDialog(false)}
+          fullWidth
+          PaperProps={{ style: { backgroundColor: "black" } }}
+        >
+          <NewDialogTitle
+            id="customized-dialog-title"
+            onClose={() => setOpenCopyDialog(false)}
+          >
+            {" "}
+            Copy this chapter to one of your other courses
+          </NewDialogTitle>
+          <DialogContent dividers>
+            <List sx={{ pt: 0 }}>
+              {courses.length > 0 &&
+                courses.map((course) => (
+                  <ListItem disableGutters key={course.id}>
+                    <ListItemButton
+                      selected={selectedCourse === course.id}
+                      onClick={() => setSelectedCourse(course.id)}
+                    >
+                      <ListItemText primary={course.title} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <StyledButton onClick={() => setOpenCopyDialog(false)}>
+              Cancel
+            </StyledButton>
+            <StyledButton
+              onClick={() => {
+                if (selectedCourse !== null) {
+                  handleCopyChapter(selectedCourse);
+                }
+              }}
+            >
+              Copy
+            </StyledButton>
           </DialogActions>
         </Dialog>
       </div>

@@ -1,5 +1,12 @@
 import express from "express";
-import { Section, User, File, Chapter } from "../models";
+import {
+  Section,
+  User,
+  File,
+  Chapter,
+  Assignment,
+  Submission,
+} from "../models";
 import { Course } from "../models";
 import { nextTick } from "process";
 import { tokenExtractor } from "../utils/middleware";
@@ -118,5 +125,104 @@ router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
     next(err);
   }
 });
+
+// To copy a chapter into another course
+router.post(
+  "/:id/copy",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    const user = req.user;
+    if (!user) {
+      return res.status(404).send("You need to be logged in");
+    }
+
+    try {
+      const originalChapter = await Chapter.findByPk(req.params.id, {
+        include: [
+          {
+            model: Section,
+            as: "sections",
+            include: [
+              {
+                model: File,
+                as: "files",
+                required: false,
+              },
+              {
+                model: Assignment,
+                as: "assignments",
+                required: false,
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!originalChapter) {
+        return res.status(404).send("Chapter not found");
+      }
+
+      const newCourseId = req.body.newCourseId;
+      const newCourse = await Course.findByPk(newCourseId);
+
+      if (!newCourse) {
+        return res.status(404).send("New course not found");
+      }
+
+      if (user.id.toString() !== newCourse.teacherId.toString()) {
+        return res
+          .status(403)
+          .send(
+            "You don't have permissions to copy this chapter to the specified course"
+          );
+      }
+
+      const newChapter = await Chapter.create({
+        title: originalChapter.title,
+        pinned: false,
+        courseId: newCourseId,
+      });
+
+      for (const section of originalChapter.sections) {
+        const newSection = await Section.create({
+          title: section.title,
+          chapterId: newChapter.id,
+        });
+
+        for (const file of section.files) {
+          await File.create({
+            name: file.name,
+            link: file.link,
+            visibledate: file.visibledate,
+            sectionId: newSection.id,
+          });
+        }
+
+        for (const assignment of section.assignments) {
+          await Assignment.create({
+            name: assignment.name,
+            link: assignment.link,
+            sectionId: newSection.id,
+            awskey: assignment.awskey,
+            visibledate: new Date(),
+            deadline: assignment.deadline,
+            instructions: assignment.instructions,
+            marks: assignment.marks,
+          });
+        }
+      }
+
+      const editedCourse = await getUpdatedCourse(newCourseId);
+      if (!editedCourse) {
+        return res.status(404).send("Course not found");
+      }
+
+      return res.json(editedCourse);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 
 export default router;
