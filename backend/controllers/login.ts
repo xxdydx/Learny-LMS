@@ -28,6 +28,14 @@ router.post("/", async (request, response, next) => {
       });
     }
 
+    console.log("sjss", user);
+
+    if (user.disabled) {
+      return response
+        .status(403)
+        .send("User is disabled. Contact Admin for support.");
+    }
+
     const userForToken = {
       username: user.username,
       id: user.id,
@@ -38,6 +46,7 @@ router.post("/", async (request, response, next) => {
     await Session.create({
       username: user.username,
       login_time: new Date(),
+      token: token,
     });
 
     response

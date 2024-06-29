@@ -4,6 +4,7 @@ import { ValidationError, DatabaseError } from "sequelize";
 const jwt = require("jsonwebtoken");
 import { SECRET } from "./config";
 import { User } from "../models";
+import Blacklistedtoken from "../models/blacklistedtoken";
 
 export const errorHandler = (
   error: any,
@@ -34,7 +35,18 @@ export const tokenExtractor = async (
 ) => {
   const authorisation = req.get("Authorization");
   if (authorisation && authorisation.toLowerCase().startsWith("bearer ")) {
-    req.decodedToken = jwt.verify(authorisation.substring(7), SECRET);
+    const token = authorisation.substring(7);
+    const blacklistedtoken = await Blacklistedtoken.findOne({
+      where: {
+        token: token,
+      },
+    });
+    if (blacklistedtoken) {
+      return res
+        .status(401)
+        .send("Token is blacklisted. Try logging in again.");
+    }
+    req.decodedToken = jwt.verify(token, SECRET);
   }
   const decodedToken = req.decodedToken;
   const userId =
