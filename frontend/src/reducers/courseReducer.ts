@@ -54,7 +54,7 @@ export const initializeCourses = (
         dispatch(setCourses(courses));
       } else {
         const course = await courseService.getOne(id);
-        dispatch(setCourses([course])); // Adjusted to dispatch an array with a single course
+        dispatch(setCourses(course));
       }
     } catch (error) {
       if (error instanceof AxiosError) {
