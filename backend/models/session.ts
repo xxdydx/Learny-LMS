@@ -30,12 +30,16 @@ Session.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
-    tableName: 'sessions',
+    tableName: "sessions",
     sequelize,
-    timestamps: false
-  },
+    timestamps: false,
+  }
 );
 
 export default Session;

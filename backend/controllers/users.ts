@@ -5,6 +5,7 @@ import { QueryTypes } from "sequelize";
 import getUpdatedCourse from "../utils/getUpdatedCourse";
 import { tokenExtractor } from "../utils/middleware";
 import { CustomRequest } from "../types";
+import Blacklistedtoken from "../models/blacklistedtoken";
 const bcrypt = require("bcryptjs");
 
 const router = express.Router();
@@ -42,58 +43,69 @@ router.post("/", async (req, res, next) => {
   }
 });
 
-router.put('/change-password', tokenExtractor, async (req: CustomRequest, res, next) => {
-  const { oldPassword, newPassword } = req.body;
-  const user = req.user;
-  if (!user) {
-    return res.status(404).send("User not found");
-  }
-
-  try {
-    const passwordMatch = await bcrypt.compare(oldPassword, user.passwordHash);
-
-    if (!passwordMatch) {
-      return res.status(401).send('Old password does not match');
-    }
-
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(newPassword, saltRounds);
-
-    user.passwordHash = passwordHash;
-    await user.save();
-
-    res.json({ message: 'Password updated successfully' });
-  } catch (error) {
-    next(error);
-  }
-});
-
-// route where admins can change password for user accounts
-router.put("/:id/changepwd", tokenExtractor, async (req: CustomRequest, res, next) => {
-  const admin = req.user;
-  if (!admin) {
-    return res.status(404).send("Log in is required to perform this action.");
-  }
-  if (admin.role !== "admin") {
-    return res.status(403).send("Unauthorized to do this action.");
-  }
-  const { password } = req.body;
-  const saltRounds = 10;
-  try {
-    const user = await User.findByPk(req.params.id);
+router.put(
+  "/change-password",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    const { oldPassword, newPassword } = req.body;
+    const user = req.user;
     if (!user) {
       return res.status(404).send("User not found");
     }
-    const passwordHash = await bcrypt.hash(password, saltRounds);
-    user.passwordHash = passwordHash;
-    await user.save();
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-});
 
-router.get("/:id", tokenExtractor, async (req:CustomRequest, res) => {
+    try {
+      const passwordMatch = await bcrypt.compare(
+        oldPassword,
+        user.passwordHash
+      );
+
+      if (!passwordMatch) {
+        return res.status(401).send("Old password does not match");
+      }
+
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+
+      user.passwordHash = passwordHash;
+      await user.save();
+
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// route where admins can change password for user accounts
+router.put(
+  "/:id/changepwd",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    const admin = req.user;
+    if (!admin) {
+      return res.status(404).send("Log in is required to perform this action.");
+    }
+    if (admin.role !== "admin") {
+      return res.status(403).send("Unauthorized to do this action.");
+    }
+    const { password } = req.body;
+    const saltRounds = 10;
+    try {
+      const user = await User.findByPk(req.params.id);
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+      user.passwordHash = passwordHash;
+      await user.save();
+      res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+router.get("/:id", tokenExtractor, async (req: CustomRequest, res) => {
   const user = req.user;
   if (!user) {
     return res.status(404).send("User not found");
@@ -174,14 +186,75 @@ router.delete("/:id", tokenExtractor, async (req: CustomRequest, res, next) => {
       await userToDelete.destroy();
       const newUserList = await User.findAll({});
       res.json(newUserList);
+    } catch (err) {
+      next(err);
     }
-    catch (err){
-      next(err)
-    }
-
   } else {
     res.status(404).end();
   }
 });
+
+// disabling a user
+router.post(
+  "/:id/disable",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      if (user.role !== "admin") {
+        return res.status(403).send("Unauthorized to do this action.");
+      }
+      const userId = req.params.id;
+
+      const userToDisable = await User.findByPk(userId);
+      if (!userToDisable) {
+        return res.status(404).send("User to disable not found");
+      }
+
+      await userToDisable.update({ disabled: true });
+
+      const blacklistedtoken = {
+        token: req.body.token,
+      };
+
+      await Blacklistedtoken.create(blacklistedtoken);
+
+      res.send("User disabled and token blacklisted");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.post(
+  "/:id/enable",
+  tokenExtractor,
+  async (req: CustomRequest, res, next) => {
+    try {
+      const user = req.user;
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+      if (user.role !== "admin") {
+        return res.status(403).send("Unauthorized to do this action.");
+      }
+      const userId = req.params.id;
+
+      const userToEnable = await User.findByPk(userId);
+      if (!userToEnable) {
+        return res.status(404).send("User to enable not found");
+      }
+
+      await userToEnable.update({ disabled: false });
+
+      res.send("User enabled");
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 export default router;

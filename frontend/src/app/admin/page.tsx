@@ -136,11 +136,11 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
   ];
 
   const sessionColumns: GridColDef[] = [
-    { field: "username", headerName: "Username", flex: 0.5, resizable: true },
+    { field: "username", headerName: "Username", flex: 1, resizable: true },
     {
       field: "login_time",
       headerName: "Last login time",
-      flex: 0.5,
+      flex: 1,
       resizable: true,
     },
   ];
@@ -214,6 +214,8 @@ export default function SettingsPage({ params }: { params: { slug: string } }) {
     });
     return { ...item, login_time: dateObj };
   });
+
+  console.log(sessionsMapped);
 
   return (
     <ThemeProvider theme={theme}>
