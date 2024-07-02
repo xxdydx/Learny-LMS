@@ -14,6 +14,9 @@ import courseService from "../services/courses";
 
 import { ThunkAction } from "@reduxjs/toolkit";
 import { NewChapter } from "../types";
+import { AxiosError } from "axios";
+import { setNotification } from "./notifReducer";
+import { Notif } from "../types";
 
 const courseSlice = createSlice({
   name: "courses",
@@ -45,16 +48,32 @@ export const initializeCourses = (
   id: number = -1
 ): ThunkAction<void, AppState, unknown, Action> => {
   return async (dispatch) => {
-    if (id === -1) {
-      const courses = await courseService.getAll();
-      dispatch(setCourses(courses));
-    } else {
-      const course = await courseService.getOne(id);
-      console.log(course);
-      dispatch(setCourses(course));
+    try {
+      if (id === -1) {
+        const courses = await courseService.getAll();
+        dispatch(setCourses(courses));
+      } else {
+        const course = await courseService.getOne(id);
+        dispatch(setCourses([course])); // Adjusted to dispatch an array with a single course
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        const notif: Notif = {
+          message: error.response?.data,
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      } else {
+        const notif: Notif = {
+          message: "Unknown error happpened. Contact support!",
+          type: "error",
+        };
+        dispatch(setNotification(notif, 5000));
+      }
     }
   };
 };
+
 
 export const createCourse = (
   courseObject: NewCourse

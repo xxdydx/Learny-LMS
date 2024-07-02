@@ -28,8 +28,6 @@ router.post("/", async (request, response, next) => {
       });
     }
 
-    console.log("sjss", user);
-
     if (user.disabled) {
       return response
         .status(403)

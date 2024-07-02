@@ -33,29 +33,48 @@ export const tokenExtractor = async (
   res: Response,
   next: NextFunction
 ) => {
-  const authorisation = req.get("Authorization");
-  if (authorisation && authorisation.toLowerCase().startsWith("bearer ")) {
-    const token = authorisation.substring(7);
-    const blacklistedtoken = await Blacklistedtoken.findOne({
-      where: {
-        token: token,
-      },
-    });
-    if (blacklistedtoken) {
-      return res
-        .status(401)
-        .send("Token is blacklisted. Try logging in again.");
+  try {
+    const authorization = req.get("Authorization");
+    if (authorization && authorization.toLowerCase().startsWith("bearer ")) {
+      const token = authorization.substring(7);
+
+      // Check if the token is blacklisted
+      const blacklistedtoken = await Blacklistedtoken.findOne({
+        where: {
+          token: token,
+        },
+      });
+      if (blacklistedtoken) {
+        return res
+          .status(401)
+          .send("Token is blacklisted. Try logging in again.");
+      }
+
+      // Verify the token
+      req.decodedToken = jwt.verify(token, SECRET);
     }
-    req.decodedToken = jwt.verify(token, SECRET);
-  }
-  const decodedToken = req.decodedToken;
-  const userId =
-    typeof decodedToken === "string" ? decodedToken : decodedToken?.id;
-  const user = await User.findByPk(userId); // Use the extracted ID to find the user
 
-  if (user instanceof User) {
-    req.user = user;
-  }
+    // Extract user ID from decoded token
+    const decodedToken = req.decodedToken;
+    const userId =
+      typeof decodedToken === "string" ? decodedToken : decodedToken?.id;
 
-  next();
+    // Find the user by ID
+    const user = await User.findByPk(userId);
+    if (user instanceof User) {
+      req.user = user;
+    } else {
+      return res.status(404).send("User not found");
+    }
+
+    next();
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(400).send("Invalid token");
+    } else if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).send("Token expired");
+    } else {
+      return res.status(500).send("Internal server error");
+    }
+  }
 };
