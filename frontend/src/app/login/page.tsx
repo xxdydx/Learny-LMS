@@ -64,52 +64,28 @@ export default function MyPage() {
 
   // attempts login thru API, sets token in local storage, dispatches token to reducers and authenticates user
   const handleLogin = async (values: any) => {
-    const {username, password} = values
+    const { username, password } = values;
     try {
-      setLoading(true)
+      setLoading(true);
       const user = await loginService.login({ username, password });
       // Set token (issued by backend) in localstorage
       window.localStorage.setItem("AKAppSessionID", JSON.stringify(user));
       courseService.setToken(user.token);
       dispatch(setUser(user));
-      console.log(user.role === "admin")
+      console.log(user.role === "admin");
       if (user.role === "admin") {
-        router.push('/admin')
+        router.push("/admin");
       } else {
         router.push("/dashboard");
       }
-      
     } catch (error: unknown) {
       // Error handling
-      setLoading(false)
-      if (error instanceof AxiosError) {
-        if (error.code === 'ECONNRESET') {
-          const notif: Notif = {
-            message: "Connection reset by server. Please try again later.",
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        }
-        else if (error.response?.status === 500) {
-          const notif: Notif = {
-            message: "Server error. Please try again later.",
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        }  else {
-          const notif: Notif = {
-            message: error.response?.data.error ? error.response?.data.error : "Unknown error happened. Contact support!",
-            type: "error",
-          };
-          dispatch(setNotification(notif, 5000));
-        }
-      } else {
-        const notif: Notif = {
-          message: "Unknown error happpened. Contact support!",
-          type: "error",
-        };
-        dispatch(setNotification(notif, 5000));
-      }
+      setLoading(false);
+      const notif: Notif = {
+        message: "Unknown error happpened. Contact support!",
+        type: "error"
+      };
+      dispatch(setNotification(notif, 5000));
     }
   };
 
