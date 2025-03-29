@@ -30,16 +30,20 @@ export default function Header() {
         <div className="flex items-center justify-between h-16 md:h-20">
           <div className="mr-4">
             <div className="flex flex-row">
-              <SchoolIcon
-                sx={{
-                  display: { xs: "none", md: "flex" },
-                  fontSize: "h6.fontSize",
-                  color: "white",
-                  mt: 0.5,
-                  mr: 1,
-                }}
-              />
-              <h1 className="text-xl text-white font-extrabold">Learny LMS</h1>
+              <Link href="/" className="flex flex-row items-center">
+                <SchoolIcon
+                  sx={{
+                    display: { xs: "none", md: "flex" },
+                    fontSize: "h6.fontSize",
+                    color: "white",
+                    mt: 0.5,
+                    mr: 1
+                  }}
+                />
+                <h1 className="text-xl text-white font-extrabold">
+                  Learny LMS
+                </h1>
+              </Link>
             </div>
           </div>
 
@@ -55,7 +59,7 @@ export default function Header() {
               </li>
               <li>
                 <Link
-                  href="/#"
+                  href="/pricing"
                   className="font-medium text-text hover:text-white px-5 flex items-center transition duration-150 ease-in-out"
                 >
                   Pricing

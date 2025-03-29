@@ -145,7 +145,7 @@ export default function Features() {
                 >
                   <div>
                     <div className="font-bold leading-snug tracking-tight mb-1">
-                      Assignment Submissions Tracking (Coming Soon)
+                      Assignment Submissions Tracking
                     </div>
                     <div className="text-gray-600">
                       You don't have to chase your students to submit
