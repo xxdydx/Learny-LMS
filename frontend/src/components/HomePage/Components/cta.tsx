@@ -107,7 +107,7 @@ export default function CTA() {
                 <form className="w-full lg:w-auto">
                   <div className="flex flex-col sm:flex-row justify-left max-w-xs mx-auto sm:max-w-md lg:mx-0">
                     <a
-                      href="#"
+                      href="https://forms.gle/Uyhd6FhatW4BV4sm8"
                       className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-crimson-9 hover:bg-darkerpink"
                     >
                       Register for private beta

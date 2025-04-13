@@ -66,7 +66,7 @@ export default function Hero() {
               className="flex justify-center space-x-4"
             >
               <a
-                href="#"
+                href="https://forms.gle/Uyhd6FhatW4BV4sm8"
                 className="group inline-flex items-center px-8 py-4 text-base md:text-lg font-semibold text-white bg-crimson-9 hover:bg-darkerpink rounded-full transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-crimson-9/25"
               >
                 Register for private beta
