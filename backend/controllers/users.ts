@@ -149,16 +149,12 @@ router.post("/directsignup/:id", async (req, res, next) => {
     console.log(user);
 
     const userId = user.id;
-    const courseId = course.id;
+    const courseIdNum = course.id;
 
-    const enrollmentQuery = `
-      INSERT INTO "enrollments" ("id", "user_id", "course_id")
-      VALUES (DEFAULT, $1, $2)
-      RETURNING "id", "user_id", "course_id"
-    `;
-    await Enrollment.sequelize?.query(enrollmentQuery, {
-      bind: [userId, courseId],
-      type: QueryTypes.INSERT,
+    // Use Sequelize's built-in create method instead of raw SQL
+    await Enrollment.create({
+      userId: userId,
+      courseId: courseIdNum,
     });
 
     const editedCourse = await getUpdatedCourse(course.id);
